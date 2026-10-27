@@ -1,0 +1,12 @@
+build/
+.cache/
+.tools/
+CMakeUserPresets.json
+.env
+*.sqlite3*
+*.db*
+*.user
+.DS_Store
+
+__pycache__/
+.ruff_cache/

@@ -1,0 +1,3 @@
+Checks: '-*,bugprone-*,performance-*,portability-*,-portability-avoid-pragma-once,modernize-use-nullptr,modernize-use-override'
+WarningsAsErrors: 'bugprone-use-after-move,bugprone-dangling-handle'
+HeaderFilterRegex: '(src|tests)/.*'
