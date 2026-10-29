@@ -189,3 +189,11 @@ Offizielle Grundlagen:
 [Fremdschlüssel](https://www.sqlite.org/foreignkeys.html),
 [QImageReader](https://doc.qt.io/qt-6.8/qimagereader.html),
 [Qt SQL und Threads](https://doc.qt.io/qt-6.8/threads-modules.html#threads-and-the-sql-module).
+
+## Sprachen
+
+App-lokale TS-Kataloge werden mit Qt Linguist in die Laufzeit eingebettet.
+`Translations` installiert App- und Qt-Basistexte vor Fenstern und Worker.
+`LanguageDialog` speichert über den vorhandenen Worker mit QSaveFile.
+QLocale steuert Zahlen und Sortierung. Die Wahl bleibt pro Prozess unverändert.
+Es gibt keine Datenmigration oder Änderung an Schema, Schritten und Fotobytes.

@@ -1,0 +1,4 @@
+Sfoglia progetti con foto e passi di lavoro.
+Modifica progetto, foto, stato e checklist insieme.
+Trova un progetto attraverso le note.
+Scegli la lingua del prossimo avvio.

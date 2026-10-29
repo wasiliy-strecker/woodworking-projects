@@ -1,0 +1,4 @@
+Parcourez les projets avec photo et étapes.
+Modifiez le projet, la photo, l’état et les étapes ensemble.
+Retrouvez un projet grâce à ses notes.
+Choisissez la langue du prochain démarrage.

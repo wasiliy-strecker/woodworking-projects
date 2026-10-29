@@ -1,0 +1,5 @@
+HolzwerkProjekt
+
+Record a project name, wood or material, storage location, and notes. Add one JPEG or PNG photo, choose Planned, Started, or Finished, and manage work steps with checkmarks.
+
+Search all four text fields and edit your projects. Everything stays local without an account or internet connection. Choose German, English, Spanish, French, Italian, or Portuguese (Brazil). Language changes apply after restarting.

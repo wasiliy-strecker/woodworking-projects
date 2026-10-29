@@ -16,7 +16,8 @@ namespace woodwork {
 class MainWindow final : public QMainWindow {
   Q_OBJECT
 public:
-  MainWindow(StorageController& controller, QString dataDirectory, QWidget* parent = nullptr);
+  MainWindow(StorageController& controller, QString dataDirectory,
+             QString languagePreference = QStringLiteral("auto"), QWidget* parent = nullptr);
 
 protected:
   void closeEvent(QCloseEvent* event) override;
@@ -30,8 +31,10 @@ private:
   void openEditor(bool editing);
   void deleteSelected();
   void showAbout();
+  void showLanguage();
   StorageController& controller_;
   QString dataDirectory_;
+  QString languagePreference_;
   ProjectList projects_;
   ProjectList visibleProjects_;
   QPointer<ProjectEditor> editor_;
@@ -51,6 +54,7 @@ private:
   QPushButton* edit_;
   QPushButton* remove_;
   QPushButton* reload_;
+  QPushButton* language_;
   bool ready_ = false;
 };
 

@@ -1,0 +1,54 @@
+{
+  "items": [
+    [
+      "Étagère murale",
+      "Pin",
+      "Établi 1",
+      "Poncer les bords avant de huiler."
+    ],
+    [
+      "Boîte à outils",
+      "Bouleau",
+      "Étagère 2",
+      "Vérifier les mesures"
+    ],
+    [
+      "Banc de jardin",
+      "Chêne",
+      "Étagère 3",
+      "Découper les pièces"
+    ],
+    [
+      "Cadre photo",
+      "Pin",
+      "Étagère 4",
+      "Traiter la surface"
+    ],
+    [
+      "Jardinière",
+      "Bouleau",
+      "Étagère 5",
+      "Vérifier les mesures"
+    ]
+  ],
+  "photos": [
+    "images/shelf.png",
+    "images/box.jpg",
+    "images/bench.png",
+    null,
+    null
+  ],
+  "statuses": [
+    "started",
+    "planned",
+    "finished",
+    "planned",
+    "started"
+  ],
+  "steps": [
+    "Vérifier les mesures",
+    "Découper les pièces",
+    "Traiter la surface"
+  ],
+  "search": "huiler"
+}

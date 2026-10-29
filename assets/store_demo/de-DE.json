@@ -1,0 +1,54 @@
+{
+  "items": [
+    [
+      "Wandregal",
+      "Kiefer",
+      "Werkbank 1",
+      "Kanten vor dem Ölen schleifen."
+    ],
+    [
+      "Werkzeugkiste",
+      "Birke",
+      "Regal 2",
+      "Maße prüfen"
+    ],
+    [
+      "Gartenbank",
+      "Eiche",
+      "Regal 3",
+      "Teile zuschneiden"
+    ],
+    [
+      "Bilderrahmen",
+      "Kiefer",
+      "Regal 4",
+      "Oberfläche behandeln"
+    ],
+    [
+      "Pflanzkasten",
+      "Birke",
+      "Regal 5",
+      "Maße prüfen"
+    ]
+  ],
+  "photos": [
+    "images/shelf.png",
+    "images/box.jpg",
+    "images/bench.png",
+    null,
+    null
+  ],
+  "statuses": [
+    "started",
+    "planned",
+    "finished",
+    "planned",
+    "started"
+  ],
+  "steps": [
+    "Maße prüfen",
+    "Teile zuschneiden",
+    "Oberfläche behandeln"
+  ],
+  "search": "Ölen"
+}

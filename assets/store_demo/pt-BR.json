@@ -1,0 +1,54 @@
+{
+  "items": [
+    [
+      "Prateleira de parede",
+      "Pinho",
+      "Bancada 1",
+      "Lixar as bordas antes de aplicar óleo."
+    ],
+    [
+      "Caixa de ferramentas",
+      "Bétula",
+      "Prateleira 2",
+      "Conferir medidas"
+    ],
+    [
+      "Banco de jardim",
+      "Carvalho",
+      "Prateleira 3",
+      "Cortar as peças"
+    ],
+    [
+      "Porta-retrato",
+      "Pinho",
+      "Prateleira 4",
+      "Tratar a superfície"
+    ],
+    [
+      "Jardineira",
+      "Bétula",
+      "Prateleira 5",
+      "Conferir medidas"
+    ]
+  ],
+  "photos": [
+    "images/shelf.png",
+    "images/box.jpg",
+    "images/bench.png",
+    null,
+    null
+  ],
+  "statuses": [
+    "started",
+    "planned",
+    "finished",
+    "planned",
+    "started"
+  ],
+  "steps": [
+    "Conferir medidas",
+    "Cortar as peças",
+    "Tratar a superfície"
+  ],
+  "search": "óleo"
+}

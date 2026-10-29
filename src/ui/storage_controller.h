@@ -10,7 +10,7 @@
 
 namespace woodwork {
 
-enum class Operation : quint8 { Load, Save, Remove, Import };
+enum class Operation : quint8 { Load, Save, Remove, Language, Import };
 using RepositoryFactory = std::function<std::unique_ptr<ProjectRepository>()>;
 
 class StorageWorker final : public QObject {
@@ -22,6 +22,7 @@ public slots:
   void load();
   void save(qint64 id, const woodwork::ProjectDraft& draft);
   void remove(qint64 id);
+  void saveLanguage(const QString& directory, const QString& preference);
   void read(qint64 id, quint64 token);
   void importPhotoFile(const QString& path);
 
@@ -33,6 +34,7 @@ signals:
   void loaded(const woodwork::ProjectList& projects);
   void saved(const woodwork::WoodProject& project);
   void removed(qint64 id);
+  void languageSaved(const QString& preference);
   void failed(woodwork::Operation operation, const QString& message);
 
 private:
@@ -49,6 +51,7 @@ public:
   bool load();
   bool save(qint64 id, const ProjectDraft& draft);
   bool remove(qint64 id);
+  bool saveLanguage(const QString& directory, const QString& preference);
   void read(qint64 id, quint64 token);
   bool importPhotoFile(const QString& path);
 
@@ -60,6 +63,7 @@ signals:
   void loaded(const woodwork::ProjectList& projects);
   void saved(const woodwork::WoodProject& project);
   void removed(qint64 id);
+  void languageSaved(const QString& preference);
   void failed(woodwork::Operation operation, const QString& message);
   void busyChanged(bool busy);
   void readRequested(qint64 id, quint64 token);
@@ -67,6 +71,7 @@ signals:
   void loadRequested();
   void saveRequested(qint64 id, const woodwork::ProjectDraft& draft);
   void removeRequested(qint64 id);
+  void languageRequested(const QString& directory, const QString& preference);
 
 private:
   bool begin();

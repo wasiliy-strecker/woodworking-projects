@@ -1,0 +1,5 @@
+Nome, material, local e notas
+Uma foto opcional e três status
+Lista de etapas com textos e marcações
+Pesquisa em projetos e etapas
+Armazenamento local e seis idiomas

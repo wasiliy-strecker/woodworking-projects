@@ -1,0 +1,5 @@
+HolzwerkProjekt
+
+Guarda el nombre, la madera o material, la ubicación y las notas. Añade una foto JPEG o PNG, elige Planificado, En curso o Finalizado y gestiona los pasos con casillas.
+
+Busca en los cuatro campos de texto y edita tus proyectos. Todo se guarda localmente sin cuenta ni Internet. Elige alemán, inglés, español, francés, italiano o portugués de Brasil. El idioma cambia al reiniciar.

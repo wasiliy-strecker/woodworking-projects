@@ -3,7 +3,9 @@
 #include "ui/photo_view.h"
 #include "ui/ui_support.h"
 #include <QComboBox>
+#include <QCoreApplication>
 #include <QFileDialog>
+#include <QPointer>
 
 #include <QCloseEvent>
 #include <QDialogButtonBox>
@@ -25,14 +27,14 @@ ProjectEditor::ProjectEditor(StorageController& controller, std::optional<WoodPr
       material_(new QLineEdit(this)), location_(new QLineEdit(this)),
       note_(new QPlainTextEdit(this)), status_(new QComboBox(this)), photo_(new PhotoView(this)),
       checklist_(new ChecklistEditor(existing ? existing->fields.steps : Checklist{}, this)),
-      choosePhoto_(new QPushButton(QStringLiteral("&Foto hinzufügen …"), this)),
-      removePhoto_(new QPushButton(QStringLiteral("Foto &entfernen"), this)),
+      choosePhoto_(new QPushButton(QCoreApplication::translate("App", "&Foto hinzufügen …"), this)),
+      removePhoto_(new QPushButton(QCoreApplication::translate("App", "Foto &entfernen"), this)),
       scroll_(new QScrollArea(this)), error_(new QLabel(this)),
-      save_(new QPushButton(QStringLiteral("Speichern"), this)),
-      cancel_(new QPushButton(QStringLiteral("Abbrechen"), this)) {
+      save_(new QPushButton(QCoreApplication::translate("App", "Speichern"), this)),
+      cancel_(new QPushButton(QCoreApplication::translate("App", "Abbrechen"), this)) {
   setObjectName(QStringLiteral("projectEditor"));
-  setWindowTitle(existing ? QStringLiteral("Projekt bearbeiten")
-                          : QStringLiteral("Projekt hinzufügen"));
+  setWindowTitle(existing ? QCoreApplication::translate("App", "Projekt bearbeiten")
+                          : QCoreApplication::translate("App", "Projekt hinzufügen"));
   setWindowModality(Qt::WindowModal);
   resize(600, 780);
   setMinimumSize(320, 280);
@@ -53,7 +55,7 @@ ProjectEditor::ProjectEditor(StorageController& controller, std::optional<WoodPr
     if (saving_ || importing_ || choosing_)
       return;
     photoBytes_.clear();
-    photo_->showMessage(QStringLiteral("Kein Foto"));
+    photo_->showMessage(QCoreApplication::translate("App", "Kein Foto"));
     updatePhotoActions();
   });
   name_->setObjectName(QStringLiteral("projectName"));
@@ -67,15 +69,17 @@ ProjectEditor::ProjectEditor(StorageController& controller, std::optional<WoodPr
     field->setMaxLength(1000000);
     field->setClearButtonEnabled(true);
   }
-  name_->setPlaceholderText(QStringLiteral("Wie heißt das Holzwerkprojekt?"));
-  material_->setPlaceholderText(QStringLiteral("Optional"));
-  location_->setPlaceholderText(QStringLiteral("Zum Beispiel Wohnzimmer, Regal 2"));
-  note_->setPlaceholderText(QStringLiteral("Was möchtest du dir zu diesem Projekt merken?"));
+  name_->setPlaceholderText(QCoreApplication::translate("App", "Wie heißt das Holzwerkprojekt?"));
+  material_->setPlaceholderText(QCoreApplication::translate("App", "Optional"));
+  location_->setPlaceholderText(
+      QCoreApplication::translate("App", "Zum Beispiel Wohnzimmer, Regal 2"));
+  note_->setPlaceholderText(
+      QCoreApplication::translate("App", "Was möchtest du dir zu diesem Projekt merken?"));
   note_->setMinimumHeight(120);
   note_->setTabChangesFocus(true);
   error_->setTextFormat(Qt::PlainText);
   error_->setWordWrap(true);
-  error_->setAccessibleName(QStringLiteral("Hinweis zum Speichern"));
+  error_->setAccessibleName(QCoreApplication::translate("App", "Hinweis zum Speichern"));
   error_->hide();
   connect(name_, &QLineEdit::textChanged, this, [this] {
     if (validationError_ && !name_->text().trimmed().isEmpty()) {
@@ -93,8 +97,8 @@ ProjectEditor::ProjectEditor(StorageController& controller, std::optional<WoodPr
     status_->setCurrentIndex(status_->findData(QVariant::fromValue(existing->fields.status)));
     photoBytes_ = existing->fields.photo;
     if (existing->hasPhoto && (photoBytes_.isEmpty() || preview.isNull())) {
-      throw StorageError(QStringLiteral(
-          "Das gespeicherte Foto muss vor der Bearbeitung vollständig geladen werden."));
+      throw StorageError(QCoreApplication::translate(
+          "App", "Das gespeicherte Foto muss vor der Bearbeitung vollständig geladen werden."));
     }
     if (!photoBytes_.isEmpty())
       photo_->showPhoto(preview);
@@ -112,21 +116,23 @@ ProjectEditor::ProjectEditor(StorageController& controller, std::optional<WoodPr
   form->setRowWrapPolicy(QFormLayout::WrapAllRows);
   form->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
   form->setSpacing(10);
-  auto* hint = new QLabel(QStringLiteral("Nur der Projektname ist erforderlich."), formWidget);
+  auto* hint = new QLabel(
+      QCoreApplication::translate("App", "Nur der Projektname ist erforderlich."), formWidget);
   hint->setWordWrap(true);
   form->addRow(hint);
   form->addRow(error_);
-  form->addRow(QStringLiteral("&Projektname *"), name_);
-  form->addRow(QStringLiteral("Holz oder &Material"), material_);
-  form->addRow(QStringLiteral("&Aufbewahrungsort"), location_);
-  form->addRow(QStringLiteral("&Status"), status_);
-  form->addRow(QStringLiteral("&Notiz"), note_);
-  form->addRow(QStringLiteral("&Checkliste"), checklist_);
-  form->addRow(QStringLiteral("Foto"), photo_);
+  form->addRow(QCoreApplication::translate("App", "&Projektname *"), name_);
+  form->addRow(QCoreApplication::translate("App", "Holz oder &Material"), material_);
+  form->addRow(QCoreApplication::translate("App", "&Aufbewahrungsort"), location_);
+  form->addRow(QCoreApplication::translate("App", "&Status"), status_);
+  form->addRow(QCoreApplication::translate("App", "&Notiz"), note_);
+  form->addRow(QCoreApplication::translate("App", "&Checkliste"), checklist_);
+  form->addRow(QCoreApplication::translate("App", "Foto"), photo_);
   form->addRow(choosePhoto_);
   form->addRow(removePhoto_);
   auto* photoHint = new QLabel(
-      QStringLiteral(
+      QCoreApplication::translate(
+          "App",
           "JPEG oder PNG. Bis 10 MiB, 6000 Pixel je Seite und 16 Millionen Pixel insgesamt."),
       formWidget);
   photoHint->setWordWrap(true);
@@ -178,7 +184,8 @@ ProjectEditor::ProjectEditor(StorageController& controller, std::optional<WoodPr
 
 ProjectDraft ProjectEditor::draft() const {
   if (status_->currentIndex() < 0)
-    throw ValidationError(QStringLiteral("Bitte wähle einen gültigen Projektstatus."));
+    throw ValidationError(
+        QCoreApplication::translate("App", "Bitte wähle einen gültigen Projektstatus."));
   return {name_->text(),
           material_->text(),
           location_->text(),
@@ -206,7 +213,8 @@ void ProjectEditor::updateBusy() {
   save_->setEnabled(!saving);
   cancel_->setEnabled(!saving);
   updatePhotoActions();
-  save_->setText(saving_ ? QStringLiteral("Wird gespeichert …") : QStringLiteral("Speichern"));
+  save_->setText(saving_ ? QCoreApplication::translate("App", "Wird gespeichert …")
+                         : QCoreApplication::translate("App", "Speichern"));
 }
 
 void ProjectEditor::save() {
@@ -230,8 +238,9 @@ void ProjectEditor::save() {
 }
 
 void ProjectEditor::updatePhotoActions() {
-  choosePhoto_->setText(photoBytes_.isEmpty() ? QStringLiteral("&Foto hinzufügen …")
-                                              : QStringLiteral("&Foto ersetzen …"));
+  choosePhoto_->setText(photoBytes_.isEmpty()
+                            ? QCoreApplication::translate("App", "&Foto hinzufügen …")
+                            : QCoreApplication::translate("App", "&Foto ersetzen …"));
   removePhoto_->setEnabled(!photoBytes_.isEmpty() && !importing_ && !saving_ && !choosing_);
 }
 void ProjectEditor::selectPhoto() {
@@ -240,8 +249,12 @@ void ProjectEditor::selectPhoto() {
   choosing_ = true;
   updateBusy();
   // No DontUseNativeDialog option. The platform supplies its native picker.
-  const auto path = QFileDialog::getOpenFileName(this, QStringLiteral("Projektfoto auswählen"), {},
-                                                 QStringLiteral("Fotos (*.jpg *.jpeg *.png)"));
+  QPointer<ProjectEditor> guard(this);
+  const auto path = QFileDialog::getOpenFileName(
+      this, QCoreApplication::translate("App", "Projektfoto auswählen"), {},
+      QCoreApplication::translate("App", "Fotos (*.jpg *.jpeg *.png)"));
+  if (!guard)
+    return;
   choosing_ = false;
   updateBusy();
   importFromPath(path);

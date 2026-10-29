@@ -1,0 +1,5 @@
+Project name, material, storage location, and notes
+One optional photo and three status values
+Checklist with text and checkmarks
+Search projects and work steps
+Local storage and six languages

@@ -1,0 +1,5 @@
+Projektname, Material, Aufbewahrungsort und Notiz
+Ein optionales Foto und drei Statuswerte
+Checkliste mit Texten und Häkchen
+Suche in Projekten und Arbeitsschritten
+Lokale Speicherung und sechs Sprachen

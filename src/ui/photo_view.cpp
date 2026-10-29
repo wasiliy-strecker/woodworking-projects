@@ -1,4 +1,5 @@
 #include "ui/photo_view.h"
+#include <QCoreApplication>
 #include <QPixmap>
 #include <QResizeEvent>
 namespace woodwork {
@@ -8,8 +9,8 @@ PhotoView::PhotoView(QWidget* parent) : QLabel(parent) {
   setTextFormat(Qt::PlainText);
   setMinimumSize(120, 100);
   setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-  setAccessibleName(QStringLiteral("Projektfoto"));
-  showMessage(QStringLiteral("Kein Foto"));
+  setAccessibleName(QCoreApplication::translate("App", "Projektfoto"));
+  showMessage(QCoreApplication::translate("App", "Kein Foto"));
 }
 void PhotoView::showPhoto(const QImage& image) {
   image_ = image;
@@ -25,7 +26,8 @@ void PhotoView::render() {
   if (!image_.isNull()) {
     setPixmap(
         QPixmap::fromImage(image_).scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    setAccessibleDescription(QStringLiteral("Gespeichertes oder ausgewähltes Projektfoto"));
+    setAccessibleDescription(
+        QCoreApplication::translate("App", "Gespeichertes oder ausgewähltes Projektfoto"));
   }
 }
 void PhotoView::resizeEvent(QResizeEvent* event) {

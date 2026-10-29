@@ -1,8 +1,10 @@
 #include "ui/checklist_editor.h"
+#include <QCoreApplication>
 
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QLocale>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <algorithm>
@@ -11,14 +13,16 @@
 namespace woodwork {
 ChecklistEditor::ChecklistEditor(const Checklist& steps, QWidget* parent)
     : QWidget(parent), rowsLayout_(new QVBoxLayout),
-      add_(new QPushButton(QStringLiteral("Arbeitsschritt hin&zufügen"), this)) {
+      add_(
+          new QPushButton(QCoreApplication::translate("App", "Arbeitsschritt hin&zufügen"), this)) {
   setObjectName(QStringLiteral("checklistEditor"));
   setFocusPolicy(Qt::StrongFocus);
   auto* layout = new QVBoxLayout(this);
   layout->setContentsMargins(0, 0, 0, 0);
-  auto* hint = new QLabel(QStringLiteral("Arbeitsschritte. Häkchen und Texte werden erst mit dem "
+  auto* hint = new QLabel(
+      QCoreApplication::translate("App", "Arbeitsschritte. Häkchen und Texte werden erst mit dem "
                                          "Projekt gespeichert. Der Status bleibt unabhängig."),
-                          this);
+      this);
   hint->setWordWrap(true);
   layout->addWidget(hint);
   layout->addLayout(rowsLayout_);
@@ -58,7 +62,8 @@ void ChecklistEditor::append(const ChecklistStep& step, bool focus) {
   line->addWidget(completed);
   line->addWidget(text, 1);
   layout->addLayout(line);
-  auto* removeButton = new QPushButton(QStringLiteral("Schritt entfernen"), widget);
+  auto* removeButton =
+      new QPushButton(QCoreApplication::translate("App", "Schritt entfernen"), widget);
   removeButton->setObjectName(QStringLiteral("removeStep"));
   removeButton->setAutoDefault(false);
   layout->addWidget(removeButton, 0, Qt::AlignRight);
@@ -97,11 +102,16 @@ void ChecklistEditor::remove(const QUuid& id) {
 void ChecklistEditor::updateLabels() {
   setFocusProxy(rows_.isEmpty() ? static_cast<QWidget*>(add_) : rows_.first().completed);
   for (qsizetype i = 0; i < rows_.size(); ++i) {
-    rows_[i].text->setAccessibleName(QStringLiteral("Arbeitsschritt %1").arg(i + 1));
-    rows_[i].text->setPlaceholderText(QStringLiteral("Arbeitsschritt %1 *").arg(i + 1));
-    rows_[i].completed->setAccessibleName(QStringLiteral("Arbeitsschritt %1 erledigt").arg(i + 1));
+    rows_[i].text->setAccessibleName(
+        QCoreApplication::translate("App", "Arbeitsschritt %1").arg(QLocale().toString(i + 1)));
+    rows_[i].text->setPlaceholderText(
+        QCoreApplication::translate("App", "Arbeitsschritt %1 *").arg(QLocale().toString(i + 1)));
+    rows_[i].completed->setAccessibleName(
+        QCoreApplication::translate("App", "Arbeitsschritt %1 erledigt")
+            .arg(QLocale().toString(i + 1)));
     rows_[i].widget->findChild<QPushButton*>()->setAccessibleName(
-        QStringLiteral("Arbeitsschritt %1 entfernen").arg(i + 1));
+        QCoreApplication::translate("App", "Arbeitsschritt %1 entfernen")
+            .arg(QLocale().toString(i + 1)));
   }
   add_->setEnabled(rows_.isEmpty() || rows_.last().position < std::numeric_limits<qint64>::max());
 }

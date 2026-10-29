@@ -1,0 +1,54 @@
+{
+  "items": [
+    [
+      "Wall shelf",
+      "Pine",
+      "Workbench 1",
+      "Sand the edges before oiling."
+    ],
+    [
+      "Toolbox",
+      "Birch",
+      "Shelf 2",
+      "Check dimensions"
+    ],
+    [
+      "Garden bench",
+      "Oak",
+      "Shelf 3",
+      "Cut the pieces"
+    ],
+    [
+      "Picture frame",
+      "Pine",
+      "Shelf 4",
+      "Finish the surface"
+    ],
+    [
+      "Planter box",
+      "Birch",
+      "Shelf 5",
+      "Check dimensions"
+    ]
+  ],
+  "photos": [
+    "images/shelf.png",
+    "images/box.jpg",
+    "images/bench.png",
+    null,
+    null
+  ],
+  "statuses": [
+    "started",
+    "planned",
+    "finished",
+    "planned",
+    "started"
+  ],
+  "steps": [
+    "Check dimensions",
+    "Cut the pieces",
+    "Finish the surface"
+  ],
+  "search": "oiling"
+}

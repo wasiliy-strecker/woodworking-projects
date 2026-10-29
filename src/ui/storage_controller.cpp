@@ -1,5 +1,7 @@
 #include "ui/storage_controller.h"
 #include "application/photo_importer.h"
+#include "persistence/language_preferences.h"
+#include <QCoreApplication>
 
 #include <utility>
 
@@ -22,7 +24,8 @@ void StorageWorker::load() {
 void StorageWorker::save(qint64 id, const ProjectDraft& draft) {
   try {
     if (!repository_) {
-      throw StorageError(QStringLiteral("Die Sammlung ist noch nicht geladen."));
+      throw StorageError(
+          QCoreApplication::translate("App", "Die Sammlung ist noch nicht geladen."));
     }
     ProjectService service(*repository_);
     emit saved(service.save(id, draft));
@@ -34,7 +37,8 @@ void StorageWorker::save(qint64 id, const ProjectDraft& draft) {
 void StorageWorker::remove(qint64 id) {
   try {
     if (!repository_) {
-      throw StorageError(QStringLiteral("Die Sammlung ist noch nicht geladen."));
+      throw StorageError(
+          QCoreApplication::translate("App", "Die Sammlung ist noch nicht geladen."));
     }
     ProjectService service(*repository_);
     service.remove(id);
@@ -47,16 +51,17 @@ void StorageWorker::remove(qint64 id) {
 void StorageWorker::read(qint64 id, quint64 token) {
   try {
     if (!repository_)
-      throw StorageError(QStringLiteral("Die Projekte sind noch nicht geladen."));
+      throw StorageError(
+          QCoreApplication::translate("App", "Die Projekte sind noch nicht geladen."));
     const auto draft = repository_->find(id);
     const auto preview = draft.photo.isEmpty() ? QImage() : decodePhoto(draft.photo).preview;
     emit readReady(token, id, draft, preview);
   } catch (const std::exception& error) {
     emit readFailed(
-        token,
-        QStringLiteral("Das Projekt konnte nicht vollständig geladen werden. "
-                       "Zum Schutz der gespeicherten Daten bleibt die Bearbeitung gesperrt.\n%1")
-            .arg(QString::fromUtf8(error.what())));
+        token, QCoreApplication::translate(
+                   "App", "Das Projekt konnte nicht vollständig geladen werden. "
+                          "Zum Schutz der gespeicherten Daten bleibt die Bearbeitung gesperrt.\n%1")
+                   .arg(QString::fromUtf8(error.what())));
   }
 }
 void StorageWorker::importPhotoFile(const QString& path) {
@@ -65,6 +70,15 @@ void StorageWorker::importPhotoFile(const QString& path) {
     emit imported(photo.bytes, photo.preview);
   } catch (const std::exception& error) {
     emit failed(Operation::Import, QString::fromUtf8(error.what()));
+  }
+}
+
+void StorageWorker::saveLanguage(const QString& directory, const QString& preference) {
+  try {
+    saveLanguagePreference(directory, preference);
+    emit languageSaved(preference);
+  } catch (const std::exception& error) {
+    emit failed(Operation::Language, QString::fromUtf8(error.what()));
   }
 }
 
@@ -79,6 +93,11 @@ StorageController::StorageController(RepositoryFactory factory, QObject* parent)
   connect(this, &StorageController::loadRequested, worker, &StorageWorker::load);
   connect(this, &StorageController::saveRequested, worker, &StorageWorker::save);
   connect(this, &StorageController::removeRequested, worker, &StorageWorker::remove);
+  connect(this, &StorageController::languageRequested, worker, &StorageWorker::saveLanguage);
+  connect(worker, &StorageWorker::languageSaved, this, [this](const QString& preference) {
+    finish();
+    emit languageSaved(preference);
+  });
   connect(worker, &StorageWorker::loaded, this, [this](const ProjectList& projects) {
     finish();
     emit loaded(projects);
@@ -158,6 +177,14 @@ bool StorageController::remove(qint64 id) {
     return false;
   }
   emit removeRequested(id);
+  return true;
+}
+
+bool StorageController::saveLanguage(const QString& directory, const QString& preference) {
+  if (!begin()) {
+    return false;
+  }
+  emit languageRequested(directory, preference);
   return true;
 }
 

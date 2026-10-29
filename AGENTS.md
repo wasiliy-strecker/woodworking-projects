@@ -44,3 +44,10 @@ SQLite und Neustart ohne Bildquelle. Workspace-Changelog ergänzen. Nur eigene
 Dateien app-lokal committen. Kein Root-Repository, Push oder Veröffentlichung.
 Zuerst Microsoft Store, später Mac App Store. Native Abnahmen, Signierung und
 konkrete Lizenzkonformität der späteren Store-Auslieferung bleiben gesondert.
+
+## Internationalisierung
+
+Sechs App-Kataloge und Qt-Basisübersetzungen für de-DE, en-US, es-ES, fr-FR,
+it-IT und pt-BR. Neue sichtbare Texte vollständig übersetzen. Sprachwahl gilt
+ab Neustart. Fachliche Daten, UUIDs, Positionen und Statuscodes bleiben sprachneutral.
+`docs/internationalization.md` beschreibt Paketprüfung und Ordnerlieferung.

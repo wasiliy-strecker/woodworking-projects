@@ -18,6 +18,7 @@ def main():
     parser.add_argument(
         "--stage-only", action="store_true", help="Prüfverzeichnis ohne Lieferarchiv"
     )
+    parser.add_argument("--output-dir", type=Path)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     qt = args.qt.resolve()
@@ -26,7 +27,11 @@ def main():
         (root / "CMakeLists.txt").read_text(),
     )[1]
     name = f"holzwerkprojekt-{version}-linux-x64"
-    output = root / ("build/staging" if args.stage_only else "build/releases")
+    output = (
+        args.output_dir.resolve()
+        if args.output_dir
+        else root / ("build/staging" if args.stage_only else "build/releases")
+    )
     stage = output / name
     archive = output / f"{name}.tar.gz"
     if stage.exists() or archive.exists():

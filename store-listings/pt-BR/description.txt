@@ -1,0 +1,5 @@
+HolzwerkProjekt
+
+Registre nome, madeira ou material, local e notas. Adicione uma foto JPEG ou PNG, escolha Planejado, Iniciado ou Concluído e gerencie etapas com caixas de seleção.
+
+Pesquise nos quatro campos de texto e edite seus projetos. Tudo fica local, sem conta ou internet. Escolha alemão, inglês, espanhol, francês, italiano ou português do Brasil. O idioma muda na próxima abertura.

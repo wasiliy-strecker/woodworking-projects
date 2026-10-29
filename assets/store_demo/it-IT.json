@@ -1,0 +1,54 @@
+{
+  "items": [
+    [
+      "Mensola da parete",
+      "Pino",
+      "Banco da lavoro 1",
+      "Levigare i bordi prima di oliare."
+    ],
+    [
+      "Cassetta degli attrezzi",
+      "Betulla",
+      "Scaffale 2",
+      "Controllare le misure"
+    ],
+    [
+      "Panchina da giardino",
+      "Quercia",
+      "Scaffale 3",
+      "Tagliare i pezzi"
+    ],
+    [
+      "Cornice",
+      "Pino",
+      "Scaffale 4",
+      "Trattare la superficie"
+    ],
+    [
+      "Fioriera",
+      "Betulla",
+      "Scaffale 5",
+      "Controllare le misure"
+    ]
+  ],
+  "photos": [
+    "images/shelf.png",
+    "images/box.jpg",
+    "images/bench.png",
+    null,
+    null
+  ],
+  "statuses": [
+    "started",
+    "planned",
+    "finished",
+    "planned",
+    "started"
+  ],
+  "steps": [
+    "Controllare le misure",
+    "Tagliare i pezzi",
+    "Trattare la superficie"
+  ],
+  "search": "oliare"
+}

@@ -1,0 +1,54 @@
+{
+  "items": [
+    [
+      "Estante de pared",
+      "Pino",
+      "Mesa de trabajo 1",
+      "Lijar los bordes antes de aceitar."
+    ],
+    [
+      "Caja de herramientas",
+      "Abedul",
+      "Estante 2",
+      "Comprobar medidas"
+    ],
+    [
+      "Banco de jardín",
+      "Roble",
+      "Estante 3",
+      "Cortar las piezas"
+    ],
+    [
+      "Marco de fotos",
+      "Pino",
+      "Estante 4",
+      "Tratar la superficie"
+    ],
+    [
+      "Jardinera",
+      "Abedul",
+      "Estante 5",
+      "Comprobar medidas"
+    ]
+  ],
+  "photos": [
+    "images/shelf.png",
+    "images/box.jpg",
+    "images/bench.png",
+    null,
+    null
+  ],
+  "statuses": [
+    "started",
+    "planned",
+    "finished",
+    "planned",
+    "started"
+  ],
+  "steps": [
+    "Comprobar medidas",
+    "Cortar las piezas",
+    "Tratar la superficie"
+  ],
+  "search": "aceitar"
+}

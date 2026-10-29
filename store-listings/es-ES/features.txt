@@ -1,0 +1,5 @@
+Nombre, material, ubicación y notas
+Una foto opcional y tres estados
+Lista de pasos con textos y casillas
+Búsqueda en proyectos y pasos
+Almacenamiento local y seis idiomas

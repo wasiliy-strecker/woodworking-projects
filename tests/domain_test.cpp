@@ -2,6 +2,8 @@
 #include "domain/project.h"
 #include "persistence/data_directory.h"
 
+#include <QLocale>
+#include <QScopeGuard>
 #include <QStandardPaths>
 #include <QTemporaryDir>
 #include <QtTest>
@@ -66,6 +68,9 @@ private slots:
     QCOMPARE(searchProjects(projects, QStringLiteral("ömer")).size(), 1);
   }
   void emptyMissingAndStableOrder() {
+    const auto previous = QLocale();
+    const auto restore = qScopeGuard([&] { QLocale::setDefault(previous); });
+    QLocale::setDefault(QLocale("de-DE"));
     const ProjectList projects{{9, {QStringLiteral("Projekt 10"), {}, {}, {}}},
                                {8, {QStringLiteral("Azul"), {}, {}, {}}},
                                {4, {QStringLiteral("azul"), {}, {}, {}}},

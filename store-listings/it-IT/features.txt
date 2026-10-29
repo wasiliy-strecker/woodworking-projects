@@ -1,0 +1,5 @@
+Nome, materiale, posizione e note
+Una foto facoltativa e tre stati
+Checklist con testi e spunte
+Ricerca nei progetti e nei passi di lavoro
+Archiviazione locale e sei lingue

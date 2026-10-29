@@ -1,4 +1,5 @@
 #include "application/photo_importer.h"
+#include <QCoreApplication>
 
 #include <QBuffer>
 #include <QFile>
@@ -52,8 +53,8 @@ private:
 };
 
 [[noreturn]] void invalidPhoto() {
-  throw PhotoError(
-      QStringLiteral("Das Foto ist beschädigt oder unvollständig. Bitte wähle eine andere Datei."));
+  throw PhotoError(QCoreApplication::translate(
+      "App", "Das Foto ist beschädigt oder unvollständig. Bitte wähle eine andere Datei."));
 }
 
 // PNG readers may tolerate missing end chunks. Check framing and all chunk CRCs
@@ -78,7 +79,8 @@ void checkPng(const QByteArray& bytes) {
     }
     const auto type = bytes.mid(offset + 4, 4);
     if (type == "acTL") {
-      throw PhotoError(QStringLiteral(
+      throw PhotoError(QCoreApplication::translate(
+          "App",
           "Animierte PNG-Dateien werden nicht unterstützt. Bitte wähle ein einzelnes Foto."));
     }
     offset += 12 + length;
@@ -100,7 +102,8 @@ QByteArray readPhotoBytes(QIODevice& device) {
     const auto chunk = device.read(qMin<qint64>(64LL * 1024, maxPhotoBytes + 1 - bytes.size()));
     if (chunk.isEmpty()) {
       if (!device.atEnd()) {
-        throw PhotoError(QStringLiteral(
+        throw PhotoError(QCoreApplication::translate(
+            "App",
             "Das Foto konnte nicht vollständig gelesen werden. Prüfe Datei und Zugriffsrechte."));
       }
       break;
@@ -108,14 +111,16 @@ QByteArray readPhotoBytes(QIODevice& device) {
     bytes.append(chunk);
   }
   if (bytes.size() > maxPhotoBytes) {
-    throw PhotoError(QStringLiteral("Das Foto ist zu groß. Erlaubt sind höchstens 10 MiB."));
+    throw PhotoError(
+        QCoreApplication::translate("App", "Das Foto ist zu groß. Erlaubt sind höchstens 10 MiB."));
   }
   return bytes;
 }
 
 ImportedPhoto decodePhoto(const QByteArray& bytes) {
   if (bytes.isEmpty() || bytes.size() > maxPhotoBytes) {
-    throw PhotoError(QStringLiteral("Das Foto ist leer oder größer als 10 MiB."));
+    throw PhotoError(
+        QCoreApplication::translate("App", "Das Foto ist leer oder größer als 10 MiB."));
   }
   const DecoderDiagnostics diagnostics;
   QBuffer buffer;
@@ -125,8 +130,8 @@ ImportedPhoto decodePhoto(const QByteArray& bytes) {
   reader.setDecideFormatFromContent(true);
   const auto format = reader.format().toLower();
   if (format != "jpeg" && format != "jpg" && format != "png") {
-    throw PhotoError(QStringLiteral(
-        "Bitte wähle ein gültiges JPEG- oder PNG-Foto. Der Dateiinhalt wird geprüft."));
+    throw PhotoError(QCoreApplication::translate(
+        "App", "Bitte wähle ein gültiges JPEG- oder PNG-Foto. Der Dateiinhalt wird geprüft."));
   }
   const QSize size = reader.size();
   if (!size.isValid() || size.isEmpty()) {
@@ -134,8 +139,9 @@ ImportedPhoto decodePhoto(const QByteArray& bytes) {
   }
   if (size.width() > maxPhotoSide || size.height() > maxPhotoSide ||
       static_cast<qint64>(size.width()) * size.height() > maxPhotoPixels) {
-    throw PhotoError(QStringLiteral("Das Foto hat zu viele Pixel. Erlaubt sind 6000 Pixel je Seite "
-                                    "und insgesamt 16 Millionen Pixel."));
+    throw PhotoError(QCoreApplication::translate(
+        "App", "Das Foto hat zu viele Pixel. Erlaubt sind 6000 Pixel je Seite "
+               "und insgesamt 16 Millionen Pixel."));
   }
   if (format == "png") {
     checkPng(bytes);
@@ -154,19 +160,21 @@ ImportedPhoto decodePhoto(const QByteArray& bytes) {
 
 ImportedPhoto importPhoto(const QString& path) {
   if (!QFileInfo(path).isFile()) {
-    throw PhotoError(QStringLiteral("Bitte wähle eine lesbare Bilddatei."));
+    throw PhotoError(QCoreApplication::translate("App", "Bitte wähle eine lesbare Bilddatei."));
   }
   QFile file(path);
   if (!file.open(QIODevice::ReadOnly)) {
-    throw PhotoError(
-        QStringLiteral("Das Foto kann nicht geöffnet werden. Prüfe Datei und Zugriffsrechte."));
+    throw PhotoError(QCoreApplication::translate(
+        "App", "Das Foto kann nicht geöffnet werden. Prüfe Datei und Zugriffsrechte."));
   }
   if (file.size() > maxPhotoBytes) {
-    throw PhotoError(QStringLiteral("Das Foto ist zu groß. Erlaubt sind höchstens 10 MiB."));
+    throw PhotoError(
+        QCoreApplication::translate("App", "Das Foto ist zu groß. Erlaubt sind höchstens 10 MiB."));
   }
   const auto bytes = readPhotoBytes(file);
   if (file.error() != QFileDevice::NoError) {
-    throw PhotoError(QStringLiteral("Beim Lesen des Fotos ist ein Fehler aufgetreten."));
+    throw PhotoError(
+        QCoreApplication::translate("App", "Beim Lesen des Fotos ist ein Fehler aufgetreten."));
   }
   return decodePhoto(bytes);
 }

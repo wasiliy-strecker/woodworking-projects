@@ -1,0 +1,5 @@
+Nom, matériau, emplacement et notes
+Une photo facultative et trois états
+Liste de tâches avec textes et cases
+Recherche dans les projets et les étapes
+Stockage local et six langues

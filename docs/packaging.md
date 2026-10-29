@@ -160,3 +160,11 @@ Stand der Prüfung: 27. Oktober 2026. Vor Veröffentlichung erneut prüfen.
 Für die Sandbox-Fotoauswahl zusätzlich die offizielle
 [Apple-Dokumentation zum lesenden Zugriff auf ausgewählte Dateien](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.security.files.user-selected.read-only) prüfen.
 Die Bilddecoder-Herkunft ist in [den Komponentenhinweisen](../THIRD_PARTY_NOTICES.md) dokumentiert.
+
+## Internationale Vorschau
+
+LinguistTools und passende Qt-Basiskataloge sind Build-Voraussetzungen. Die
+Kataloge werden eingebettet. `--stage-only --output-dir` erstellt eine eigene
+Prüflaufzeit ohne Lieferarchiv. [Internationalisierung](internationalization.md)
+beschreibt echte Aufnahmen, Laufzeitnachweise und sechs Store-Textfassungen.
+Native Windows-Abnahme und abschließende Store-Paketierung bleiben separat.

@@ -1,0 +1,5 @@
+HolzwerkProjekt
+
+Erfasse Projektname, Holz oder Material, Aufbewahrungsort und Notiz. Ergänze ein JPEG- oder PNG-Foto, wähle Geplant, Angefangen oder Fertig und verwalte Arbeitsschritte zum Abhaken.
+
+Durchsuche die vier Textfelder und bearbeite deine Projekte. Alles bleibt lokal ohne Konto oder Internet. Die sechs Oberflächensprachen Deutsch, Englisch, Spanisch, Französisch, Italienisch und brasilianisches Portugiesisch gelten nach einem Neustart.

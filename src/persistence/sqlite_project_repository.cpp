@@ -1,5 +1,6 @@
 #include "persistence/sqlite_project_repository.h"
 #include "application/photo_importer.h"
+#include <QCoreApplication>
 
 #include <QDir>
 #include <QFileInfo>
@@ -44,26 +45,29 @@ ProjectStatus readStatus(const QVariant& value) {
   // SQLite extended result codes keep the primary result in the low byte.
   const int code = error.nativeErrorCode().toInt() & 0xff;
   if (code == 5 || code == 6) {
-    throw StorageError(QStringLiteral("Die Datenbank ist gerade gesperrt. Beende andere Zugriffe "
-                                      "und versuche es erneut. Deine Eingaben bleiben erhalten."));
+    throw StorageError(QCoreApplication::translate(
+        "App", "Die Datenbank ist gerade gesperrt. Beende andere Zugriffe "
+               "und versuche es erneut. Deine Eingaben bleiben erhalten."));
   }
   if (code == 11 || code == 26) {
-    throw StorageError(
-        QStringLiteral("Die Datenbank ist beschädigt oder keine gültige SQLite-Datei. "
-                       "Sie wird nicht ersetzt. Sichere die Datei vor einer Reparatur."));
+    throw StorageError(QCoreApplication::translate(
+        "App", "Die Datenbank ist beschädigt oder keine gültige SQLite-Datei. "
+               "Sie wird nicht ersetzt. Sichere die Datei vor einer Reparatur."));
   }
   if (code == 3 || code == 8 || code == 14) {
-    throw StorageError(QStringLiteral("Die Datenbank kann nicht geöffnet oder beschrieben werden. "
-                                      "Prüfe das Datenverzeichnis und deine Zugriffsrechte."));
+    throw StorageError(QCoreApplication::translate(
+        "App", "Die Datenbank kann nicht geöffnet oder beschrieben werden. "
+               "Prüfe das Datenverzeichnis und deine Zugriffsrechte."));
   }
   if (code == 13) {
-    throw StorageError(QStringLiteral("Es ist nicht genügend Speicherplatz verfügbar. "
-                                      "Schaffe Platz und versuche es erneut."));
+    throw StorageError(QCoreApplication::translate("App",
+                                                   "Es ist nicht genügend Speicherplatz verfügbar. "
+                                                   "Schaffe Platz und versuche es erneut."));
   }
-  throw StorageError(
-      QStringLiteral("Der Datenbankzugriff ist fehlgeschlagen. "
-                     "Prüfe Datenträger und Zugriffsrechte und versuche es erneut.\n%1")
-          .arg(error.text()));
+  throw StorageError(QCoreApplication::translate(
+                         "App", "Der Datenbankzugriff ist fehlgeschlagen. "
+                                "Prüfe Datenträger und Zugriffsrechte und versuche es erneut.\n%1")
+                         .arg(error.text()));
 }
 
 void execute(QSqlQuery& query, const QString& sql) {
@@ -141,8 +145,9 @@ Checklist readSteps(QSqlDatabase& database, qint64 projectId) {
         query.value(5).toString() != QStringLiteral("integer") ||
         query.value(6).toString() != QStringLiteral("integer") ||
         (completed != 0 && completed != 1)) {
-      throw StorageError(QStringLiteral("Ein gespeicherter Arbeitsschritt ist beschädigt. "
-                                        "Die Daten werden nicht verändert."));
+      throw StorageError(
+          QCoreApplication::translate("App", "Ein gespeicherter Arbeitsschritt ist beschädigt. "
+                                             "Die Daten werden nicht verändert."));
     }
     steps.append({id, query.value(1).toString(), completed == 1, query.value(3).toLongLong()});
   }
@@ -150,11 +155,13 @@ Checklist readSteps(QSqlDatabase& database, qint64 projectId) {
     fail(query.lastError());
   try {
     if (validateChecklist(steps) != steps) {
-      throw ValidationError(QStringLiteral("Ein gespeicherter Schritttext ist ungültig."));
+      throw ValidationError(
+          QCoreApplication::translate("App", "Ein gespeicherter Schritttext ist ungültig."));
     }
   } catch (const ValidationError& error) {
-    throw StorageError(QStringLiteral("Die gespeicherte Checkliste ist beschädigt. %1")
-                           .arg(QString::fromUtf8(error.what())));
+    throw StorageError(
+        QCoreApplication::translate("App", "Die gespeicherte Checkliste ist beschädigt. %1")
+            .arg(QString::fromUtf8(error.what())));
   }
   return steps;
 }
@@ -162,10 +169,12 @@ Checklist readSteps(QSqlDatabase& database, qint64 projectId) {
 void validateStoredDraft(const ProjectDraft& draft) {
   try {
     if (validateDraft(draft) != draft)
-      throw ValidationError(QStringLiteral("Die gespeicherten Textfelder sind ungültig."));
+      throw ValidationError(
+          QCoreApplication::translate("App", "Die gespeicherten Textfelder sind ungültig."));
   } catch (const ValidationError& error) {
-    throw StorageError(QStringLiteral("Das gespeicherte Projekt ist beschädigt. %1")
-                           .arg(QString::fromUtf8(error.what())));
+    throw StorageError(
+        QCoreApplication::translate("App", "Das gespeicherte Projekt ist beschädigt. %1")
+            .arg(QString::fromUtf8(error.what())));
   }
 }
 
@@ -191,9 +200,9 @@ void replaceSteps(QSqlDatabase& database, qint64 projectId, const Checklist& ste
 
 void requireAffectedRow(const QSqlQuery& query) {
   if (query.numRowsAffected() != 1) {
-    throw StorageError(
-        QStringLiteral("Dieses Projekt ist nicht mehr vorhanden. "
-                       "Lade die Sammlung erneut. Deine Eingaben bleiben erhalten."));
+    throw StorageError(QCoreApplication::translate(
+        "App", "Dieses Projekt ist nicht mehr vorhanden. "
+               "Lade die Sammlung erneut. Deine Eingaben bleiben erhalten."));
   }
 }
 
@@ -220,8 +229,9 @@ void SqliteProjectRepository::initialize() {
   }
   close();
   if (!QDir::isAbsolutePath(directory_) || !QDir().mkpath(directory_)) {
-    throw StorageError(QStringLiteral("Das Datenverzeichnis kann nicht angelegt werden. "
-                                      "Prüfe Pfad, Datenträger und Zugriffsrechte."));
+    throw StorageError(
+        QCoreApplication::translate("App", "Das Datenverzeichnis kann nicht angelegt werden. "
+                                           "Prüfe Pfad, Datenträger und Zugriffsrechte."));
   }
   directory_ = QFileInfo(directory_).canonicalFilePath();
   lock_ = std::make_unique<QLockFile>(QDir(directory_).filePath(QStringLiteral("collection.lock")));
@@ -231,9 +241,11 @@ void SqliteProjectRepository::initialize() {
     lock_.reset();
     throw StorageError(
         otherInstance
-            ? QStringLiteral("Diese Sammlung ist bereits in einer anderen App-Instanz geöffnet. "
-                             "Schließe sie dort und lade hier erneut.")
-            : QStringLiteral(
+            ? QCoreApplication::translate(
+                  "App", "Diese Sammlung ist bereits in einer anderen App-Instanz geöffnet. "
+                         "Schließe sie dort und lade hier erneut.")
+            : QCoreApplication::translate(
+                  "App",
                   "Das Datenverzeichnis ist nicht beschreibbar. Prüfe deine Zugriffsrechte."));
   }
   try {
@@ -250,18 +262,20 @@ void SqliteProjectRepository::initialize() {
     execute(query, QStringLiteral("PRAGMA foreign_keys=ON"));
     execute(query, QStringLiteral("PRAGMA foreign_keys"));
     if (!query.next() || query.value(0).toInt() != 1)
-      throw StorageError(QStringLiteral("Der Fremdschlüsselschutz konnte nicht aktiviert werden."));
+      throw StorageError(QCoreApplication::translate(
+          "App", "Der Fremdschlüsselschutz konnte nicht aktiviert werden."));
     query.finish();
     execute(query, QStringLiteral("PRAGMA user_version"));
     if (!query.next()) {
-      throw StorageError(QStringLiteral("Die Schema-Version konnte nicht gelesen werden."));
+      throw StorageError(
+          QCoreApplication::translate("App", "Die Schema-Version konnte nicht gelesen werden."));
     }
     const int version = query.value(0).toInt();
     query.finish();
     if (version > 1) {
-      throw StorageError(
-          QStringLiteral("Diese Datenbank benötigt eine neuere Version von HolzwerkProjekt. "
-                         "Die vorhandene Datei wird nicht verändert."));
+      throw StorageError(QCoreApplication::translate(
+          "App", "Diese Datenbank benötigt eine neuere Version von HolzwerkProjekt. "
+                 "Die vorhandene Datei wird nicht verändert."));
     }
     if (isNew) {
       Transaction transaction(database_);
@@ -272,38 +286,41 @@ void SqliteProjectRepository::initialize() {
       query.finish();
       transaction.commit();
     } else if (version != 1) {
-      throw StorageError(
-          QStringLiteral("Die vorhandene Datei hat kein bekanntes HolzwerkProjekt-Schema. "
-                         "Sie wird nicht überschrieben."));
+      throw StorageError(QCoreApplication::translate(
+          "App", "Die vorhandene Datei hat kein bekanntes HolzwerkProjekt-Schema. "
+                 "Sie wird nicht überschrieben."));
     }
     execute(query, QStringLiteral("PRAGMA quick_check"));
     if (!query.next() || query.value(0).toString() != QStringLiteral("ok")) {
-      throw StorageError(QStringLiteral("Die Datenbankprüfung hat einen Schaden gefunden. "
-                                        "Sichere die Datei. Sie wird nicht ersetzt."));
+      throw StorageError(
+          QCoreApplication::translate("App", "Die Datenbankprüfung hat einen Schaden gefunden. "
+                                             "Sichere die Datei. Sie wird nicht ersetzt."));
     }
     query.finish();
     execute(query, QStringLiteral("PRAGMA application_id"));
     if (!query.next() || query.value(0).toInt() != 1213681713) {
-      throw StorageError(QStringLiteral(
-          "Diese Datenbank gehört nicht zu HolzwerkProjekt. Die Datei wird nicht ersetzt."));
+      throw StorageError(QCoreApplication::translate(
+          "App", "Diese Datenbank gehört nicht zu HolzwerkProjekt. Die Datei wird nicht ersetzt."));
     }
     query.finish();
     execute(query,
             QStringLiteral("SELECT sql FROM sqlite_master WHERE type='table' AND name='projects'"));
     if (!query.next() || query.value(0).toString() != schemaSql()) {
-      throw StorageError(QStringLiteral(
+      throw StorageError(QCoreApplication::translate(
+          "App",
           "Die Datenbankstruktur ist unbekannt oder beschädigt. Die Datei wird nicht ersetzt."));
     }
     query.finish();
     execute(query, QStringLiteral("SELECT sql FROM sqlite_master WHERE type='table' "
                                   "AND name='checklist_steps'"));
     if (!query.next() || query.value(0).toString() != stepSchemaSql())
-      throw StorageError(QStringLiteral("Die Checklistenstruktur ist unbekannt oder beschädigt."));
+      throw StorageError(QCoreApplication::translate(
+          "App", "Die Checklistenstruktur ist unbekannt oder beschädigt."));
     query.finish();
     execute(query, QStringLiteral("PRAGMA foreign_key_check"));
     if (query.next())
-      throw StorageError(
-          QStringLiteral("Die Zuordnung gespeicherter Arbeitsschritte ist beschädigt."));
+      throw StorageError(QCoreApplication::translate(
+          "App", "Die Zuordnung gespeicherter Arbeitsschritte ist beschädigt."));
     if (query.lastError().isValid())
       fail(query.lastError());
     query.finish();
@@ -355,14 +372,15 @@ ProjectDraft SqliteProjectRepository::find(qint64 id) {
   if (!query.next()) {
     if (query.lastError().isValid())
       fail(query.lastError());
-    throw StorageError(
-        QStringLiteral("Dieses Projekt ist nicht mehr vorhanden. Bitte lade die Liste erneut."));
+    throw StorageError(QCoreApplication::translate(
+        "App", "Dieses Projekt ist nicht mehr vorhanden. Bitte lade die Liste erneut."));
   }
   if (query.value(6).toBool() &&
       (query.value(7).toLongLong() < 1 || query.value(7).toLongLong() > maxPhotoBytes ||
        query.value(8).toString() != QStringLiteral("blob"))) {
-    throw StorageError(QStringLiteral("Das gespeicherte Foto ist ungültig. Der Bearbeitungsdialog "
-                                      "wird zum Schutz der Daten nicht geöffnet."));
+    throw StorageError(QCoreApplication::translate(
+        "App", "Das gespeicherte Foto ist ungültig. Der Bearbeitungsdialog "
+               "wird zum Schutz der Daten nicht geöffnet."));
   }
   ProjectDraft draft{query.value(0).toString(),  query.value(1).toString(),
                      query.value(2).toString(),  query.value(3).toString(),

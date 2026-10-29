@@ -1,0 +1,5 @@
+HolzwerkProjekt
+
+Registra nome, legno o materiale, posizione e note. Aggiungi una foto JPEG o PNG, scegli Pianificato, Iniziato o Finito e gestisci i passi di lavoro con le spunte.
+
+Cerca nei quattro campi di testo e modifica i progetti. Tutto resta in locale, senza account o Internet. Scegli tedesco, inglese, spagnolo, francese, italiano o portoghese brasiliano. La lingua cambia al prossimo avvio.

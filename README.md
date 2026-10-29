@@ -180,3 +180,12 @@ Jede Stufe behält die vorherigen Grundfunktionen. RestaurierungsHeft bleibt
 Reserve und wird hier nicht implementiert. FactoryForge und PDF Batch Studio
 bleiben separate größere Projekte. Keine Kostenplanung, Werkzeugbestände,
 Fristen, Unteraufgaben, Fortschrittswerte, PDF-Funktionen oder Cloud-Anbindung.
+
+## Sprachen und Store-Vorschau
+
+Deutsch, Englisch, Spanisch, Französisch, Italienisch und brasilianisches
+Portugiesisch sind unter „Sprache“ wählbar. Die Auswahl gilt ab Neustart.
+Bestandsdaten, Fotos und Checklisten bleiben erhalten. Sechs Store-Textfassungen
+und echte Linux-Vorschauen werden als Ordner geliefert.
+Siehe [Internationalisierung](docs/internationalization.md).
+Windows-Abnahme und Einreichung bleiben gesondert.

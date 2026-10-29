@@ -1,5 +1,27 @@
 # Prüfbericht
 
+## Internationalisierung, 29. Oktober 2026
+
+161 fachliche Qt-Testausführungen plus 16 Initialisierungs- und Abschlussaufrufe
+bestehen. Alle neun CTest-Suiten einschließlich Katalogprüfung bestehen in Release
+und ASan/UBSan. Compilerwarnungen, clang-tidy, Formatter, Ruff und Shell-Syntax
+sind geprüft. Sechs eingebettete Kataloge enthalten je 143 Meldungen.
+
+Zwölf echte Prozesse der gebündelten Laufzeit prüfen sechs Sprachen. Der Ablauf
+umfasst Unicode, native Fotoauswahl, PNG/JPEG, drei Statuswerte, leere Schritte,
+gleiche Texte mit unabhängigen UUIDs, Häkchen und Positionslücken. SQLite-Sperren
+erhalten den Entwurf. Verwerfen und Neustart erhalten Checklisten und Fotobytes.
+Der bisherige deutsche Komplettablauf besteht zusätzlich mit 14 Nachweisbildern.
+24 Vorschauaufnahmen zeigen die reale Linux-App und wurden visuell geprüft.
+
+Nachweise: `build/international-release-check.log`, `build/international-asan-check.log`,
+`build/international-captures-final/` und `build/international-legacy-gui-final/`.
+Die Laufzeit liegt in `build/staging/international-20261029/holzwerkprojekt-0.1.0-linux-x64/`.
+Quell-, Laufzeit- und Nachweishashes sichern die Zuordnung zum lokalen Commit.
+Windows-Abnahme, endgültige Windows-Aufnahmen und Store-Einreichung bleiben offen.
+
+## Historischer Erststand
+
 Stand: 27. Oktober 2026, HolzwerkProjekt 0.1.0.
 Alle Testdaten sind synthetisch. Normale Benutzerdaten wurden nicht geöffnet.
 
