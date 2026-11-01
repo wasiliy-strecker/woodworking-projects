@@ -145,7 +145,7 @@ class Journey:
             stdout=self.log,
             stderr=self.log,
         )
-        self.main = self.window("HolzwerkProjekt")
+        self.main = self.window("Woodworking Projects")
         self.command("xdotool", "windowactivate", "--sync", self.main)
         self.key("alt+F10")
         time.sleep(0.7)
@@ -198,7 +198,7 @@ class Journey:
         self.paste(value)
 
     def edit(self):
-        self.window("HolzwerkProjekt")
+        self.window("Woodworking Projects")
         self.action("&Bearbeiten")
         return self.window(self.catalog["Projekt bearbeiten"])
 
@@ -218,7 +218,7 @@ class Journey:
         self.key("Escape")
         self.window(self.catalog["Änderungen verwerfen?"])
         self.key("Tab", "space")
-        self.window("HolzwerkProjekt")
+        self.window("Woodworking Projects")
 
     def run(self):
         fixture = json.loads(
@@ -315,7 +315,7 @@ class Journey:
                 self.capture("04-language", store=True)
                 self.key("Escape", "Escape")
 
-                self.window("HolzwerkProjekt")
+                self.window("Woodworking Projects")
                 self.key("ctrl+n")
                 self.editor_title = "Projekt hinzufügen"
                 editor = self.window(self.catalog[self.editor_title])
@@ -431,7 +431,7 @@ class Journey:
                 self.photo(photo_sources[0])
                 self.key("ctrl+s")
                 self.wait(lambda: self.rows()[-1][4] == photo_sources[0].read_bytes())
-                self.window("HolzwerkProjekt")
+                self.window("Woodworking Projects")
                 self.action("&Löschen")
                 self.window(self.catalog["Projekt löschen?"])
                 self.key("Return")
@@ -454,7 +454,7 @@ class Journey:
                 )
                 preserved = self.rows()
                 assert [row[4] for row in preserved] == [row[4] for row in original]
-                self.window("HolzwerkProjekt")
+                self.window("Woodworking Projects")
                 self.key("alt+F10")
                 self.command("xdotool", "windowsize", self.main, "560", "520")
                 self.capture("small-window")

@@ -1,4 +1,4 @@
-HolzwerkProjekt
+Woodworking Projects
 
 Erfasse Projektname, Holz oder Material, Aufbewahrungsort und Notiz. Ergänze ein JPEG- oder PNG-Foto, wähle Geplant, Angefangen oder Fertig und verwalte Arbeitsschritte zum Abhaken.
 

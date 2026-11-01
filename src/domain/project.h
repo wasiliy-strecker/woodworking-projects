@@ -54,7 +54,11 @@ public:
 
 ProjectDraft validateDraft(ProjectDraft draft);
 QString searchKey(const QString& text);
-ProjectList searchProjects(const ProjectList& projects, const QString& query);
+enum class SortField : quint8 { Name, Details, Location, Status, Photo };
+using TransferDraftList = QVector<ProjectDraft>;
+ProjectList searchProjects(const ProjectList& projects, const QString& query,
+                           SortField field = SortField::Name,
+                           Qt::SortOrder order = Qt::AscendingOrder);
 
 } // namespace woodwork
 

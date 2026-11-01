@@ -1,4 +1,4 @@
-HolzwerkProjekt
+Woodworking Projects
 
 Registra nome, legno o materiale, posizione e note. Aggiungi una foto JPEG o PNG, scegli Pianificato, Iniziato o Finito e gestisci i passi di lavoro con le spunte.
 

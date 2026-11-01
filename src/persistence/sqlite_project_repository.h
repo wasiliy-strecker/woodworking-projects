@@ -14,6 +14,8 @@ public:
   ~SqliteProjectRepository() override;
   SqliteProjectRepository(const SqliteProjectRepository&) = delete;
   SqliteProjectRepository& operator=(const SqliteProjectRepository&) = delete;
+  TransferDraftList transferSnapshot() override;
+  CollectionImportResult importEntries(const TransferDraftList& drafts) override;
   void initialize() override;
   ProjectList findAll() override;
   ProjectDraft find(qint64 id) override;
@@ -22,6 +24,9 @@ public:
   void remove(qint64 id) override;
 
 private:
+  ProjectList findAllInTransaction();
+  ProjectDraft findInTransaction(qint64 id);
+  WoodProject createInTransaction(const ProjectDraft& draft);
   void close();
   QString directory_;
   QString connectionName_;

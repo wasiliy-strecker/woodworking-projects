@@ -1,4 +1,4 @@
-HolzwerkProjekt
+Woodworking Projects
 
 Registre nome, madeira ou material, local e notas. Adicione uma foto JPEG ou PNG, escolha Planejado, Iniciado ou Concluído e gerencie etapas com caixas de seleção.
 

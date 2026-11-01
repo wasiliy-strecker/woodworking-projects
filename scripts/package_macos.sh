@@ -18,8 +18,8 @@ ctest --preset release
 mkdir -p "$holzwerk_stage"
 cp README.md THIRD_PARTY_NOTICES.md "$holzwerk_stage/"
 cp -R docs "$holzwerk_stage/docs"
-cp -R build/release/holzwerkprojekt.app "$holzwerk_stage/HolzwerkProjekt.app"
-holzwerk_app="$holzwerk_stage/HolzwerkProjekt.app"
+cp -R build/release/holzwerkprojekt.app "$holzwerk_stage/Woodworking Projects.app"
+holzwerk_app="$holzwerk_stage/Woodworking Projects.app"
 "$HOLZWERKPROJEKT_QT_ROOT/bin/macdeployqt" "$holzwerk_app" -always-overwrite -appstore-compliant
 test -f "$holzwerk_app/Contents/PlugIns/sqldrivers/libqsqlite.dylib"
 test -f "$holzwerk_app/Contents/PlugIns/platforms/libqcocoa.dylib"
@@ -45,7 +45,7 @@ iconutil -c icns "$holzwerk_icons" -o "$holzwerk_app/Contents/Resources/Holzwerk
 /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string HolzwerkProjekt.icns" "$holzwerk_app/Contents/Info.plist"
 # Ad-hoc signing permits local Apple-Silicon testing. It is not a distribution identity.
 codesign --force --deep --sign - "$holzwerk_app"
-hdiutil create -volname HolzwerkProjekt -srcfolder "$holzwerk_stage" -ov -format UDZO "$holzwerk_dmg"
+hdiutil create -volname "Woodworking Projects" -srcfolder "$holzwerk_stage" -ov -format UDZO "$holzwerk_dmg"
 shasum -a 256 "$holzwerk_dmg" > "$holzwerk_dmg.sha256"
 echo "$holzwerk_dmg"
 echo "Native GUI-Abnahme und spätere Store-Signierung bleiben erforderlich."

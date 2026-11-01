@@ -1,6 +1,7 @@
 #include "ui/ui_support.h"
 #include <QCoreApplication>
 
+#include <QLocale>
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -43,4 +44,48 @@ bool confirmDelete(QWidget* parent, const QString& name) {
   box.exec();
   return box.clickedButton() == remove;
 }
+bool confirmImport(QWidget* parent, qsizetype count) {
+  QMessageBox box(QMessageBox::Question,
+                  QCoreApplication::translate("App", "Einträge importieren?"),
+                  QCoreApplication::translate(
+                      "App", "Einträge in der Datei: %1. Vorhandene Einträge bleiben erhalten. "
+                             "Bereits vorhandene identische Exemplare werden übersprungen. "
+                             "Nach dem Import wird die Suche geleert.")
+                      .arg(QLocale().toString(count)),
+                  QMessageBox::NoButton, parent);
+  box.setObjectName(QStringLiteral("importConfirmation"));
+  box.setTextFormat(Qt::PlainText);
+  auto* cancel =
+      box.addButton(QCoreApplication::translate("App", "Abbrechen"), QMessageBox::RejectRole);
+  cancel->setObjectName(QStringLiteral("cancelImport"));
+  auto* import =
+      box.addButton(QCoreApplication::translate("App", "Importieren"), QMessageBox::AcceptRole);
+  import->setObjectName(QStringLiteral("confirmImport"));
+  box.setDefaultButton(cancel);
+  box.setEscapeButton(cancel);
+  box.exec();
+  return box.clickedButton() == import;
+}
+
+bool confirmExportReplacement(QWidget* parent, const QString& filename) {
+  QMessageBox box(
+      QMessageBox::Question, QCoreApplication::translate("App", "Export ersetzen?"),
+      QCoreApplication::translate(
+          "App", "„%1“ ist bereits vorhanden. Durch die gesamte gespeicherte Sammlung ersetzen?")
+          .arg(filename),
+      QMessageBox::NoButton, parent);
+  box.setObjectName(QStringLiteral("replaceExportConfirmation"));
+  box.setTextFormat(Qt::PlainText);
+  auto* cancel =
+      box.addButton(QCoreApplication::translate("App", "Abbrechen"), QMessageBox::RejectRole);
+  cancel->setObjectName(QStringLiteral("cancelReplaceExport"));
+  auto* replace =
+      box.addButton(QCoreApplication::translate("App", "Ersetzen"), QMessageBox::AcceptRole);
+  replace->setObjectName(QStringLiteral("confirmReplaceExport"));
+  box.setDefaultButton(cancel);
+  box.setEscapeButton(cancel);
+  box.exec();
+  return box.clickedButton() == replace;
+}
+
 } // namespace woodwork

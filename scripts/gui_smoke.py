@@ -158,6 +158,7 @@ def exercise(args):
 
     with tempfile.TemporaryDirectory(prefix="holzwerkprojekt-gui-") as temporary:
         directory = Path(temporary)
+        (directory / "language.txt").write_text("de-DE\n")
         database = directory / "holzwerkprojekt.sqlite3"
         source = directory / "regal.png"
         replacement = directory / "holz.jpg"
@@ -197,20 +198,20 @@ def exercise(args):
                 stdout=log,
                 stderr=log,
             )
-            window("^HolzwerkProjekt$")
+            window("^Woodworking Projects$")
             command("xdotool", "windowsize", focused, "1100", "800")
             command("xdotool", "windowmove", focused, "80", "60")
             wait_for(lambda: query("PRAGMA user_version") == [(1,)])
             time.sleep(0.5)
 
         def stop():
-            window("^HolzwerkProjekt$")
+            window("^Woodworking Projects$")
             key("ctrl+q")
             process.wait(timeout=6)
             assert process.returncode == 0
 
         def edit():
-            window("^HolzwerkProjekt$")
+            window("^Woodworking Projects$")
             time.sleep(0.5)
             key("alt+b")
             window("^Projekt bearbeiten$")
@@ -241,7 +242,7 @@ def exercise(args):
             except AssertionError:
                 capture("unerwarteter-speicherfehler")
                 raise
-            window("^HolzwerkProjekt$")
+            window("^Woodworking Projects$")
             time.sleep(0.6)
 
         def picker(path=None):
@@ -262,7 +263,7 @@ def exercise(args):
             key("Escape")
             window("Änderungen verwerfen")
             destructive()
-            window("^HolzwerkProjekt$")
+            window("^Woodworking Projects$")
 
         def step_field(index):
             key("alt+c")
@@ -274,7 +275,7 @@ def exercise(args):
             start()
             assert rows() == []
             capture("01-leere-liste")
-            click(95, 765)
+            key("ctrl+n")
             window("^Projekt hinzufügen$")
             key("ctrl+s")
             capture("02-pflichtfeld")
@@ -391,7 +392,7 @@ def exercise(args):
             key("alt+e")
             discard()
             assert rows()[0][6] == replacement_bytes
-            click(95, 765)
+            key("ctrl+n")
             window("^Projekt hinzufügen$")
             text("Werkstattregal")
             picker(source)
@@ -442,18 +443,18 @@ def exercise(args):
             window("Projekt löschen")
             capture("13-loeschabbruch")
             key("Return")
-            window("^HolzwerkProjekt$")
+            window("^Woodworking Projects$")
             assert len(rows()) == 2
             key("alt+l")
             window("Projekt löschen")
             destructive()
-            window("^HolzwerkProjekt$")
+            window("^Woodworking Projects$")
             wait_for(lambda: len(rows()) == 1)
             assert rows()[0][0] == 2 and len(steps(2)) == 1 and steps(1) == []
             key("alt+l")
             window("Projekt löschen")
             destructive()
-            window("^HolzwerkProjekt$")
+            window("^Woodworking Projects$")
             wait_for(lambda: rows() == [])
             assert query("SELECT count(*) FROM checklist_steps") == [(0,)]
             capture("14-wieder-leer")

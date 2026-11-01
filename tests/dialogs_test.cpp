@@ -31,6 +31,12 @@ struct Controls {
 
 class ControlledRepository final : public ProjectRepository {
 public:
+  TransferDraftList transferSnapshot() override {
+    throw std::logic_error("Unexpected test transfer");
+  }
+  CollectionImportResult importEntries(const TransferDraftList&) override {
+    throw std::logic_error("Unexpected test transfer");
+  }
   ControlledRepository(const QString& directory, std::shared_ptr<Controls> controls)
       : repository_(directory), controls_(std::move(controls)), thread_(QThread::currentThread()) {
     if (thread_ == qApp->thread()) {
@@ -360,6 +366,12 @@ private slots:
     QTemporaryDir directory;
     class FailingRepository final : public ProjectRepository {
     public:
+      TransferDraftList transferSnapshot() override {
+        throw std::logic_error("Unexpected test transfer");
+      }
+      CollectionImportResult importEntries(const TransferDraftList&) override {
+        throw std::logic_error("Unexpected test transfer");
+      }
       void initialize() override { throw StorageError(QStringLiteral("Synthetischer Pfadfehler")); }
       ProjectList findAll() override { return {}; }
       ProjectDraft find(qint64) override { return {}; }

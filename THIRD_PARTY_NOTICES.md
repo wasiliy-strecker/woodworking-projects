@@ -1,6 +1,6 @@
 # Komponenten und Lizenzhinweise
 
-HolzwerkProjekt verwendet Qt 6.8.3 unter der GNU Lesser General Public License,
+Woodworking Projects verwendet Qt 6.8.3 unter der GNU Lesser General Public License,
 Version 3 (LGPL-3.0). Qt Core, Gui, Widgets und Sql werden dynamisch eingebunden.
 Der QSQLITE-Treiber wird als dynamisches Plugin ausgeliefert. Qt Test wird nur
 für Entwicklungsprüfungen verwendet.

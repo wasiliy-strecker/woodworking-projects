@@ -1,5 +1,13 @@
 # Paketierung und spätere Store-Auslieferung
 
+Aktueller öffentlicher Name: **Woodworking Projects**. Alle sechs Oberflächensprachen bleiben
+verfügbar. Neue Installationen verwenden die unterstützte Systemsprache mit Englisch
+als Fallback. Die technischen Kennungen und Datenverzeichnisse bleiben unverändert.
+macOS erlaubt Zugriff auf ausgewählte Dateien und Ordner mit Lese-/Schreibrechten.
+Die Export-Ordnerwahl gewährt Zugriff auch für temporäre Nachbardateien.
+Native macOS-Sandbox und ein physischer exFAT-Datenträger benötigen eigene Abnahme.
+
+
 Ziel ist zuerst der Microsoft Store, später der Mac App Store. Die lokalen
 Pakete sind Testlieferungen. Ein Paketformat allein belegt weder Lizenzkonformität
 noch bestandene Store-Zertifizierung.

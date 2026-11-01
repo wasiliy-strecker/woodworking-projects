@@ -2,15 +2,27 @@
 
 #include "application/project_service.h"
 
+#include "application/collection_file.h"
 #include <QImage>
 #include <QObject>
 #include <QThread>
 #include <functional>
 #include <memory>
+#include <optional>
 
 namespace woodwork {
 
-enum class Operation : quint8 { Load, Save, Remove, Language, Import };
+enum class Operation : quint8 {
+  InspectCollectionExport,
+  ExportCollection,
+  ReadCollectionImport,
+  ImportCollection,
+  Load,
+  Save,
+  Remove,
+  Language,
+  Import
+};
 using RepositoryFactory = std::function<std::unique_ptr<ProjectRepository>()>;
 
 class StorageWorker final : public QObject {
@@ -26,6 +38,13 @@ public slots:
   void read(qint64 id, quint64 token);
   void importPhotoFile(const QString& path);
 
+  void inspectCollectionExport(const QString& path, const QString& directory);
+  void exportCollection(const woodwork::CollectionExportTarget& target, bool replacementApproved,
+                        const QString& directory);
+  void readCollectionImport(const QString& path);
+  void importCollection();
+  void discardCollectionImport();
+
 signals:
   void readReady(quint64 token, qint64 id, const woodwork::ProjectDraft& draft,
                  const QImage& preview);
@@ -35,11 +54,16 @@ signals:
   void saved(const woodwork::WoodProject& project);
   void removed(qint64 id);
   void languageSaved(const QString& preference);
+  void collectionExportInspected(const woodwork::CollectionExportTarget& target);
+  void collectionExported(qsizetype count);
+  void collectionImportReady(qsizetype count);
+  void collectionImported(const woodwork::CollectionImportResult& result);
   void failed(woodwork::Operation operation, const QString& message);
 
 private:
   RepositoryFactory factory_;
   std::unique_ptr<ProjectRepository> repository_;
+  std::optional<TransferDraftList> pendingImport_;
 };
 
 class StorageController final : public QObject {
@@ -55,6 +79,13 @@ public:
   void read(qint64 id, quint64 token);
   bool importPhotoFile(const QString& path);
 
+  bool inspectCollectionExport(const QString& path, const QString& directory);
+  bool exportCollection(const CollectionExportTarget& target, bool replacementApproved,
+                        const QString& directory);
+  bool readCollectionImport(const QString& path);
+  bool importCollection();
+  void discardCollectionImport();
+
 signals:
   void readReady(quint64 token, qint64 id, const woodwork::ProjectDraft& draft,
                  const QImage& preview);
@@ -64,6 +95,10 @@ signals:
   void saved(const woodwork::WoodProject& project);
   void removed(qint64 id);
   void languageSaved(const QString& preference);
+  void collectionExportInspected(const woodwork::CollectionExportTarget& target);
+  void collectionExported(qsizetype count);
+  void collectionImportReady(qsizetype count);
+  void collectionImported(const woodwork::CollectionImportResult& result);
   void failed(woodwork::Operation operation, const QString& message);
   void busyChanged(bool busy);
   void readRequested(qint64 id, quint64 token);
@@ -72,6 +107,13 @@ signals:
   void saveRequested(qint64 id, const woodwork::ProjectDraft& draft);
   void removeRequested(qint64 id);
   void languageRequested(const QString& directory, const QString& preference);
+
+  void inspectCollectionExportRequested(const QString& path, const QString& directory);
+  void collectionExportRequested(const woodwork::CollectionExportTarget& target,
+                                 bool replacementApproved, const QString& directory);
+  void readCollectionImportRequested(const QString& path);
+  void collectionImportRequested();
+  void discardCollectionImportRequested();
 
 private:
   bool begin();

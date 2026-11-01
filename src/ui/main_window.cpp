@@ -1,10 +1,20 @@
 #include "ui/main_window.h"
+#include "ui/export_file_dialog.h"
+#include "ui/information_dialog.h"
 #include "ui/language_dialog.h"
 #include "ui/photo_view.h"
+#include "ui/sort_header.h"
 #include "ui/ui_support.h"
+#include <QAction>
 #include <QCoreApplication>
+#include <QDateTime>
+#include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QLocale>
+#include <QMenu>
 #include <QScrollArea>
+#include <QStandardPaths>
 
 #include <QApplication>
 #include <QCloseEvent>
@@ -41,7 +51,10 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
       remove_(new QPushButton(QCoreApplication::translate("App", "&Löschen"), this)),
       reload_(new QPushButton(QCoreApplication::translate("App", "Neu laden"), this)),
       language_(new QPushButton(QCoreApplication::translate("App", "Sprache"), this)) {
-  setWindowTitle(QStringLiteral("HolzwerkProjekt"));
+  exportCollection_ = new QPushButton(QCoreApplication::translate("App", "Exportieren"), this);
+  importCollection_ = new QPushButton(QCoreApplication::translate("App", "Importieren"), this);
+  transferDirectory_ = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+  setWindowTitle(QStringLiteral("Woodworking Projects"));
   setObjectName(QStringLiteral("mainWindow"));
   resize(1100, 800);
   setMinimumSize(440, 420);
@@ -50,20 +63,25 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
   root->setContentsMargins(24, 22, 24, 22);
   root->setSpacing(14);
   auto* header = new QHBoxLayout;
-  auto* title = new QLabel(QStringLiteral("HolzwerkProjekt"), central);
+  auto* title = new QLabel(QStringLiteral("Woodworking Projects"), central);
   QFont titleFont = title->font();
   titleFont.setPointSize(22);
   titleFont.setBold(true);
   title->setFont(titleFont);
   header->addWidget(title, 1);
-  auto* about = new QPushButton(QCoreApplication::translate("App", "Über die App"), central);
+  auto* about = new QPushButton(QCoreApplication::translate("App", "Info"), central);
+  about->setAccessibleName(QCoreApplication::translate("App", "Info"));
+  auto* infoMenu = new QMenu(about);
+  about->setMenu(infoMenu);
+  auto* aboutAction = infoMenu->addAction(QCoreApplication::translate("App", "Über die App"));
+  aboutAction->setObjectName(QStringLiteral("showAbout"));
+  auto* privacyAction = infoMenu->addAction(QCoreApplication::translate("App", "Datenschutz"));
+  privacyAction->setObjectName(QStringLiteral("showPrivacy"));
+  auto* licensesAction = infoMenu->addAction(QCoreApplication::translate("App", "Lizenzen"));
+  licensesAction->setObjectName(QStringLiteral("showLicenses"));
+  about->setObjectName(QStringLiteral("aboutApp"));
   root->addLayout(header);
-  auto* settings = new QHBoxLayout;
-  settings->addStretch();
   language_->setObjectName(QStringLiteral("changeLanguage"));
-  settings->addWidget(language_);
-  settings->addWidget(about);
-  root->addLayout(settings);
   auto* subtitle = new QLabel(
       QCoreApplication::translate("App", "Deine Holzideen. Schritt für Schritt verwirklicht."),
       central);
@@ -74,13 +92,14 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
   search_->setPlaceholderText(
       QCoreApplication::translate("App", "Projekte und Arbeitsschritte durchsuchen …"));
   search_->setClearButtonEnabled(true);
-  root->addWidget(search_);
+
   auto* clear = new QPushButton(QCoreApplication::translate("App", "Suche leeren"), central);
   clear->setObjectName(QStringLiteral("clearSearch"));
-  auto* searchInfo = new QHBoxLayout;
-  searchInfo->addWidget(count_, 1);
-  searchInfo->addWidget(clear);
-  root->addLayout(searchInfo);
+  auto* searchRow = new QHBoxLayout;
+  searchRow->addWidget(search_, 1);
+  searchRow->addWidget(clear);
+  search_->setMinimumHeight(36);
+  root->addLayout(searchRow);
 
   auto* splitter = new QSplitter(Qt::Vertical, central);
   auto* collection = new QWidget(splitter);
@@ -93,6 +112,8 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
   table_->setObjectName(QStringLiteral("projectsTable"));
   table_->setAccessibleName(QCoreApplication::translate("App", "Holzwerkprojekte"));
   table_->setColumnCount(5);
+  auto* sortHeader = new SortHeader(table_);
+  table_->setHorizontalHeader(sortHeader);
   table_->setHorizontalHeaderLabels({QCoreApplication::translate("App", "Projektname"),
                                      QCoreApplication::translate("App", "Holz / Material"),
                                      QCoreApplication::translate("App", "Aufbewahrungsort"),
@@ -156,11 +177,27 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
   edit_->setObjectName(QStringLiteral("editProject"));
   remove_->setObjectName(QStringLiteral("removeProject"));
   reload_->setObjectName(QStringLiteral("reloadProjects"));
-  actions->addWidget(add_);
+  header->addWidget(add_);
+  actions->addWidget(count_, 1);
   actions->addWidget(edit_);
   actions->addWidget(remove_);
-  actions->addStretch();
-  root->addLayout(actions);
+
+  collectionLayout->addLayout(actions);
+  auto* footer = new QHBoxLayout;
+  auto* localStorage = new QLabel(
+      QCoreApplication::translate("App", "Lokal auf diesem Computer gespeichert"), central);
+  localStorage->setWordWrap(true);
+  footer->addWidget(localStorage, 1);
+  footer->addWidget(about);
+  footer->addWidget(language_);
+  exportCollection_->setObjectName(QStringLiteral("exportCollection"));
+  importCollection_->setObjectName(QStringLiteral("importCollection"));
+  footer->addWidget(exportCollection_);
+  footer->addWidget(importCollection_);
+  root->addLayout(footer);
+  for (auto* button :
+       {add_, edit_, remove_, clear, about, language_, exportCollection_, importCollection_})
+    button->setMinimumHeight(34);
   root->addWidget(reload_, 0, Qt::AlignRight);
   reload_->hide();
   auto* centralScroll = new QScrollArea(this);
@@ -169,8 +206,61 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
   centralScroll->setWidget(central);
   setCentralWidget(centralScroll);
 
-  connect(about, &QPushButton::clicked, this, &MainWindow::showAbout);
+  connect(aboutAction, &QAction::triggered, this, &MainWindow::showAbout);
+  connect(privacyAction, &QAction::triggered, this, [this] {
+    InformationDialog dialog(InformationPage::Privacy, dataDirectory_, this);
+    dialog.exec();
+  });
+  connect(licensesAction, &QAction::triggered, this, [this] {
+    InformationDialog dialog(InformationPage::Licenses, dataDirectory_, this);
+    dialog.exec();
+  });
   connect(language_, &QPushButton::clicked, this, &MainWindow::showLanguage);
+  connect(exportCollection_, &QPushButton::clicked, this, &MainWindow::exportCollection);
+  connect(importCollection_, &QPushButton::clicked, this, &MainWindow::importCollection);
+  connect(&controller_, &StorageController::collectionExportInspected, this,
+          [this](const CollectionExportTarget& target) {
+            if (!transferRunning_) {
+              return;
+            }
+            if (target.exists &&
+                !confirmExportReplacement(this, QFileInfo(target.path).fileName())) {
+              finishTransfer(QCoreApplication::translate("App", "Vorgang abgebrochen."));
+              return;
+            }
+            controller_.exportCollection(target, target.exists, dataDirectory_);
+          });
+  connect(&controller_, &StorageController::collectionExported, this, [this](qsizetype count) {
+    finishTransfer(QCoreApplication::translate("App", "Export abgeschlossen. Einträge: %1.")
+                       .arg(QLocale().toString(count)));
+  });
+  connect(&controller_, &StorageController::collectionImportReady, this, [this](qsizetype count) {
+    if (!transferRunning_) {
+      controller_.discardCollectionImport();
+      return;
+    }
+    if (!confirmImport(this, count)) {
+      controller_.discardCollectionImport();
+      finishTransfer(QCoreApplication::translate("App", "Vorgang abgebrochen."));
+      return;
+    }
+    controller_.importCollection();
+  });
+  connect(&controller_, &StorageController::collectionImported, this,
+          [this](const CollectionImportResult& result) {
+            const auto selected = selectedProject();
+            projects_ = result.entries;
+            if (search_->text().isEmpty()) {
+              refresh(selected ? selected->id : 0);
+            } else {
+              // Update the table and the line edit's own clear icon through the search handler.
+              search_->clear();
+            }
+            finishTransfer(
+                QCoreApplication::translate(
+                    "App", "Import abgeschlossen. Hinzugefügt: %1. Bereits vorhanden: %2.")
+                    .arg(QLocale().toString(result.added), QLocale().toString(result.skipped)));
+          });
   auto* languageShortcut = new QShortcut(QKeySequence(QStringLiteral("Ctrl+,")), this);
   connect(languageShortcut, &QShortcut::activated, this, &MainWindow::showLanguage);
   connect(&controller_, &StorageController::languageSaved, this, [this](const QString& preference) {
@@ -185,6 +275,10 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
     refresh(selected ? selected->id : 0);
   });
   clear->setEnabled(false);
+  connect(sortHeader, &QHeaderView::sortIndicatorChanged, this, [this] {
+    const auto selected = selectedProject();
+    refresh(selected ? selected->id : 0);
+  });
   connect(table_, &QTableWidget::itemSelectionChanged, this, &MainWindow::updateSelection);
   connect(table_, &QTableWidget::cellDoubleClicked, this, [this] { openEditor(true); });
   connect(add_, &QPushButton::clicked, this, [this] { openEditor(false); });
@@ -246,6 +340,13 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
   });
   connect(&controller_, &StorageController::failed, this,
           [this](Operation operation, const QString& message) {
+            if (operation == Operation::InspectCollectionExport ||
+                operation == Operation::ExportCollection ||
+                operation == Operation::ReadCollectionImport ||
+                operation == Operation::ImportCollection) {
+              finishTransfer(message);
+              return;
+            }
             feedback_->setText(message);
             if (operation != Operation::Save && operation != Operation::Language) {
               reload_->show();
@@ -295,7 +396,10 @@ std::optional<WoodProject> MainWindow::selectedProject() const {
 
 void MainWindow::refresh(std::optional<qint64> preferredId, int fallbackRow) {
   const QSignalBlocker block(table_);
-  visibleProjects_ = searchProjects(projects_, search_->text());
+  visibleProjects_ =
+      searchProjects(projects_, search_->text(),
+                     static_cast<SortField>(table_->horizontalHeader()->sortIndicatorSection()),
+                     table_->horizontalHeader()->sortIndicatorOrder());
   table_->setRowCount(static_cast<int>(visibleProjects_.size()));
   int selection = visibleProjects_.isEmpty()
                       ? -1
@@ -375,16 +479,20 @@ void MainWindow::updateSelection() {
 }
 
 void MainWindow::updateActions() {
-  const bool available = ready_ && !controller_.isBusy() && (!editor_ || !editor_->isVisible());
+  const bool available =
+      ready_ && !transferRunning_ && !controller_.isBusy() && (!editor_ || !editor_->isVisible());
   add_->setEnabled(available);
   language_->setEnabled(available);
+  exportCollection_->setEnabled(available);
+  importCollection_->setEnabled(available);
   edit_->setEnabled(available && selectedProject().has_value() && selectedDetails_.has_value());
   remove_->setEnabled(available && selectedProject().has_value());
-  reload_->setEnabled(!controller_.isBusy() && (!editor_ || !editor_->isVisible()));
+  reload_->setEnabled(!transferRunning_ && !controller_.isBusy() &&
+                      (!editor_ || !editor_->isVisible()));
 }
 
 void MainWindow::openEditor(bool editing) {
-  if (!ready_ || controller_.isBusy() || (editor_ && editor_->isVisible())) {
+  if (!ready_ || transferRunning_ || controller_.isBusy() || (editor_ && editor_->isVisible())) {
     return;
   }
   auto selected = editing ? selectedProject() : std::nullopt;
@@ -430,7 +538,7 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event) {
 }
 
 void MainWindow::closeEvent(QCloseEvent* event) {
-  if (controller_.isBusy()) {
+  if (transferRunning_ || controller_.isBusy()) {
     feedback_->setText(QCoreApplication::translate(
         "App",
         "Bitte warte, bis der laufende Datenbankzugriff beendet ist, und schließe dann erneut."));
@@ -445,26 +553,7 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 }
 
 void MainWindow::showAbout() {
-  QDialog dialog(this);
-  dialog.setWindowTitle(QCoreApplication::translate("App", "Über HolzwerkProjekt"));
-  dialog.resize(640, 500);
-  auto* layout = new QVBoxLayout(&dialog);
-  auto* text = new QTextBrowser(&dialog);
-  QFile notices(QStringLiteral(":/licenses/THIRD_PARTY_NOTICES.md"));
-  QString licenseText;
-  if (notices.open(QIODevice::ReadOnly)) {
-    licenseText = QString::fromUtf8(notices.readAll());
-  }
-  text->setPlainText(
-      QCoreApplication::translate(
-          "App", "HolzwerkProjekt %1\n\nDeine Sammlung bleibt lokal.\nDatenverzeichnis: %2\n\n%3")
-          .arg(QCoreApplication::applicationVersion(), dataDirectory_, licenseText));
-  layout->addWidget(text);
-  auto* buttons = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
-  buttons->button(QDialogButtonBox::Close)
-      ->setText(QCoreApplication::translate("App", "Schließen"));
-  connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
-  layout->addWidget(buttons);
+  InformationDialog dialog(InformationPage::About, dataDirectory_, this);
   dialog.exec();
 }
 
@@ -473,6 +562,71 @@ void MainWindow::showLanguage() {
     return;
   LanguageDialog dialog(controller_, dataDirectory_, languagePreference_, this);
   dialog.exec();
+}
+
+bool MainWindow::beginTransfer() {
+  if (!ready_ || transferRunning_ || controller_.isBusy() || (editor_ && editor_->isVisible())) {
+    return false;
+  }
+  transferRunning_ = true;
+  updateActions();
+  return true;
+}
+
+void MainWindow::finishTransfer(const QString& message) {
+  transferRunning_ = false;
+  feedback_->setText(message);
+  updateActions();
+}
+
+void MainWindow::exportCollection() {
+  if (!beginTransfer()) {
+    return;
+  }
+#ifdef Q_OS_MACOS
+  constexpr bool selectDirectory = true;
+#else
+  constexpr bool selectDirectory = false;
+#endif
+  const auto path = chooseExportFile(
+      this, QDir(transferDirectory_),
+      QStringLiteral("woodworking-projects-%1.json")
+          .arg(QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd_HH-mm-ss"))),
+      selectDirectory);
+  // Finish native-dialog cleanup before starting work that can open a confirmation.
+  if (path.isEmpty()) {
+    finishTransfer(QCoreApplication::translate("App", "Vorgang abgebrochen."));
+    return;
+  }
+  transferDirectory_ = QFileInfo(path).absolutePath();
+  controller_.inspectCollectionExport(path, dataDirectory_);
+}
+
+void MainWindow::importCollection() {
+  if (!beginTransfer()) {
+    return;
+  }
+  QString path;
+  {
+    QFileDialog dialog(
+        this, QCoreApplication::translate("App", "Woodworking Projects-Sammlung importieren"));
+    dialog.setObjectName(QStringLiteral("importCollectionDialog"));
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setNameFilter(
+        QCoreApplication::translate("App", "Woodworking Projects-Sammlung (*.json *.JSON)"));
+    dialog.setDirectory(transferDirectory_);
+    if (dialog.exec() == QDialog::Accepted && !dialog.selectedFiles().isEmpty()) {
+      path = dialog.selectedFiles().first();
+    }
+  }
+  // Finish native-dialog cleanup before starting work that can open a confirmation.
+  if (path.isEmpty()) {
+    finishTransfer(QCoreApplication::translate("App", "Vorgang abgebrochen."));
+    return;
+  }
+  transferDirectory_ = QFileInfo(path).absolutePath();
+  controller_.readCollectionImport(path);
 }
 
 } // namespace woodwork

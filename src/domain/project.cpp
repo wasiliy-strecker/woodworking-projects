@@ -97,7 +97,8 @@ QString searchKey(const QString& text) {
       .normalized(QString::NormalizationForm_C);
 }
 
-ProjectList searchProjects(const ProjectList& projects, const QString& query) {
+ProjectList searchProjects(const ProjectList& projects, const QString& query, SortField field,
+                           Qt::SortOrder order) {
   const auto needle = searchKey(query.trimmed());
   ProjectList matches;
   for (const auto& project : projects) {
@@ -113,13 +114,35 @@ ProjectList searchProjects(const ProjectList& projects, const QString& query) {
   QCollator collator{QLocale()};
   collator.setCaseSensitivity(Qt::CaseInsensitive);
   collator.setNumericMode(true);
-  std::sort(matches.begin(), matches.end(),
-            [&collator](const WoodProject& left, const WoodProject& right) {
-              const int comparison =
-                  collator.compare(left.fields.name.normalized(QString::NormalizationForm_C),
-                                   right.fields.name.normalized(QString::NormalizationForm_C));
-              return comparison == 0 ? left.id < right.id : comparison < 0;
-            });
+  std::sort(
+      matches.begin(), matches.end(),
+      [&collator, field, order](const WoodProject& left, const WoodProject& right) {
+        int comparison = 0;
+        switch (field) {
+        case SortField::Name:
+          comparison = collator.compare(left.fields.name.normalized(QString::NormalizationForm_C),
+                                        right.fields.name.normalized(QString::NormalizationForm_C));
+          break;
+        case SortField::Details:
+          comparison =
+              collator.compare(left.fields.material.normalized(QString::NormalizationForm_C),
+                               right.fields.material.normalized(QString::NormalizationForm_C));
+          break;
+        case SortField::Location:
+          comparison =
+              collator.compare(left.fields.location.normalized(QString::NormalizationForm_C),
+                               right.fields.location.normalized(QString::NormalizationForm_C));
+          break;
+        case SortField::Status:
+          comparison = static_cast<int>(left.fields.status) - static_cast<int>(right.fields.status);
+          break;
+        case SortField::Photo:
+          comparison = static_cast<int>(left.hasPhoto) - static_cast<int>(right.hasPhoto);
+          break;
+        }
+        return comparison == 0 ? left.id < right.id
+                               : (order == Qt::AscendingOrder ? comparison < 0 : comparison > 0);
+      });
   return matches;
 }
 

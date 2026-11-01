@@ -1,4 +1,4 @@
-HolzwerkProjekt
+Woodworking Projects
 
 Record a project name, wood or material, storage location, and notes. Add one JPEG or PNG photo, choose Planned, Started, or Finished, and manage work steps with checkmarks.
 

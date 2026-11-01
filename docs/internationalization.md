@@ -1,5 +1,13 @@
 # Internationalisierung und Vorschauordner
 
+Aktueller öffentlicher Name: **Woodworking Projects**. Alle sechs Oberflächensprachen bleiben
+verfügbar. Neue Installationen verwenden die unterstützte Systemsprache mit Englisch
+als Fallback. Die technischen Kennungen und Datenverzeichnisse bleiben unverändert.
+macOS erlaubt Zugriff auf ausgewählte Dateien und Ordner mit Lese-/Schreibrechten.
+Die Export-Ordnerwahl gewährt Zugriff auch für temporäre Nachbardateien.
+Native macOS-Sandbox und ein physischer exFAT-Datenträger benötigen eigene Abnahme.
+
+
 HolzwerkProjekt 0.1.0 unterstützt de-DE, en-US, es-ES, fr-FR, it-IT und pt-BR.
 Die sechs TS-Kataloge enthalten je 143 Meldungen. Eigene Oberflächen, Fotoimport,
 Validierung, Datenbankfehler und Sprachwahl verwenden diese Kataloge. Passende

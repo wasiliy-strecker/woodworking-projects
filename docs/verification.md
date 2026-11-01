@@ -1,5 +1,70 @@
 # Prüfbericht
 
+## Sammlungstransfer und gemeinsame Oberfläche, 1. November 2026
+
+Woodworking Projects übernimmt die Verbesserungen von Board Game Shelf bis Commit `11245ea`.
+Buttons sind neu angeordnet. Alle Tabellenspalten bieten auf- und absteigende
+Sortierung, ohne die ausgewählte Eintrags-ID zu verlieren. Info enthält drei
+getrennte Offline-Fenster mit roten Schließen-Buttons. Der öffentliche englische
+Name bleibt in allen sechs Sprachen gleich. Die Systemsprache beim Erststart
+mit Englisch als Fallback ist ausdrücklich bestätigt. Datenpfade, App-Kennungen,
+Datenbankschema und gespeicherte Sprachwahlen bleiben erhalten.
+
+JSON-Dateien sichern alle gespeicherten Inhalte einschließlich Originalfotos.
+Ein konsistenter Lesesnapshot enthält auch die in der Tabelle absichtlich nicht
+geladenen Foto-BLOBs. Import ergänzt fehlende Exemplare atomar, berücksichtigt
+die Anzahl identischer Exemplare und verändert keine vorhandenen Einträge.
+Neue Arbeitsschritte erhalten bei UUID-Kollisionen neue Kennungen. Reihenfolge
+und Häkchen bleiben erhalten. Der Worker importiert den bestätigten Snapshot,
+auch wenn die Quelldatei zwischenzeitlich geändert wird.
+
+Die vollständigen 14 CTest-Suiten bestehen in Development, Release und mit
+AddressSanitizer, LeakSanitizer und UndefinedBehaviorSanitizer. Formatter,
+strikte Compilerwarnungen, clang-tidy, Ruff, Shell- und XML-Prüfung bestehen.
+Die vorgebauten Qt-Bibliotheken sind selbst nicht mit Sanitizern instrumentiert.
+Nach den letzten Layoutkorrekturen wurden die betroffenen UI-, Übersetzungs-
+und Dialogsuiten in allen drei Konfigurationen zusätzlich erfolgreich geprüft.
+
+Native X11-Prüfungen auf eigenen Xvfb-Bildschirmen verwenden ausschließlich
+synthetische Daten. Geprüft sind alle sechs Sprachen, kleine Fenster,
+Tastaturbedienung der Info-Menüs, rote Schließen-Buttons, Sortierung mit
+beibehaltener Auswahl, vollständiger Sammlungstransfer und die vorhandenen
+Foto-/Projektabläufe mit Neustart ohne Bildquelle.
+
+Auch die eigenständigen Linux-Pakete mit eigener Qt-Laufzeit bestehen den
+vollständigen Bedienablauf. Native GTK-Dateidialoge prüfen Export bei aktiver
+Suche, Importabbruch, bestätigten Import mit Fotos, wiederholten Import ohne
+zusätzliche Duplikate und Neustart. Bei Checklisten werden zusätzlich kollidierende
+Schrittkennungen geprüft. Laufzeitnachweise kontrollieren die tatsächlich geladenen
+Qt-, SQLite- und JPEG-Bibliotheken. Die Pakete werden ausschließlich als Ordner
+mit `--stage-only` erzeugt. Vorherige Testpakete bleiben erhalten.
+
+Die Tests simulieren fehlende Hardlinks, späte Dateikollisionen und Schreibfehler.
+Neue Dateien werden dann exklusiv angelegt. Der Kopierweg ist nicht atomar und
+kann bei hartem Prozessabbruch eine unvollständige neue Datei hinterlassen.
+Bestehende Dateien werden ausschließlich nach Bestätigung und erneuter Prüfung
+atomar ersetzt. App-Daten und Dateiverweise sind als Exportziel geschützt.
+
+Native Windows- und macOS-Ausführung, Apple-Sandbox, Signierung und ein physischer
+exFAT-Datenträger bleiben offen. Linux-Prüfungen sind keine Store-Freigabe.
+
+Prüfbefehle und lokale Nachweise:
+
+```bash
+bash scripts/check.sh
+ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 bash scripts/check.sh asan
+cmake --build --preset release --parallel 4
+ctest --preset release
+```
+
+Vollständige Protokolle liegen unter `build/port-verified-dev.log`,
+`build/port-verified-asan.log` und `build/port-release-check.log`.
+Die abschließenden UI-Prüfungen stehen in `build/port-final-*.log`.
+Native Belege und Aufnahmen liegen in `build/port-final-native/`,
+`build/port-package-journey/` und `build/port-final-package-transfer/`.
+Die abschließenden Testpakete liegen in `build/port-package-final/`.
+
+
 ## Internationalisierung, 29. Oktober 2026
 
 161 fachliche Qt-Testausführungen plus 16 Initialisierungs- und Abschlussaufrufe

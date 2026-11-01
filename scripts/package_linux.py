@@ -86,7 +86,7 @@ def main():
     (stage / "bin/qt.conf").write_text(
         "[Paths]\nPrefix=..\nPlugins=plugins\nLibraries=lib\nTranslations=translations\n"
     )
-    launcher = stage / "HolzwerkProjekt.sh"
+    launcher = stage / "WoodworkingProjects.sh"
     launcher.write_text(
         '#!/bin/sh\nset -eu\nholzwerk_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)\nexport LD_LIBRARY_PATH="$holzwerk_dir/lib"\nexport QT_PLUGIN_PATH="$holzwerk_dir/plugins"\nexport QT_QPA_PLATFORM_PLUGIN_PATH="$holzwerk_dir/plugins/platforms"\nexport QT_QPA_PLATFORMTHEME="gtk3"\nexec "$holzwerk_dir/bin/holzwerkprojekt" "$@"\n'
     )

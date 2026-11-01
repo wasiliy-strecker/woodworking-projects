@@ -51,6 +51,12 @@ RepositoryFactory factory(const QString& directory) {
 }
 class SlowRepository final : public ProjectRepository {
 public:
+  TransferDraftList transferSnapshot() override {
+    throw std::logic_error("Unexpected test transfer");
+  }
+  CollectionImportResult importEntries(const TransferDraftList&) override {
+    throw std::logic_error("Unexpected test transfer");
+  }
   SlowRepository(const QString& path, std::shared_ptr<std::atomic<int>> reads)
       : inner_(path), reads_(std::move(reads)) {}
   void initialize() override { inner_.initialize(); }

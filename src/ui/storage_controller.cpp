@@ -1,5 +1,7 @@
 #include "ui/storage_controller.h"
+#include "application/collection_transfer.h"
 #include "application/photo_importer.h"
+#include "persistence/json_collection_file.h"
 #include "persistence/language_preferences.h"
 #include <QCoreApplication>
 
@@ -82,11 +84,68 @@ void StorageWorker::saveLanguage(const QString& directory, const QString& prefer
   }
 }
 
+// File path and app directory are named explicitly at the queued UI/worker boundary.
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+void StorageWorker::inspectCollectionExport(const QString& path, const QString& directory) {
+  try {
+    JsonCollectionFile files(directory);
+    emit collectionExportInspected(files.inspect(path));
+  } catch (const std::exception& error) {
+    emit failed(Operation::InspectCollectionExport, QString::fromUtf8(error.what()));
+  }
+}
+
+void StorageWorker::exportCollection(const CollectionExportTarget& target, bool replacementApproved,
+                                     const QString& directory) {
+  try {
+    if (!repository_) {
+      throw StorageError(
+          QCoreApplication::translate("App", "Die Sammlung ist noch nicht geladen."));
+    }
+    JsonCollectionFile files(directory);
+    CollectionTransfer transfer(*repository_, files);
+    emit collectionExported(transfer.exportEntries(target, replacementApproved));
+  } catch (const std::exception& error) {
+    emit failed(Operation::ExportCollection, QString::fromUtf8(error.what()));
+  }
+}
+
+void StorageWorker::readCollectionImport(const QString& path) {
+  pendingImport_.reset();
+  try {
+    JsonCollectionFile files;
+    pendingImport_ = files.read(path);
+    emit collectionImportReady(pendingImport_->size());
+  } catch (const std::exception& error) {
+    emit failed(Operation::ReadCollectionImport, QString::fromUtf8(error.what()));
+  }
+}
+
+void StorageWorker::importCollection() {
+  try {
+    if (!repository_ || !pendingImport_) {
+      throw TransferError(
+          QCoreApplication::translate("App", "Wähle zuerst eine gültige Importdatei."));
+    }
+    // Import the exact validated snapshot the user confirmed, never a later file revision.
+    const auto result = repository_->importEntries(*pendingImport_);
+    pendingImport_.reset();
+    emit collectionImported(result);
+  } catch (const std::exception& error) {
+    pendingImport_.reset();
+    emit failed(Operation::ImportCollection, QString::fromUtf8(error.what()));
+  }
+}
+
+void StorageWorker::discardCollectionImport() { pendingImport_.reset(); }
+
 StorageController::StorageController(RepositoryFactory factory, QObject* parent) : QObject(parent) {
   qRegisterMetaType<ProjectDraft>();
   qRegisterMetaType<WoodProject>();
   qRegisterMetaType<ProjectList>();
   qRegisterMetaType<Operation>();
+  qRegisterMetaType<CollectionExportTarget>();
+  qRegisterMetaType<CollectionImportResult>();
   auto* worker = new StorageWorker(std::move(factory));
   worker->moveToThread(&thread_);
   connect(&thread_, &QThread::finished, worker, &QObject::deleteLater);
@@ -123,6 +182,34 @@ StorageController::StorageController(RepositoryFactory factory, QObject* parent)
           [this](const QByteArray& bytes, const QImage& preview) {
             finish();
             emit imported(bytes, preview);
+          });
+  connect(this, &StorageController::inspectCollectionExportRequested, worker,
+          &StorageWorker::inspectCollectionExport);
+  connect(this, &StorageController::collectionExportRequested, worker,
+          &StorageWorker::exportCollection);
+  connect(this, &StorageController::readCollectionImportRequested, worker,
+          &StorageWorker::readCollectionImport);
+  connect(this, &StorageController::collectionImportRequested, worker,
+          &StorageWorker::importCollection);
+  connect(this, &StorageController::discardCollectionImportRequested, worker,
+          &StorageWorker::discardCollectionImport);
+  connect(worker, &StorageWorker::collectionExportInspected, this,
+          [this](const CollectionExportTarget& target) {
+            finish();
+            emit collectionExportInspected(target);
+          });
+  connect(worker, &StorageWorker::collectionExported, this, [this](qsizetype count) {
+    finish();
+    emit collectionExported(count);
+  });
+  connect(worker, &StorageWorker::collectionImportReady, this, [this](qsizetype count) {
+    finish();
+    emit collectionImportReady(count);
+  });
+  connect(worker, &StorageWorker::collectionImported, this,
+          [this](const CollectionImportResult& result) {
+            finish();
+            emit collectionImported(result);
           });
   thread_.start();
 }
@@ -187,5 +274,40 @@ bool StorageController::saveLanguage(const QString& directory, const QString& pr
   emit languageRequested(directory, preference);
   return true;
 }
+
+bool StorageController::inspectCollectionExport(const QString& path, const QString& directory) {
+  if (!begin()) {
+    return false;
+  }
+  emit inspectCollectionExportRequested(path, directory);
+  return true;
+}
+
+bool StorageController::exportCollection(const CollectionExportTarget& target,
+                                         bool replacementApproved, const QString& directory) {
+  if (!begin()) {
+    return false;
+  }
+  emit collectionExportRequested(target, replacementApproved, directory);
+  return true;
+}
+
+bool StorageController::readCollectionImport(const QString& path) {
+  if (!begin()) {
+    return false;
+  }
+  emit readCollectionImportRequested(path);
+  return true;
+}
+
+bool StorageController::importCollection() {
+  if (!begin()) {
+    return false;
+  }
+  emit collectionImportRequested();
+  return true;
+}
+
+void StorageController::discardCollectionImport() { emit discardCollectionImportRequested(); }
 
 } // namespace woodwork

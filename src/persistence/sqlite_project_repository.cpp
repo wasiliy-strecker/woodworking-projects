@@ -1,6 +1,9 @@
 #include "persistence/sqlite_project_repository.h"
+#include "application/collection_codec.h"
 #include "application/photo_importer.h"
 #include <QCoreApplication>
+#include <QJsonDocument>
+#include <QMap>
 
 #include <QDir>
 #include <QFileInfo>
@@ -274,7 +277,7 @@ void SqliteProjectRepository::initialize() {
     query.finish();
     if (version > 1) {
       throw StorageError(QCoreApplication::translate(
-          "App", "Diese Datenbank benötigt eine neuere Version von HolzwerkProjekt. "
+          "App", "Diese Datenbank benötigt eine neuere Version von Woodworking Projects. "
                  "Die vorhandene Datei wird nicht verändert."));
     }
     if (isNew) {
@@ -287,7 +290,7 @@ void SqliteProjectRepository::initialize() {
       transaction.commit();
     } else if (version != 1) {
       throw StorageError(QCoreApplication::translate(
-          "App", "Die vorhandene Datei hat kein bekanntes HolzwerkProjekt-Schema. "
+          "App", "Die vorhandene Datei hat kein bekanntes Woodworking Projects-Schema. "
                  "Sie wird nicht überschrieben."));
     }
     execute(query, QStringLiteral("PRAGMA quick_check"));
@@ -300,7 +303,8 @@ void SqliteProjectRepository::initialize() {
     execute(query, QStringLiteral("PRAGMA application_id"));
     if (!query.next() || query.value(0).toInt() != 1213681713) {
       throw StorageError(QCoreApplication::translate(
-          "App", "Diese Datenbank gehört nicht zu HolzwerkProjekt. Die Datei wird nicht ersetzt."));
+          "App",
+          "Diese Datenbank gehört nicht zu Woodworking Projects. Die Datei wird nicht ersetzt."));
     }
     query.finish();
     execute(query,
@@ -333,6 +337,11 @@ void SqliteProjectRepository::initialize() {
 
 ProjectList SqliteProjectRepository::findAll() {
   Transaction transaction(database_);
+  auto result = findAllInTransaction();
+  transaction.commit();
+  return result;
+}
+ProjectList SqliteProjectRepository::findAllInTransaction() {
   QSqlQuery query(database_);
   execute(query, QStringLiteral("SELECT id,name,material,location,note,status,photo IS NOT "
                                 "NULL FROM projects ORDER BY id"));
@@ -355,12 +364,16 @@ ProjectList SqliteProjectRepository::findAll() {
     project.fields.steps = readSteps(database_, project.id);
     validateStoredDraft(project.fields);
   }
-  transaction.commit();
   return projects;
 }
 
 ProjectDraft SqliteProjectRepository::find(qint64 id) {
   Transaction transaction(database_);
+  auto result = findInTransaction(id);
+  transaction.commit();
+  return result;
+}
+ProjectDraft SqliteProjectRepository::findInTransaction(qint64 id) {
   QSqlQuery query(database_);
   // The bounded expression avoids materializing a corrupted oversized BLOB.
   prepare(query, QStringLiteral(
@@ -388,16 +401,20 @@ ProjectDraft SqliteProjectRepository::find(qint64 id) {
   query.finish();
   draft.steps = readSteps(database_, id);
   validateStoredDraft(draft);
-  transaction.commit();
   return draft;
 }
 
 WoodProject SqliteProjectRepository::create(const ProjectDraft& draft) {
+  Transaction transaction(database_);
+  auto result = createInTransaction(draft);
+  transaction.commit();
+  return result;
+}
+WoodProject SqliteProjectRepository::createInTransaction(const ProjectDraft& draft) {
   const auto valid = validateDraft(draft);
   if (!valid.photo.isEmpty()) {
     (void)decodePhoto(valid.photo);
   }
-  Transaction transaction(database_);
   QSqlQuery query(database_);
   prepare(query, QStringLiteral("INSERT INTO projects(name,material,location,note,status,photo) "
                                 "VALUES(:name,:material,:location,:note,:status,:photo)"));
@@ -406,7 +423,6 @@ WoodProject SqliteProjectRepository::create(const ProjectDraft& draft) {
   const auto id = query.lastInsertId().toLongLong();
   query.finish();
   replaceSteps(database_, id, valid.steps);
-  transaction.commit();
   return summarize(id, valid);
 }
 
@@ -439,6 +455,75 @@ void SqliteProjectRepository::remove(qint64 id) {
   requireAffectedRow(query);
   query.finish();
   transaction.commit();
+}
+
+TransferDraftList SqliteProjectRepository::transferSnapshot() {
+  Transaction transaction(database_);
+  const auto rows = findAllInTransaction();
+  if (rows.size() > maxTransferEntries)
+    throw TransferError(QCoreApplication::translate(
+        "App", "Eine Sammlung darf höchstens 10.000 Einträge und 256 MiB enthalten."));
+  TransferDraftList result;
+  qint64 size = 0;
+  for (const auto& row : rows) {
+    auto draft = findInTransaction(row.id);
+    size += QJsonDocument(encodeEntry(draft)).toJson(QJsonDocument::Compact).size() + 8;
+    if (size > maxTransferBytes)
+      throw TransferError(QCoreApplication::translate(
+          "App", "Eine Sammlung darf höchstens 10.000 Einträge und 256 MiB enthalten."));
+    result.append(std::move(draft));
+  }
+  transaction.commit();
+  return result;
+}
+CollectionImportResult SqliteProjectRepository::importEntries(const TransferDraftList& drafts) {
+  if (drafts.size() > maxTransferEntries)
+    throw TransferError(QCoreApplication::translate(
+        "App", "Eine Sammlung darf höchstens 10.000 Einträge und 256 MiB enthalten."));
+  qint64 size = 0;
+  for (const auto& draft : drafts) {
+    size += QJsonDocument(encodeEntry(draft)).toJson(QJsonDocument::Compact).size() + 8;
+    if (size > maxTransferBytes)
+      throw TransferError(QCoreApplication::translate(
+          "App", "Eine Sammlung darf höchstens 10.000 Einträge und 256 MiB enthalten."));
+  }
+  Transaction transaction(database_);
+  const auto existing = findAllInTransaction();
+  QMap<QByteArray, qsizetype> available;
+  for (const auto& row : existing)
+    ++available[entryFingerprint(findInTransaction(row.id))];
+  CollectionImportResult result;
+  for (auto draft : drafts) {
+    auto& copies = available[entryFingerprint(draft)];
+    if (copies > 0) {
+      --copies;
+      ++result.skipped;
+      continue;
+    }
+    if (existing.size() + result.added >= maxTransferEntries)
+      throw TransferError(
+          QCoreApplication::translate("App", "Der Import würde die Grenze von 10.000 Einträgen "
+                                             "überschreiten. Die Sammlung bleibt unverändert."));
+    for (auto& step : draft.steps) {
+      QSqlQuery collision(database_);
+      prepare(collision, QStringLiteral("SELECT 1 FROM checklist_steps WHERE id=:id"));
+      while (true) {
+        collision.bindValue(QStringLiteral(":id"), step.id.toString(QUuid::WithoutBraces));
+        execute(collision);
+        if (!collision.next()) {
+          collision.finish();
+          break;
+        }
+        collision.finish();
+        step.id = QUuid::createUuid();
+      }
+    }
+    (void)createInTransaction(draft);
+    ++result.added;
+  }
+  result.entries = findAllInTransaction();
+  transaction.commit();
+  return result;
 }
 
 } // namespace woodwork

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
+<?xml version='1.0' encoding='utf-8'?>
 <TS version="2.1" language="es_ES" sourcelanguage="de_DE">
   <context>
     <name>App</name>
@@ -104,6 +103,10 @@
       <translation>Se ha producido un error al leer la foto.</translation>
     </message>
     <message>
+      <source>Bitte bestätige das Ersetzen der vorhandenen Exportdatei.</source>
+      <translation>Confirma que deseas reemplazar el archivo de exportación existente.</translation>
+    </message>
+    <message>
       <source>Bitte gib einen Projektnamen ein.</source>
       <translation>Introduce un nombre para el proyecto.</translation>
     </message>
@@ -182,8 +185,24 @@
       <translation>El directorio de datos personal no está disponible.</translation>
     </message>
     <message>
+      <source>Dateiname ohne Ordnerpfad. Die Endung .json wird bei Bedarf ergänzt.</source>
+      <translation>Nombre del archivo sin ruta de carpeta. Se añade la extensión .json si es necesario.</translation>
+    </message>
+    <message>
       <source>Daten werden verarbeitet …</source>
       <translation>Procesando datos…</translation>
+    </message>
+    <message>
+      <source>Datenschutz</source>
+      <translation>Privacidad</translation>
+    </message>
+    <message>
+      <source>Datenschutzerklärung für Woodworking Projects</source>
+      <translation>Política de privacidad de Woodworking Projects</translation>
+    </message>
+    <message>
+      <source>Datenverzeichnis: %1</source>
+      <translation>Carpeta de datos: %1</translation>
     </message>
     <message>
       <source>Deine Holzideen. Schritt für Schritt verwirklicht.</source>
@@ -204,8 +223,16 @@
 %1</translation>
     </message>
     <message>
+      <source>Der Export konnte nicht sicher gespeichert werden. Prüfe Speicherplatz und Zugriffsrechte oder wähle einen anderen lokalen Ordner. Ein vorhandener Export bleibt erhalten.</source>
+      <translation>No se ha podido guardar la exportación de forma segura. Comprueba el espacio y los permisos o elige otra carpeta local. Se conserva la exportación existente.</translation>
+    </message>
+    <message>
       <source>Der Fremdschlüsselschutz konnte nicht aktiviert werden.</source>
       <translation>No se ha podido activar la protección de claves externas.</translation>
+    </message>
+    <message>
+      <source>Der Import würde die Grenze von 10.000 Einträgen überschreiten. Die Sammlung bleibt unverändert.</source>
+      <translation>La importación superaría el límite de 10.000 entradas. La colección no se modifica.</translation>
     </message>
     <message>
       <source>Der Projektstatus ist ungültig.</source>
@@ -240,6 +267,14 @@
       <translation>Los identificadores o el orden de los pasos no son válidos. Los datos no se modificarán.</translation>
     </message>
     <message>
+      <source>Die Importdatei konnte nicht gelesen werden. Prüfe die Zugriffsrechte. Die Sammlung bleibt unverändert.</source>
+      <translation>No se ha podido leer el archivo de importación. Comprueba los permisos. Tu colección no se ha modificado.</translation>
+    </message>
+    <message>
+      <source>Die Informationen konnten nicht geladen werden. Bitte installiere die App erneut.</source>
+      <translation>No se pudo cargar la información. Vuelve a instalar la app.</translation>
+    </message>
+    <message>
       <source>Die Projekte sind noch nicht geladen.</source>
       <translation>Los proyectos aún no se han cargado.</translation>
     </message>
@@ -252,6 +287,10 @@
       <translation>No se ha podido abrir la colección.</translation>
     </message>
     <message>
+      <source>Die Sammlungsdatei enthält ungültige oder zu große Daten. Die Sammlung bleibt unverändert.</source>
+      <translation>El archivo de colección contiene datos no válidos o demasiado grandes. La colección no se modifica.</translation>
+    </message>
+    <message>
       <source>Die Schema-Version konnte nicht gelesen werden.</source>
       <translation>No se ha podido leer la versión del esquema.</translation>
     </message>
@@ -260,8 +299,16 @@
       <translation>No se ha podido guardar el idioma. Comprueba el directorio de datos y tus permisos de acceso. Se conserva la configuración anterior.</translation>
     </message>
     <message>
+      <source>Die Zieldatei wurde nach der Auswahl verändert. Wähle sie erneut. Sie wurde nicht ersetzt.</source>
+      <translation>El archivo de destino cambió después de seleccionarlo. Vuelve a seleccionarlo. No se ha reemplazado.</translation>
+    </message>
+    <message>
       <source>Die Zuordnung gespeicherter Arbeitsschritte ist beschädigt.</source>
       <translation>Las asociaciones de los pasos guardados están dañadas.</translation>
+    </message>
+    <message>
+      <source>Die folgenden Hinweise und Lizenztexte beschreiben die verwendeten Fremdkomponenten. Rechtliche Originaltexte werden in ihrer Originalsprache angezeigt. Weitere Laufzeithinweise befinden sich in den Lizenzordnern der installierten App.</source>
+      <translation>Los siguientes avisos y licencias describen los componentes de terceros de esta app. Los textos legales originales se muestran en su idioma original. Hay más avisos del entorno de ejecución en las carpetas de licencias de la app instalada.</translation>
     </message>
     <message>
       <source>Die gespeicherte Checkliste ist beschädigt. %1</source>
@@ -280,16 +327,24 @@
       <translation>El idioma elegido se aplica al volver a iniciar la aplicación. Tus proyectos y fotos no cambian.</translation>
     </message>
     <message>
-      <source>Die vorhandene Datei hat kein bekanntes HolzwerkProjekt-Schema. Sie wird nicht überschrieben.</source>
-      <translation>El archivo existente no tiene un esquema reconocido de HolzwerkProjekt. No se sobrescribirá.</translation>
+      <source>Die vorhandene Datei hat kein bekanntes Woodworking Projects-Schema. Sie wird nicht überschrieben.</source>
+      <translation>El archivo existente no tiene un esquema reconocido de Woodworking Projects. No se sobrescribirá.</translation>
     </message>
     <message>
-      <source>Diese Datenbank benötigt eine neuere Version von HolzwerkProjekt. Die vorhandene Datei wird nicht verändert.</source>
-      <translation>Esta base de datos requiere una versión más reciente de HolzwerkProjekt. El archivo existente no se modificará.</translation>
+      <source>Dies ist keine gültige Woodworking Projects-Sammlung. Wähle eine mit Exportieren erzeugte JSON-Datei. Die Sammlung bleibt unverändert.</source>
+      <translation>Esta no es una colección válida de Woodworking Projects. Elige un archivo JSON creado con Exportar. Tu colección no se ha modificado.</translation>
     </message>
     <message>
-      <source>Diese Datenbank gehört nicht zu HolzwerkProjekt. Die Datei wird nicht ersetzt.</source>
-      <translation>Esta base de datos no pertenece a HolzwerkProjekt. El archivo no se sustituirá.</translation>
+      <source>Diese Datei verwendet eine nicht unterstützte Exportversion. Die Sammlung bleibt unverändert.</source>
+      <translation>Este archivo utiliza una versión de exportación no compatible. Tu colección no se ha modificado.</translation>
+    </message>
+    <message>
+      <source>Diese Datenbank benötigt eine neuere Version von Woodworking Projects. Die vorhandene Datei wird nicht verändert.</source>
+      <translation>Esta base de datos requiere una versión más reciente de Woodworking Projects. El archivo existente no se modificará.</translation>
+    </message>
+    <message>
+      <source>Diese Datenbank gehört nicht zu Woodworking Projects. Die Datei wird nicht ersetzt.</source>
+      <translation>Esta base de datos no pertenece a Woodworking Projects. El archivo no se sustituirá.</translation>
     </message>
     <message>
       <source>Diese Sammlung ist bereits in einer anderen App-Instanz geöffnet. Schließe sie dort und lade hier erneut.</source>
@@ -316,12 +371,48 @@
       <translation>El texto de un paso guardado no es válido.</translation>
     </message>
     <message>
+      <source>Eine Sammlung darf höchstens 10.000 Einträge und 256 MiB enthalten.</source>
+      <translation>Una colección puede contener como máximo 10.000 entradas y 256 MiB.</translation>
+    </message>
+    <message>
+      <source>Eine Sammlungsdatei darf höchstens 10.000 Einträge und 256 MiB enthalten. Es wurde keine unvollständige Datei oder Sammlung gespeichert.</source>
+      <translation>Un archivo de colección puede contener como máximo 10.000 entradas y 256 MiB. No se ha guardado ningún archivo ni colección incompletos.</translation>
+    </message>
+    <message>
       <source>Eine lokale Sammlung für deine Holzwerkprojekte.</source>
       <translation>Una colección local para tus proyectos de carpintería.</translation>
     </message>
     <message>
+      <source>Einträge importieren?</source>
+      <translation>¿Importar entradas?</translation>
+    </message>
+    <message>
+      <source>Einträge in der Datei: %1. Vorhandene Einträge bleiben erhalten. Bereits vorhandene identische Exemplare werden übersprungen. Nach dem Import wird die Suche geleert.</source>
+      <translation>Entradas en el archivo: %1. Se conservan los entradas existentes. Se omiten las copias idénticas que ya están en tu colección. La búsqueda se vacía tras la importación.</translation>
+    </message>
+    <message>
+      <source>Entwicklung: Wasiliy Strecker · AppFabrik AI</source>
+      <translation>Desarrollo: Wasiliy Strecker · AppFabrik AI</translation>
+    </message>
+    <message>
+      <source>Ersetzen</source>
+      <translation>Reemplazar</translation>
+    </message>
+    <message>
       <source>Es ist nicht genügend Speicherplatz verfügbar. Schaffe Platz und versuche es erneut.</source>
       <translation>No hay suficiente espacio en disco. Libera espacio e inténtalo de nuevo.</translation>
+    </message>
+    <message>
+      <source>Export abgeschlossen. Einträge: %1.</source>
+      <translation>Exportación completada. Entradas: %1.</translation>
+    </message>
+    <message>
+      <source>Export ersetzen?</source>
+      <translation>¿Reemplazar la exportación?</translation>
+    </message>
+    <message>
+      <source>Exportieren</source>
+      <translation>Exportar</translation>
     </message>
     <message>
       <source>Fertig</source>
@@ -348,6 +439,10 @@
       <translation>Planificado</translation>
     </message>
     <message>
+      <source>Gesamte Sammlung exportieren</source>
+      <translation>Exportar toda la colección</translation>
+    </message>
+    <message>
       <source>Gespeicherte Arbeitsschritte</source>
       <translation>Pasos de trabajo guardados</translation>
     </message>
@@ -368,26 +463,20 @@
       <translation>&amp;Madera o material</translation>
     </message>
     <message>
-      <source>HolzwerkProjekt %1
-
-Deine Sammlung bleibt lokal.
-Datenverzeichnis: %2
-
-%3</source>
-      <translation>HolzwerkProjekt %1
-
-Tu colección se guarda localmente.
-Directorio de datos: %2
-
-%3</translation>
-    </message>
-    <message>
-      <source>HolzwerkProjekt kann nicht starten</source>
-      <translation>HolzwerkProjekt no puede iniciarse</translation>
-    </message>
-    <message>
       <source>Holzwerkprojekte</source>
       <translation>Proyectos de carpintería</translation>
+    </message>
+    <message>
+      <source>Import abgeschlossen. Hinzugefügt: %1. Bereits vorhanden: %2.</source>
+      <translation>Importación completada. Añadidos: %1. Ya presentes: %2.</translation>
+    </message>
+    <message>
+      <source>Importieren</source>
+      <translation>Importar</translation>
+    </message>
+    <message>
+      <source>Info</source>
+      <translation>Info</translation>
     </message>
     <message>
       <source>Isoliertes absolutes Datenverzeichnis.</source>
@@ -408,6 +497,14 @@ Directorio de datos: %2
     <message>
       <source>Keine Projekte gefunden. Ändere oder leere die Suche.</source>
       <translation>No se han encontrado proyectos. Cambia o borra la búsqueda.</translation>
+    </message>
+    <message>
+      <source>Lizenzen</source>
+      <translation>Licencias</translation>
+    </message>
+    <message>
+      <source>Lokal auf diesem Computer gespeichert</source>
+      <translation>Guardado localmente en este equipo</translation>
     </message>
     <message>
       <source>Löschen</source>
@@ -436,6 +533,10 @@ Directorio de datos: %2
     <message>
       <source>Optional</source>
       <translation>Opcional</translation>
+    </message>
+    <message>
+      <source>Ordner für den Export wählen</source>
+      <translation>Elegir una carpeta de exportación</translation>
     </message>
     <message>
       <source>Projekt auswählen</source>
@@ -510,6 +611,10 @@ Directorio de datos: %2
       <translation>Idioma guardado. Se aplicará al volver a abrir la aplicación.</translation>
     </message>
     <message>
+      <source>Stand: 1. November 2026</source>
+      <translation>Última actualización: 1 de noviembre de 2026</translation>
+    </message>
+    <message>
       <source>Status</source>
       <translation>Estado</translation>
     </message>
@@ -522,12 +627,68 @@ Directorio de datos: %2
       <translation>Estado de proyecto guardado desconocido: «%1». Los datos no se modificarán.</translation>
     </message>
     <message>
+      <source>Verantwortlicher und Kontakt
+Wasiliy Strecker · AppFabrik AI
+Ludwigstrasse 23, 86152 Augsburg, Deutschland
+Datenschutz: contact@appfabrik-ai.de
+Support: support@appfabrik-ai.de
+
+Zweck und gespeicherte Daten
+Woodworking Projects verwaltet deine privaten Einträge. Die App speichert Namen, Materialangaben, Aufbewahrungsorte, Notizen, interne Eintragskennungen und deine Spracheinstellung sowie ein optionales Foto, den Projektstatus und Arbeitsschritte mit Reihenfolge und Erledigungsstand standardmäßig lokal im Benutzerprofil deines Computers. Fotos bleiben als Originaldateiinhalt gespeichert und können Metadaten enthalten. Die Angaben können personenbezogene Informationen enthalten, wenn du sie selbst einträgst. Die Verarbeitung dient ausschließlich den von dir angeforderten Funktionen zum Verwalten, Suchen, Exportieren und Importieren deiner Sammlung.
+
+Lokale Verarbeitung
+Die App benötigt kein Konto und keinen Server. Sie übermittelt deine Sammlung und Spracheinstellung nicht an den Entwickler oder andere Empfänger. Sie enthält keine Werbung, Telemetrie, Nutzungsanalyse oder eigene Cloud-Synchronisierung. Die Datenschutzerklärung ist Bestandteil der App und wird ohne Internetverbindung angezeigt. Woodworking Projects verschlüsselt weder seine gespeicherte Sammlung noch exportierte JSON-Dateien selbst. Der Schutz hängt auch von deinem Benutzerkonto, den Zugriffsrechten und einer gegebenenfalls aktivierten Datenträgerverschlüsselung ab.
+
+Import, Export und Sicherungskopien
+Die App liest ausgewählte JSON-Dateien und Fotos lokal. Ein JSON-Export enthält alle gespeicherten Einträge mit einem optionalen Foto, dem Projektstatus und Arbeitsschritten mit Reihenfolge und Erledigungsstand. Er enthält keine internen Eintragskennungen und keine Spracheinstellung. Schrittkennungen, Reihenfolge und Häkchen sind enthalten. Du bestimmst den Speicherort und eine mögliche Weitergabe. Exportierte Dateien sind eigenständige Kopien und werden durch Änderungen in der App nicht aktualisiert oder gelöscht. Synchronisierte Ordner, Netzlaufwerke oder Sicherungsdienste können diese Dateien außerhalb der App verarbeiten oder übertragen. Dafür gelten die Einstellungen und Datenschutzbedingungen des jeweiligen Anbieters. Woodworking Projects steuert diese Dienste nicht.
+
+Speicherdauer und Löschung
+Die App bewahrt die Sammlung auf, bis du Einträge löschst oder die gespeicherten App-Daten entfernst. Du kannst Einträge in der App ansehen, bearbeiten und löschen. Zum vollständigen Entfernen der lokalen Sammlung und Spracheinstellung schließt du die App und entfernst ihren Datenordner. Die Speicherorte sind in der mitgelieferten Anleitung beschrieben. Exportdateien und andere Sicherungskopien musst du an ihren jeweiligen Speicherorten gesondert löschen. Das Löschen eines Eintrags ist keine garantierte sichere Löschung aller früheren Dateiinhalte. Verlasse dich nicht darauf, dass eine Deinstallation alle App-Daten und externen Kopien entfernt.
+
+Kontakt und Support
+Wenn du uns freiwillig eine E-Mail sendest, verarbeiten wir deine E-Mail-Adresse, den Nachrichteninhalt und beigefügte Dateien zur Bearbeitung der Anfrage. Deine lokal gespeicherte Sammlung wird dabei nicht automatisch mitgesendet. Rechtsgrundlage ist bei vertragsbezogenen Anfragen Artikel 6 Absatz 1 Buchstabe b DSGVO, ansonsten unser berechtigtes Interesse an der Beantwortung von Anfragen nach Artikel 6 Absatz 1 Buchstabe f DSGVO. Wir bewahren die Korrespondenz nur so lange auf, wie dies für die Bearbeitung und gesetzliche Aufbewahrungspflichten erforderlich ist.
+
+Deine Rechte und weitere Anbieter
+Soweit anwendbar, hast du Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht auf Beschwerde bei einer Datenschutzaufsichtsbehörde. Nutze dafür den Datenschutzkontakt. Auf Sammlungen, die ausschließlich auf deinem Computer liegen, hat der Entwickler keinen Zugriff. Beim Bezug oder Aktualisieren über Apple App Store, Microsoft Store oder GitHub können diese Anbieter selbst Daten verarbeiten. Dafür gelten deren eigene Datenschutzbedingungen. Diese Erklärung beschreibt die Datenverarbeitung durch Woodworking Projects und wird bei entsprechenden Änderungen aktualisiert.</source>
+      <translation>Responsable y contacto
+Wasiliy Strecker · AppFabrik AI
+Ludwigstrasse 23, 86152 Augsburgo, Alemania
+Privacidad: contact@appfabrik-ai.de
+Soporte: support@appfabrik-ai.de
+
+Finalidad y datos almacenados
+Woodworking Projects organiza tus entradas personales. De forma predeterminada, la aplicación guarda nombres, datos de materiales, ubicaciones, notas, identificadores internos y tu idioma, junto con una foto opcional, el estado del proyecto y pasos ordenados con su estado de realización, localmente en el perfil de usuario del ordenador. Las fotos conservan su contenido original y pueden incluir metadatos. Los datos pueden contener información personal si la introduces. El tratamiento sirve únicamente para las funciones solicitadas de gestión, búsqueda, exportación e importación de tu colección.
+
+Tratamiento local
+La aplicación no necesita una cuenta ni un servidor. No transmite tu colección ni la preferencia de idioma al desarrollador ni a otros destinatarios. No incluye publicidad, telemetría, análisis de uso ni sincronización propia en la nube. Esta política forma parte de la aplicación y puede leerse sin conexión a Internet. Woodworking Projects no cifra por sí mismo la colección guardada ni los archivos JSON exportados. Su protección también depende de tu cuenta de usuario, los permisos de acceso y el cifrado de disco que hayas activado.
+
+Importación, exportación y copias de seguridad
+La aplicación lee localmente los archivos JSON y las fotos seleccionados. Una exportación JSON contiene todas las entradas guardadas, con una foto opcional, el estado del proyecto y pasos ordenados con su estado de realización. No contiene identificadores internos de entradas ni el idioma. Se incluyen los identificadores, el orden y el estado de realización de los pasos. Tú eliges dónde guardar y compartir los archivos. Los archivos exportados son copias independientes y no se actualizan ni eliminan con los cambios en la aplicación. Las carpetas sincronizadas, unidades de red o servicios de copia de seguridad pueden tratar o transferir estos archivos fuera de la aplicación. Se aplican sus propios ajustes y condiciones de privacidad. Woodworking Projects no controla estos servicios.
+
+Conservación y eliminación
+La aplicación conserva tu colección hasta que elimines entradas o los datos guardados de la aplicación. Puedes consultar, editar y eliminar entradas en la aplicación. Para eliminar toda la colección local y la preferencia de idioma, cierra la aplicación y elimina su carpeta de datos. Las ubicaciones se describen en las instrucciones incluidas. Los archivos exportados y otras copias deben eliminarse por separado de sus respectivas ubicaciones. Eliminar una entrada no garantiza el borrado seguro de todos los contenidos anteriores de los archivos. No debes asumir que desinstalar la aplicación elimina todos sus datos y las copias externas.
+
+Contacto y soporte
+Si nos envías voluntariamente un correo, tratamos tu dirección de correo electrónico, el mensaje y sus adjuntos para atender la consulta. Tu colección local no se adjunta automáticamente. La base jurídica para consultas relacionadas con un contrato es el artículo 6.1.b del RGPD. Para otras consultas es nuestro interés legítimo en responder, conforme al artículo 6.1.f del RGPD. Conservamos la correspondencia solo durante el tiempo necesario para atender la consulta y cumplir las obligaciones legales de conservación.
+
+Tus derechos y otros proveedores
+Cuando corresponda, tienes derecho de acceso, rectificación, supresión, limitación del tratamiento, portabilidad y oposición, así como a presentar una reclamación ante una autoridad de protección de datos. Puedes utilizar el contacto de privacidad indicado arriba. El desarrollador no tiene acceso a las colecciones que solo están en tu ordenador. Al obtener o actualizar la aplicación mediante Apple App Store, Microsoft Store o GitHub, estos proveedores pueden tratar datos de forma independiente según sus propias condiciones. Esta política describe el tratamiento de Woodworking Projects y se actualizará cuando cambie dicho tratamiento.</translation>
+    </message>
+    <message>
+      <source>Version %1</source>
+      <translation>Versión %1</translation>
+    </message>
+    <message>
       <source>Verwerfen</source>
       <translation>Descartar</translation>
     </message>
     <message>
       <source>Vollständige Notiz</source>
       <translation>Nota completa</translation>
+    </message>
+    <message>
+      <source>Vorgang abgebrochen.</source>
+      <translation>Operación cancelada.</translation>
     </message>
     <message>
       <source>Was möchtest du dir zu diesem Projekt merken?</source>
@@ -546,12 +707,32 @@ Directorio de datos: %2
       <translation>Guardando…</translation>
     </message>
     <message>
+      <source>Woodworking Projects kann nicht starten</source>
+      <translation>Woodworking Projects no puede iniciarse</translation>
+    </message>
+    <message>
+      <source>Woodworking Projects-Sammlung (*.json *.JSON)</source>
+      <translation>Colección de Woodworking Projects (*.json *.JSON)</translation>
+    </message>
+    <message>
+      <source>Woodworking Projects-Sammlung importieren</source>
+      <translation>Importar una colección de Woodworking Projects</translation>
+    </message>
+    <message>
       <source>Wähle ein Projekt aus, um seine Notiz zu lesen.</source>
       <translation>Selecciona un proyecto para leer sus notas.</translation>
     </message>
     <message>
       <source>Wähle ein Projekt, um seine Arbeitsschritte zu sehen.</source>
       <translation>Selecciona un proyecto para ver sus pasos.</translation>
+    </message>
+    <message>
+      <source>Wähle eine normale .json-Datei in einem vorhandenen Ordner außerhalb der App-Daten. Dateiverknüpfungen sind als Exportziel nicht erlaubt.</source>
+      <translation>Elige un archivo .json normal en una carpeta existente fuera de los datos de la aplicación. No se permiten enlaces como destino de exportación.</translation>
+    </message>
+    <message>
+      <source>Wähle zuerst eine gültige Importdatei.</source>
+      <translation>Elige primero un archivo de importación válido.</translation>
     </message>
     <message>
       <source>Zu diesem Projekt gibt es noch keine Notiz.</source>
@@ -570,8 +751,8 @@ Directorio de datos: %2
       <translation>¿Descartar los cambios?</translation>
     </message>
     <message>
-      <source>Über HolzwerkProjekt</source>
-      <translation>Acerca de HolzwerkProjekt</translation>
+      <source>Über Woodworking Projects</source>
+      <translation>Acerca de Woodworking Projects</translation>
     </message>
     <message>
       <source>Über die App</source>
@@ -580,6 +761,10 @@ Directorio de datos: %2
     <message>
       <source>„%1“</source>
       <translation>«%1»</translation>
+    </message>
+    <message>
+      <source>„%1“ ist bereits vorhanden. Durch die gesamte gespeicherte Sammlung ersetzen?</source>
+      <translation>«%1» ya existe. ¿Reemplazarlo con toda la colección guardada?</translation>
     </message>
     <message>
       <source>„%1“ wurde gespeichert, passt aber nicht zur aktuellen Suche. Mit „Suche leeren“ findest du es wieder.</source>

@@ -70,7 +70,7 @@ def main():
     for log in args.check_log:
         shutil.copy2(log, verification / log.name)
     manifest = {
-        "app": "HolzwerkProjekt",
+        "app": "Woodworking Projects",
         "version": version,
         "source_commit": commit,
         "languages": LANGUAGES,

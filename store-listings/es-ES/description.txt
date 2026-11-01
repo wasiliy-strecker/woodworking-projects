@@ -1,4 +1,4 @@
-HolzwerkProjekt
+Woodworking Projects
 
 Guarda el nombre, la madera o material, la ubicación y las notas. Añade una foto JPEG o PNG, elige Planificado, En curso o Finalizado y gestiona los pasos con casillas.
 
