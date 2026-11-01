@@ -74,3 +74,13 @@ werden ohne Überschreiben veröffentlicht. Ohne Hardlinks darf eine Datei exklu
 neu angelegt und kopiert werden. Nach hartem Abbruch kann dabei eine unvollständige
 neue Datei zurückbleiben. Bestehende Ziele werden ausschließlich nach Bestätigung
 und erneuter Prüfung atomar ersetzt.
+
+## Farbauswahl ab Stufe 2, 1. November 2026
+
+Auf ausdrücklichen Nutzerauftrag wird die optionale Farbauswahl aus Yarn Box
+auf alle vier C++-Apps ab Collection Showcase übertragen. Die Begrenzung auf
+die bisherigen Hauptfunktionen bleibt bestehen. Farben gehören zum atomaren
+Entwurf und zum JSON-Transfer. Schema 2 ergänzt das Farbfeld nach vollständiger
+Prüfung und mit atomarer Migration von Schema 1. App-IDs, Datenpfade und
+vorhandene Inhalte bleiben erhalten. Neue Werte verwenden #RRGGBB oder
+#RRGGBBAA. Alte Exporte ohne Farbe bleiben lesbar. Alle sechs Sprachen abdecken.

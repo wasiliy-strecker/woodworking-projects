@@ -15,7 +15,7 @@ namespace {
 void check(const ProjectDraft& draft) {
   if (validateDraft(draft) != draft)
     invalid();
-  for (const auto& text : {draft.name, draft.material, draft.location, draft.note}) {
+  for (const auto& text : {draft.name, draft.material, draft.location, draft.note, draft.color}) {
     if (!text.isValidUtf16() || text.size() > 1000000)
       invalid();
   }
@@ -36,6 +36,7 @@ QJsonObject encodeEntry(const ProjectDraft& draft) {
                      {QStringLiteral("material"), draft.material},
                      {QStringLiteral("location"), draft.location},
                      {QStringLiteral("note"), draft.note},
+                     {QStringLiteral("color"), draft.color},
                      {QStringLiteral("photoBase64"),
                       draft.photo.isEmpty()
                           ? QJsonValue(QJsonValue::Null)
@@ -51,7 +52,9 @@ QJsonObject encodeEntry(const ProjectDraft& draft) {
   return object;
 }
 ProjectDraft decodeEntry(const QJsonObject& object) {
-  if (object.size() != 7)
+  const bool hasColor = object.contains(QStringLiteral("color"));
+  if (object.size() != 7 + (hasColor ? 1 : 0) || !object.contains(QStringLiteral("photoBase64")) ||
+      (hasColor && !object.value(QStringLiteral("color")).isString()))
     invalid();
   for (const auto& field : {QStringLiteral("name"), QStringLiteral("material"),
                             QStringLiteral("location"), QStringLiteral("note")})
@@ -62,6 +65,7 @@ ProjectDraft decodeEntry(const QJsonObject& object) {
   draft.material = object.value(QStringLiteral("material")).toString();
   draft.location = object.value(QStringLiteral("location")).toString();
   draft.note = object.value(QStringLiteral("note")).toString();
+  draft.color = object.value(QStringLiteral("color")).toString();
   const auto photo = object.value(QStringLiteral("photoBase64"));
   if (!photo.isNull()) {
     if (!photo.isString())

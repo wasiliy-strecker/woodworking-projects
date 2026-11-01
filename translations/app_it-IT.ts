@@ -634,7 +634,7 @@ Datenschutz: contact@appfabrik-ai.de
 Support: support@appfabrik-ai.de
 
 Zweck und gespeicherte Daten
-Woodworking Projects verwaltet deine privaten Einträge. Die App speichert Namen, Materialangaben, Aufbewahrungsorte, Notizen, interne Eintragskennungen und deine Spracheinstellung sowie ein optionales Foto, den Projektstatus und Arbeitsschritte mit Reihenfolge und Erledigungsstand standardmäßig lokal im Benutzerprofil deines Computers. Fotos bleiben als Originaldateiinhalt gespeichert und können Metadaten enthalten. Die Angaben können personenbezogene Informationen enthalten, wenn du sie selbst einträgst. Die Verarbeitung dient ausschließlich den von dir angeforderten Funktionen zum Verwalten, Suchen, Exportieren und Importieren deiner Sammlung.
+Woodworking Projects verwaltet deine privaten Einträge. Die App speichert Namen, Materialangaben, Aufbewahrungsorte, Farben, Notizen, interne Eintragskennungen und deine Spracheinstellung sowie ein optionales Foto, den Projektstatus und Arbeitsschritte mit Reihenfolge und Erledigungsstand standardmäßig lokal im Benutzerprofil deines Computers. Fotos bleiben als Originaldateiinhalt gespeichert und können Metadaten enthalten. Die Angaben können personenbezogene Informationen enthalten, wenn du sie selbst einträgst. Die Verarbeitung dient ausschließlich den von dir angeforderten Funktionen zum Verwalten, Suchen, Exportieren und Importieren deiner Sammlung.
 
 Lokale Verarbeitung
 Die App benötigt kein Konto und keinen Server. Sie übermittelt deine Sammlung und Spracheinstellung nicht an den Entwickler oder andere Empfänger. Sie enthält keine Werbung, Telemetrie, Nutzungsanalyse oder eigene Cloud-Synchronisierung. Die Datenschutzerklärung ist Bestandteil der App und wird ohne Internetverbindung angezeigt. Woodworking Projects verschlüsselt weder seine gespeicherte Sammlung noch exportierte JSON-Dateien selbst. Der Schutz hängt auch von deinem Benutzerkonto, den Zugriffsrechten und einer gegebenenfalls aktivierten Datenträgerverschlüsselung ab.
@@ -657,7 +657,7 @@ Privacy: contact@appfabrik-ai.de
 Assistenza: support@appfabrik-ai.de
 
 Finalità e dati memorizzati
-Woodworking Projects organizza le tue voci personali. Per impostazione predefinita, l’app memorizza nomi, informazioni sui materiali, posizioni, note, identificativi interni e la lingua scelta, insieme a una foto facoltativa, lo stato del progetto e passaggi ordinati con il relativo completamento, localmente nel profilo utente del computer. Le foto conservano il contenuto originale e possono includere metadati. I dati possono contenere informazioni personali se le inserisci. Il trattamento serve esclusivamente alle funzioni richieste di gestione, ricerca, esportazione e importazione della raccolta.
+Woodworking Projects organizza le tue voci personali. Per impostazione predefinita, l’app memorizza nomi, informazioni sui materiali, posizioni, colori, note, identificativi interni e la lingua scelta, insieme a una foto facoltativa, lo stato del progetto e passaggi ordinati con il relativo completamento, localmente nel profilo utente del computer. Le foto conservano il contenuto originale e possono includere metadati. I dati possono contenere informazioni personali se le inserisci. Il trattamento serve esclusivamente alle funzioni richieste di gestione, ricerca, esportazione e importazione della raccolta.
 
 Trattamento locale
 L’app non richiede un account o un server. Non trasmette la raccolta né la preferenza di lingua allo sviluppatore o ad altri destinatari. Non contiene pubblicità, telemetria, analisi dell’utilizzo o sincronizzazione cloud propria. Questa informativa è inclusa nell’app e si può leggere senza connessione Internet. Woodworking Projects non cifra autonomamente la raccolta salvata né i file JSON esportati. La protezione dipende anche dall’account utente, dai permessi di accesso e dall’eventuale cifratura del disco attivata.
@@ -773,6 +773,26 @@ Ove applicabili, hai diritto di accesso, rettifica, cancellazione, limitazione d
     <message>
       <source>„%1“ wurde gespeichert.</source>
       <translation>«%1» è stato salvato.</translation>
+    </message>
+    <message>
+      <source>Farbe</source>
+      <translation>Colore</translation>
+    </message>
+    <message>
+      <source>Farbe auswählen</source>
+      <translation>Scegli colore</translation>
+    </message>
+    <message>
+      <source>Farbe entfernen</source>
+      <translation>Rimuovi colore</translation>
+    </message>
+    <message>
+      <source>Keine Farbe</source>
+      <translation>Nessun colore</translation>
+    </message>
+    <message>
+      <source>Die Farbe muss ein Hexwert wie #RRGGBB oder #RRGGBBAA sein.</source>
+      <translation>Il colore deve essere un valore esadecimale come #RRGGBB o #RRGGBBAA.</translation>
     </message>
   </context>
 </TS>

@@ -21,6 +21,7 @@ ProjectDraft richDraft() {
   draft.material = QStringLiteral("Material 12");
   draft.location = QStringLiteral("Shelf 2");
   draft.note = QStringLiteral("First line\nSecond line");
+  draft.color = QStringLiteral("#315A7D80");
   QImage image(40, 20, QImage::Format_RGB32);
   image.fill(Qt::red);
   QBuffer buffer(&draft.photo);
@@ -143,7 +144,7 @@ private slots:
     QVERIFY(table);
     QCOMPARE(table->item(0, 0)->text(), QStringLiteral("Entry 2"));
     table->selectRow(1);
-    table->horizontalHeader()->setSortIndicator(4, Qt::DescendingOrder);
+    table->horizontalHeader()->setSortIndicator(5, Qt::DescendingOrder);
     QCOMPARE(table->currentRow(), 0);
     QCOMPARE(table->item(0, 0)->data(Qt::UserRole).toLongLong(), selectedId);
     for (int column = 0; column < table->columnCount(); ++column) {

@@ -1,0 +1,4 @@
+CREATE TABLE projects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL CHECK(length(trim(name))>0), material TEXT NOT NULL DEFAULT '', location TEXT NOT NULL DEFAULT '', note TEXT NOT NULL DEFAULT '', status TEXT NOT NULL DEFAULT 'planned' CHECK(status IN ('planned','started','finished')), photo BLOB CHECK(photo IS NULL OR (typeof(photo)='blob' AND length(photo) BETWEEN 1 AND 10485760)));
+CREATE TABLE checklist_steps (id TEXT NOT NULL PRIMARY KEY CHECK(length(id)=36), project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE, text TEXT NOT NULL CHECK(length(trim(text))>0), completed INTEGER NOT NULL CHECK(typeof(completed)='integer' AND completed IN (0,1)), position INTEGER NOT NULL CHECK(typeof(position)='integer' AND position>=0), UNIQUE(project_id,position));
+PRAGMA application_id=1213681713;
+PRAGMA user_version=1;

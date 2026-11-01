@@ -3,6 +3,7 @@
 
 #include <QCollator>
 #include <QLocale>
+#include <QRegularExpression>
 #include <QSet>
 #include <algorithm>
 
@@ -49,6 +50,11 @@ WoodProject summarize(qint64 id, ProjectDraft draft) {
 }
 
 ProjectDraft validateDraft(ProjectDraft draft) {
+  static const QRegularExpression colorPattern(
+      QStringLiteral("\\A#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?\\z"));
+  if (!draft.color.isEmpty() && !colorPattern.match(draft.color).hasMatch())
+    throw ValidationError(QCoreApplication::translate(
+        "App", "Die Farbe muss ein Hexwert wie #RRGGBB oder #RRGGBBAA sein."));
   (void)storedStatus(draft.status);
   draft.name = draft.name.trimmed();
   draft.material = draft.material.trimmed();
@@ -105,6 +111,7 @@ ProjectList searchProjects(const ProjectList& projects, const QString& query, So
     const auto& f = project.fields;
     if (searchKey(f.name).contains(needle) || searchKey(f.material).contains(needle) ||
         searchKey(f.location).contains(needle) || searchKey(f.note).contains(needle) ||
+        searchKey(f.color).contains(needle) ||
         std::any_of(f.steps.cbegin(), f.steps.cend(), [&needle](const ChecklistStep& step) {
           return searchKey(step.text).contains(needle);
         })) {
@@ -127,6 +134,9 @@ ProjectList searchProjects(const ProjectList& projects, const QString& query, So
           comparison =
               collator.compare(left.fields.material.normalized(QString::NormalizationForm_C),
                                right.fields.material.normalized(QString::NormalizationForm_C));
+          break;
+        case SortField::Color:
+          comparison = collator.compare(left.fields.color, right.fields.color);
           break;
         case SortField::Location:
           comparison =

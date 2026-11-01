@@ -26,6 +26,12 @@ QString schemaSql() {
       "10485760)))");
 }
 
+QString schemaForVersion(int version) {
+  const auto original = schemaSql();
+  return version == 2 ? original.chopped(1) + QStringLiteral(", color TEXT NOT NULL DEFAULT '')")
+                      : original;
+}
+
 QString stepSchemaSql() {
   return QStringLiteral(
       "CREATE TABLE checklist_steps (id TEXT NOT NULL PRIMARY KEY CHECK(length(id)=36), "
@@ -119,6 +125,8 @@ private:
 
 void bindDraft(QSqlQuery& query, const ProjectDraft& draft) {
   // Empty optional QString values must be TEXT, never SQL NULL.
+  query.bindValue(QStringLiteral(":color"),
+                  draft.color.isNull() ? QStringLiteral("") : draft.color);
   query.bindValue(QStringLiteral(":status"), storedStatus(draft.status));
   query.bindValue(QStringLiteral(":photo"), draft.photo.isEmpty()
                                                 ? QVariant(QMetaType::fromType<QByteArray>())
@@ -275,7 +283,7 @@ void SqliteProjectRepository::initialize() {
     }
     const int version = query.value(0).toInt();
     query.finish();
-    if (version > 1) {
+    if (version > 2) {
       throw StorageError(QCoreApplication::translate(
           "App", "Diese Datenbank benötigt eine neuere Version von Woodworking Projects. "
                  "Die vorhandene Datei wird nicht verändert."));
@@ -288,7 +296,7 @@ void SqliteProjectRepository::initialize() {
       execute(query, QStringLiteral("PRAGMA user_version=1"));
       query.finish();
       transaction.commit();
-    } else if (version != 1) {
+    } else if (version != 1 && version != 2) {
       throw StorageError(QCoreApplication::translate(
           "App", "Die vorhandene Datei hat kein bekanntes Woodworking Projects-Schema. "
                  "Sie wird nicht überschrieben."));
@@ -309,7 +317,7 @@ void SqliteProjectRepository::initialize() {
     query.finish();
     execute(query,
             QStringLiteral("SELECT sql FROM sqlite_master WHERE type='table' AND name='projects'"));
-    if (!query.next() || query.value(0).toString() != schemaSql()) {
+    if (!query.next() || query.value(0).toString() != schemaForVersion(isNew ? 1 : version)) {
       throw StorageError(QCoreApplication::translate(
           "App",
           "Die Datenbankstruktur ist unbekannt oder beschädigt. Die Datei wird nicht ersetzt."));
@@ -328,6 +336,16 @@ void SqliteProjectRepository::initialize() {
     if (query.lastError().isValid())
       fail(query.lastError());
     query.finish();
+    if (isNew || version == 1) {
+      // Validate identity and the entire old schema before changing an existing collection.
+      // DDL and version change commit together. Failed upgrades leave all data intact.
+      Transaction migration(database_);
+      execute(query,
+              QStringLiteral("ALTER TABLE projects ADD COLUMN color TEXT NOT NULL DEFAULT ''"));
+      execute(query, QStringLiteral("PRAGMA user_version=2"));
+      query.finish();
+      migration.commit();
+    }
     initialized_ = true;
   } catch (...) {
     close();
@@ -344,7 +362,7 @@ ProjectList SqliteProjectRepository::findAll() {
 ProjectList SqliteProjectRepository::findAllInTransaction() {
   QSqlQuery query(database_);
   execute(query, QStringLiteral("SELECT id,name,material,location,note,status,photo IS NOT "
-                                "NULL FROM projects ORDER BY id"));
+                                "NULL,color FROM projects ORDER BY id"));
   ProjectList projects;
   while (query.next()) {
     projects.append({query.value(0).toLongLong(),
@@ -353,7 +371,9 @@ ProjectList SqliteProjectRepository::findAllInTransaction() {
                       query.value(3).toString(),
                       query.value(4).toString(),
                       readStatus(query.value(5)),
-                      {}},
+                      {},
+                      {},
+                      query.value(7).toString()},
                      query.value(6).toBool()});
   }
   if (query.lastError().isValid()) {
@@ -376,10 +396,11 @@ ProjectDraft SqliteProjectRepository::find(qint64 id) {
 ProjectDraft SqliteProjectRepository::findInTransaction(qint64 id) {
   QSqlQuery query(database_);
   // The bounded expression avoids materializing a corrupted oversized BLOB.
-  prepare(query, QStringLiteral(
-                     "SELECT name,material,location,note,status,"
-                     "CASE WHEN length(photo)<=10485760 THEN photo ELSE NULL END,"
-                     "photo IS NOT NULL,length(photo),typeof(photo) FROM projects WHERE id=:id"));
+  prepare(query,
+          QStringLiteral(
+              "SELECT name,material,location,note,status,"
+              "CASE WHEN length(photo)<=10485760 THEN photo ELSE NULL END,"
+              "photo IS NOT NULL,length(photo),typeof(photo),color FROM projects WHERE id=:id"));
   query.bindValue(QStringLiteral(":id"), id);
   execute(query);
   if (!query.next()) {
@@ -398,6 +419,7 @@ ProjectDraft SqliteProjectRepository::findInTransaction(qint64 id) {
   ProjectDraft draft{query.value(0).toString(),  query.value(1).toString(),
                      query.value(2).toString(),  query.value(3).toString(),
                      readStatus(query.value(4)), query.value(5).toByteArray()};
+  draft.color = query.value(9).toString();
   query.finish();
   draft.steps = readSteps(database_, id);
   validateStoredDraft(draft);
@@ -416,8 +438,9 @@ WoodProject SqliteProjectRepository::createInTransaction(const ProjectDraft& dra
     (void)decodePhoto(valid.photo);
   }
   QSqlQuery query(database_);
-  prepare(query, QStringLiteral("INSERT INTO projects(name,material,location,note,status,photo) "
-                                "VALUES(:name,:material,:location,:note,:status,:photo)"));
+  prepare(query,
+          QStringLiteral("INSERT INTO projects(name,material,location,note,status,photo,color) "
+                         "VALUES(:name,:material,:location,:note,:status,:photo,:color)"));
   bindDraft(query, valid);
   execute(query);
   const auto id = query.lastInsertId().toLongLong();
@@ -435,7 +458,7 @@ WoodProject SqliteProjectRepository::update(qint64 id, const ProjectDraft& draft
   QSqlQuery query(database_);
   prepare(query,
           QStringLiteral("UPDATE projects SET name=:name,material=:material,location=:location,"
-                         "note=:note,status=:status,photo=:photo WHERE id=:id"));
+                         "note=:note,status=:status,photo=:photo,color=:color WHERE id=:id"));
   bindDraft(query, valid);
   query.bindValue(QStringLiteral(":id"), id);
   execute(query);

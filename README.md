@@ -264,3 +264,26 @@ Status wird als `status` mit `planned`, `started` oder `finished` gespeichert.
 Schrittpositionen müssen als JSON-Zahlen exakt darstellbar sein.
 Dateien anderer Produkte, unbekannte Versionen und ungültige Felder werden
 abgewiesen. Der bestätigte Import verwendet einen bereits validierten Snapshot.
+
+## Optionale Farbauswahl
+
+Wie in Yarn Box ab der zweiten Java-App besitzt jeder Eintrag eine optionale
+Farbe. Im Editor öffnet „Farbe auswählen“ den Farbdialog mit Palette, eigener
+Farbe und Transparenz. Erst Bestätigen übernimmt die Auswahl in den Entwurf.
+„×“ entfernt sie. Erst Speichern übernimmt den gesamten Entwurf in die Sammlung.
+Abbrechen und Schließen schützen auch Änderungen ausschließlich an der Farbe.
+
+Die Tabelle zeigt ein Farbfeld und den Hexcode. Sie lässt sich nach Farbe
+sortieren. Auch die Suche berücksichtigt den Code. Transparenz ist am
+Schachbrettmuster erkennbar. Die Auswahl ist in allen sechs Sprachen verfügbar.
+
+Farben werden als `#RRGGBB`, bei Transparenz als `#RRGGBBAA` gespeichert.
+Keine Farbe entspricht einer leeren Zeichenfolge. JSON-Exporte enthalten das
+Feld `color`. Bisherige Exporte ohne dieses Feld bleiben importierbar.
+Neue Exporte benötigen zum Import die aktualisierte App. Unterschiede in der
+Farbe gelten beim ergänzenden Import als unterschiedliche Einträge.
+
+Vorhandene lokale Datenbanken werden nach Prüfung ihrer Identität und Struktur
+atomar von Schema 1 auf Schema 2 erweitert. IDs, Texte, Originalfotos und alle
+vorhandenen Status- und Checklistendaten bleiben erhalten. Die Farbauswahl ist
+zunächst leer. Ältere App-Builds können Schema 2 nicht öffnen.

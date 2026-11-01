@@ -273,3 +273,36 @@ Nachweis und ersetzt diese Prüfungen nicht.
 Store-Identitäten, Signierung, Lizenzkonformität der konkreten Store-Auslieferung,
 Metadaten und Einreichung stehen aus. Veröffentlichung zuerst im Microsoft Store,
 danach im Mac App Store. Kein Push und keine Veröffentlichung.
+
+## Farbauswahl pro Eintrag, 1. November 2026
+
+Die optionale Farbauswahl aus Yarn Box ist in dieser App umgesetzt. Der Qt-
+Farbwähler bietet Palette, eigene Farben und Transparenz. Die Auswahl wird erst
+mit dem gesamten Entwurf gespeichert. Farbkachel, Hexcode, Tab-Reihenfolge,
+Entfernen, Suche und Sortierung wurden geprüft.
+
+`bash scripts/check.sh` besteht mit 15 CTest-Suiten, clang-format,
+Compilerwarnungen als Fehlern und clang-tidy ohne neue Meldungen.
+`ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 bash scripts/check.sh asan`
+besteht ebenfalls mit allen 15 Suiten. Die neuen Farbtests prüfen RGBA-Bytes,
+Migration echter Schema-1-Fixtures einschließlich Foto, Status und Schritten,
+Rollback einer gesperrten Migration und erneuten Versuch, atomare Schreibfehler,
+Altimporte ohne Farbe, Importunterschiede und Wiederholungen sowie Editor-
+und Tabellenabläufe in sechs Sprachen. Alle Prüfdaten sind synthetisch.
+
+Zusätzlich bestehen `color_tests` und `collection_features_tests` mit xcb und
+GTK3 auf einem eigenen sichtbaren Xephyr-Bildschirm. Das eigenständige Linux-
+Paket unter `build/manual/color-package/holzwerkprojekt-0.1.0-linux-x64/`
+besteht `scripts/color_gui_smoke.py` und den vollständigen bisherigen
+`scripts/gui_smoke.py`-Ablauf mit bereinigter Entwicklungsumgebung. Die neue
+Prüfung öffnet den nativen Farbpicker per Tab und Leertaste, bestätigt Weiß mit
+dem nativen Auswahlbutton, bricht eine weitere Auswahl ab, entfernt die Farbe
+und prüft beide gespeicherten Zustände nach zwei Neustarts. Der bisherige
+Ablauf prüft außerdem Fotoimport, Status, Checkliste, Fehler und Neustart ohne
+Bildquelle. Die normalen Nutzerdaten werden von Tests nicht geöffnet.
+
+Nachweise liegen unter `build/manual/colors/`, `build/manual/color-package-native/`
+und `build/manual/color-package-workflow/`. Die normale Nutzersammlung wurde
+anschließend mit Schema 2 erfolgreich geöffnet. Native Windows- und macOS-
+Prüfungen wurden in dieser Linux-Umgebung nicht ausgeführt. Keine Store-
+Veröffentlichung, kein Upload und kein Lieferarchiv.

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ui/color_field.h"
 #include "ui/storage_controller.h"
 
 #include <QDialog>
@@ -41,6 +42,7 @@ private:
   StorageController& controller_;
   qint64 id_ = 0;
   ProjectDraft original_;
+  ColorField* color_;
   QLineEdit* name_;
   QLineEdit* material_;
   QLineEdit* location_;

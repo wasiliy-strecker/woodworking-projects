@@ -32,6 +32,7 @@ struct ProjectDraft {
   ProjectStatus status = ProjectStatus::Planned;
   QByteArray photo = {};
   Checklist steps = {};
+  QString color = {}; // Optional #RRGGBB or #RRGGBBAA.
   bool operator==(const ProjectDraft&) const = default;
 };
 
@@ -54,7 +55,7 @@ public:
 
 ProjectDraft validateDraft(ProjectDraft draft);
 QString searchKey(const QString& text);
-enum class SortField : quint8 { Name, Details, Location, Status, Photo };
+enum class SortField : quint8 { Name, Details, Color, Location, Status, Photo };
 using TransferDraftList = QVector<ProjectDraft>;
 ProjectList searchProjects(const ProjectList& projects, const QString& query,
                            SortField field = SortField::Name,
