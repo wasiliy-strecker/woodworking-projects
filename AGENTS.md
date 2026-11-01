@@ -25,6 +25,13 @@ Tests öffnen nur temporäre Datenbanken und verwenden synthetische Bilder.
 
 ## Prüfen
 
+Ausnahme auf ausdrücklichen Nutzerwunsch vom 1. November 2026: Bei kleinen
+Farb-, Kontrast- und vergleichbaren reinen Darstellungsänderungen keine Tests
+hinzufügen oder ausführen. Auch Vollanalysen, Sanitizer, GUI-Automation und
+Paketprüfungen entfallen. Nur die zum Bereitstellen nötige App kompilieren
+oder neu laden. Der Nutzer testet selbst. Diese Ausnahme gilt auch vor dem
+Abschlusscommit und hat Vorrang vor den folgenden Prüfanforderungen.
+
 ```bash
 source scripts/env.sh
 find src tests -type f \( -name '*.cpp' -o -name '*.h' \) -print0 | xargs -0 clang-format -i

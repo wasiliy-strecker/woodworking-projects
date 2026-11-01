@@ -5,12 +5,57 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QLocale>
+#include <QPainter>
+#include <QPainterPath>
 #include <QPushButton>
+#include <QStyleOptionButton>
 #include <QVBoxLayout>
 #include <algorithm>
 #include <limits>
 
 namespace woodwork {
+namespace {
+// Keep native checkbox input and accessibility, but avoid low-contrast platform indicators.
+class StepCheckBox final : public QCheckBox {
+public:
+  explicit StepCheckBox(QWidget* parent) : QCheckBox(parent) {
+    setFixedSize(32, 32);
+    setFocusPolicy(Qt::StrongFocus);
+    setAttribute(Qt::WA_Hover);
+  }
+
+protected:
+  bool hitButton(const QPoint& position) const override { return rect().contains(position); }
+
+  void paintEvent(QPaintEvent*) override {
+    QStyleOptionButton option;
+    initStyleOption(&option);
+    const auto foreground = option.palette.color(QPalette::Text);
+    const auto background = option.palette.color(QPalette::Base);
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    const bool hovered = isEnabled() && (option.state & QStyle::State_MouseOver);
+    painter.setPen(QPen(foreground, hovered ? 3.0 : 2.0));
+    painter.setBrush(isChecked() ? foreground : background);
+    painter.drawRoundedRect(QRectF(5, 5, 22, 22), 3, 3);
+    if (isChecked()) {
+      painter.setPen(QPen(background, 2.5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+      painter.setBrush(Qt::NoBrush);
+      QPainterPath tick;
+      tick.moveTo(10, 16);
+      tick.lineTo(14, 20);
+      tick.lineTo(23, 11);
+      painter.drawPath(tick);
+    }
+    if (hasFocus()) {
+      painter.setPen(QPen(foreground, 1, Qt::DotLine));
+      painter.setBrush(Qt::NoBrush);
+      painter.drawRoundedRect(QRectF(1, 1, 30, 30), 4, 4);
+    }
+  }
+};
+} // namespace
+
 ChecklistEditor::ChecklistEditor(const Checklist& steps, QWidget* parent)
     : QWidget(parent), rowsLayout_(new QVBoxLayout),
       add_(
@@ -52,7 +97,7 @@ void ChecklistEditor::append(const ChecklistStep& step, bool focus) {
   layout->setContentsMargins(0, 4, 0, 8);
   layout->setSpacing(4);
   auto* line = new QHBoxLayout;
-  auto* completed = new QCheckBox(widget);
+  auto* completed = new StepCheckBox(widget);
   completed->setObjectName(QStringLiteral("stepCompleted"));
   completed->setChecked(step.completed);
   auto* text = new QLineEdit(step.text, widget);
