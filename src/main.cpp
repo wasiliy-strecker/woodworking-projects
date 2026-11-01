@@ -3,6 +3,7 @@
 #include "persistence/language_preferences.h"
 #include "persistence/sqlite_project_repository.h"
 #include "ui/main_window.h"
+#include "ui/native_edit_menus.h"
 #include <QCoreApplication>
 
 #include <QApplication>
@@ -44,6 +45,9 @@ int main(int argc, char* argv[]) {
         woodwork::resolveDataDirectory(parser.value(dataOption), parser.isSet(dataOption));
     const auto preference = woodwork::readLanguagePreference(directory);
     translations.install(preference.value);
+#ifdef Q_OS_MACOS
+    woodwork::NativeEditMenus nativeEditMenus;
+#endif
     woodwork::StorageController controller(
         [directory] { return std::make_unique<woodwork::SqliteProjectRepository>(directory); });
     woodwork::MainWindow window(controller, directory, preference.value);

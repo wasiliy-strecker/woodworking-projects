@@ -1,5 +1,73 @@
 # Prüfbericht
 
+## Mac-Menüs und Systemdialogsprachen, 1. November 2026
+
+Die App registriert auf macOS ein natives Bearbeiten-Menü mit Ausschneiden,
+Kopieren, Einfügen und Alles auswählen. Die Standardaktionen verwenden die von
+Qt erkannten, bereits eingebetteten Qt-Übersetzungen und Standardkürzel.
+App-eigene Qt-Fenster erhalten jeweils eine Menüleiste, damit die Aktionen auch
+in modalen Bearbeitungs- und Dateinamen-Dialogen verfügbar sind. Eine globale
+Menüleiste dient als Rückfall für native Dialoge. Datei-, Farb-, Schrift- und
+Meldungsdialoge werden durch den Menühelfer nicht mit Qt-Kindwidgets erweitert.
+
+Qt-Textaktionen betreffen ausschließlich das aktuell fokussierte, sichtbare und
+aktivierte Textfeld. Schreibgeschützte Inhalte bleiben unverändert. Native
+Mac-Dialoge nutzen die Qt-/AppKit-Weiterleitung und deren eigene Aktionsprüfung.
+Unter Linux und Windows wird der Helfer im normalen App-Start nicht aktiviert.
+Die neuen Tests instanziieren ihn dort gezielt zur Prüfung der gemeinsamen Logik.
+
+Die Mac-Konfiguration deklariert Deutsch, Englisch, Spanisch, Französisch,
+Italienisch und brasilianisches Portugiesisch mit Englisch als Fallback.
+Native Mac-Dateidialoge folgen ausdrücklich der macOS-Sprachwahl. Die eigene
+Sprachwahl der App bleibt unabhängig und gilt weiterhin nach einem Neustart.
+Es werden keine Apple-Spracheinstellungen geschrieben und keine App-Kennungen,
+Datenpfade, Datenbankinhalte oder Exportformate geändert.
+
+Zusätzliche Regressionstests: `native_edit_menus` und `macos_localizations`.
+Sie prüfen Textaktionen, Unicode, Undo nach Ausschneiden, Fokuswechsel, modale
+Dateinamen-Eingabe, schreibgeschützte Felder, normale Tastenkürzel, wiederholtes
+Öffnen, unveränderte Dateidialoge sowie die Katalog- und Plist-Sprachzuordnung.
+Die gemeinsamen Tests prüfen die sechs Sprachen einschließlich der vorhandenen
+Systemsprachwahl, expliziten Präferenzen und des Englisch-Fallbacks.
+
+### Ausgeführte Linux-Prüfung
+
+Alle 17 CTest-Suiten bestehen in Development und unter AddressSanitizer,
+LeakSanitizer und UndefinedBehaviorSanitizer für den eigenen Code.
+Formatter, strikte Compilerwarnungen, clang-tidy und die Python-Prüfungen bestehen.
+Die Menütests bestehen zusätzlich mit xcb und GTK3 auf einem eigenen X11-Display.
+Der vollständige Bedienablauf der aktuellen Development-Datei in einer separaten
+Testlaufzeit mit eigener Qt-Laufzeit besteht einschließlich Speichern und Neustart.
+Repräsentative Aufnahmen wurden visuell geprüft. Alle Daten sind synthetisch.
+Frühere Pakete und die normale Nutzersammlung bleiben erhalten.
+
+Nachweise: `build/mac-fix-dev.log`, `build/mac-fix-asan.log`,
+`build/mac-fix-native/native-edit-menus.log`,
+`build/mac-fix-journey/` und `build/mac-fix-native/result.json`.
+Letztere Datei hält die Prüfsumme der tatsächlich geprüften ausführbaren Datei fest.
+Die Testlaufzeit liegt unter `build/mac-fix-runtime/`. Kein Lieferarchiv.
+
+### Noch offene native Mac-Abnahme
+
+Die Linux-Prüfung ersetzt keine Ausführung in Cocoa oder der Apple-Sandbox.
+Auf einem Mac mit isolierten synthetischen Daten sind zusätzlich zu prüfen:
+
+- In den vorhandenen nativen Dateidialogen funktionieren ⌘X, ⌘C, ⌘V und ⌘A im
+  Suchfeld beziehungsweise in der Pfadeingabe. Der tatsächlich fokussierte
+  Dialog erhält die Aktion. Hintergrundentwürfe bleiben unverändert.
+- Im Bearbeitungsdialog und Exportdateiname funktionieren dieselben Aktionen
+  per Menü und Tastatur. Schreibgeschützte Ansichten erlauben keine Änderungen.
+- Erststart und Dateidialoge in allen sechs Systemsprachen, Englisch-Fallback
+  ohne unterstützte macOS-Sprachpräferenz und Neustart nach expliziter App-Wahl.
+  Eine abweichende App-Sprachwahl überschreibt die Mac-Dialogsprache nicht.
+- Import, Export, bestätigter Ersatz, Abbruch, Dateinamen mit Unicode und Neustart
+  mit der Sandbox-Testapp funktionieren. Fotoimport gehört ab Stufe 2 dazu.
+  Restoration Journal prüft zusätzlich den PDF-Export.
+- Beenden per ⌘Q, App-Menü und Fensterschließen schützt ungespeicherte Entwürfe.
+
+Für diese Mac-Prüfung wurde kein Release-Paket erzeugt und keine Store-Abnahme
+behauptet. Referenz: [Qt 6.8 zu macOS-Menüs und Internationalisierung](https://doc.qt.io/qt-6.8/macos-issues.html).
+
 ## Sammlungstransfer und gemeinsame Oberfläche, 1. November 2026
 
 Woodworking Projects übernimmt die Verbesserungen von Board Game Shelf bis Commit `11245ea`.

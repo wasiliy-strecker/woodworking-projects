@@ -1,5 +1,19 @@
 # Internationalisierung und Vorschauordner
 
+## Sprache nativer Mac-Dateidialoge
+
+Die Mac-Konfiguration nennt `de`, `en`, `es`, `fr`, `it` und `pt-BR` als
+unterstützte Sprachen. `CFBundleDevelopmentRegion` ist `en`.
+Die native Dateiauswahl richtet sich nach den macOS-Sprachpräferenzen und den
+verfügbaren Sprachen. Sie wird nicht über die eigene App-Sprachauswahl gesteuert.
+Die App behält die gespeicherte Auswahl, einschließlich Automatisch, und wendet
+sie nach einem Neustart an. Das Bearbeiten-Menü verwendet die App-Sprache und
+die bereits eingebetteten Qt-Standardübersetzungen.
+
+`scripts/check_macos_localizations.py` prüft die Mac-Deklarationen gegen die
+App-Kataloge. Diese Prüfung benötigt keinen Mac und keinen Store-Build.
+Die tatsächliche Cocoa-Sprachwahl bleibt Teil der nativen Mac-Abnahme.
+
 Aktueller öffentlicher Name: **Woodworking Projects**. Alle sechs Oberflächensprachen bleiben
 verfügbar. Neue Installationen verwenden die unterstützte Systemsprache mit Englisch
 als Fallback. Die technischen Kennungen und Datenverzeichnisse bleiben unverändert.
