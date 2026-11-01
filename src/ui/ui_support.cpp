@@ -1,5 +1,6 @@
 #include "ui/ui_support.h"
 #include <QCoreApplication>
+#include <QDialogButtonBox>
 
 #include <QLocale>
 #include <QMessageBox>
@@ -12,6 +13,10 @@ bool confirmDiscard(QWidget* parent) {
       QCoreApplication::translate("App", "Deine Änderungen sind noch nicht gespeichert."),
       QMessageBox::NoButton, parent);
   box.setObjectName(QStringLiteral("discardConfirmation"));
+  box.setOption(QMessageBox::Option::DontUseNativeDialog);
+  // Keep editing stays left of Discard with its safe default and reject role.
+  box.setStyleSheet(QStringLiteral("QDialogButtonBox { button-layout: %1; }")
+                        .arg(QDialogButtonBox::AndroidLayout));
   box.setTextFormat(Qt::PlainText);
   auto* keep = box.addButton(QCoreApplication::translate("App", "Weiterbearbeiten"),
                              QMessageBox::RejectRole);
@@ -32,6 +37,10 @@ bool confirmDelete(QWidget* parent, const QString& name) {
           .arg(name),
       QMessageBox::NoButton, parent);
   box.setObjectName(QStringLiteral("deleteConfirmation"));
+  box.setOption(QMessageBox::Option::DontUseNativeDialog);
+  // Keep Cancel left of Delete while retaining their reject/destructive roles.
+  box.setStyleSheet(QStringLiteral("QDialogButtonBox { button-layout: %1; }")
+                        .arg(QDialogButtonBox::AndroidLayout));
   box.setTextFormat(Qt::PlainText);
   auto* cancel =
       box.addButton(QCoreApplication::translate("App", "Abbrechen"), QMessageBox::RejectRole);
