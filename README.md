@@ -1,5 +1,36 @@
 # Woodworking Projects
 
+## Linux-Anwendungsmenü und Dock
+
+Nach dem Entwicklungsbuild registriert dieser Befehl die App im aktuellen
+Benutzerkonto:
+
+```bash
+python3 scripts/install_desktop.py --development
+```
+
+Danach erscheint **Woodworking Projects** mit dem eigenen Icon im Anwendungsmenü und Dock.
+Der Menüeintrag startet den vorhandenen Entwicklungsbuild über
+`scripts/launch.sh`. Dieser baut nichts neu. `scripts/run.sh` baut weiterhin
+und startet anschließend die App. Bei fehlendem Build zeigt der Starthelfer
+eine Fehlermeldung auf stderr.
+
+Der Installer schreibt ausschließlich den eigenen Desktop-Eintrag und Icons
+unter `$XDG_DATA_HOME`, standardmäßig `~/.local/share`. Wiederholtes Ausführen
+aktualisiert verwaltete Einträge. Fremde Einträge werden nicht überschrieben.
+Die normale Sammlung und Spracheinstellung bleiben erhalten.
+`--data-dir /absoluter/testpfad` ist nur für einen ausdrücklich gewünschten
+abweichenden Startpfad nötig.
+
+Ein eigenständiges Linux-Paket enthält denselben Installer. Im Paketordner
+genügt `python3 install_desktop.py`. Alternativ ist
+`python3 scripts/install_desktop.py --app-dir /absoluter/paketpfad` möglich.
+Dabei verweist der Menüeintrag auf `WoodworkingProjects.sh` und die paketierte Laufzeit.
+
+Die bestehenden Motive bleiben unverändert. Zusätzliche PNG-Größen können
+mit `python3 scripts/prepare_icons.py` erzeugt werden. Dafür ist Python mit
+Pillow erforderlich, für Installation und App-Start nicht.
+
 ## Sammlung, Information und Sprache
 
 Hinzufügen steht oben rechts. Unter der Tabelle stehen Bearbeiten und Löschen.
