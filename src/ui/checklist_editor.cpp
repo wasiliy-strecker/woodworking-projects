@@ -19,7 +19,7 @@ namespace {
 class StepCheckBox final : public QCheckBox {
 public:
   explicit StepCheckBox(QWidget* parent) : QCheckBox(parent) {
-    setFixedSize(32, 32);
+    setFixedSize(24, 24);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_Hover);
   }
@@ -30,27 +30,20 @@ protected:
   void paintEvent(QPaintEvent*) override {
     QStyleOptionButton option;
     initStyleOption(&option);
-    const auto foreground = option.palette.color(QPalette::Text);
-    const auto background = option.palette.color(QPalette::Base);
+    option.rect = QRect(4, 4, 16, 16);
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    const bool hovered = isEnabled() && (option.state & QStyle::State_MouseOver);
-    painter.setPen(QPen(foreground, hovered ? 3.0 : 2.0));
-    painter.setBrush(isChecked() ? foreground : background);
-    painter.drawRoundedRect(QRectF(5, 5, 22, 22), 3, 3);
+    // Use the same border, background, hover and focus treatment as the app's buttons.
+    style()->drawControl(QStyle::CE_PushButton, &option, &painter, this);
     if (isChecked()) {
-      painter.setPen(QPen(background, 2.5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+      painter.setPen(QPen(option.palette.color(QPalette::ButtonText), 1.5, Qt::SolidLine,
+                          Qt::RoundCap, Qt::RoundJoin));
       painter.setBrush(Qt::NoBrush);
       QPainterPath tick;
-      tick.moveTo(10, 16);
-      tick.lineTo(14, 20);
-      tick.lineTo(23, 11);
+      tick.moveTo(8, 12);
+      tick.lineTo(11, 15);
+      tick.lineTo(16, 9);
       painter.drawPath(tick);
-    }
-    if (hasFocus()) {
-      painter.setPen(QPen(foreground, 1, Qt::DotLine));
-      painter.setBrush(Qt::NoBrush);
-      painter.drawRoundedRect(QRectF(1, 1, 30, 30), 4, 4);
     }
   }
 };
