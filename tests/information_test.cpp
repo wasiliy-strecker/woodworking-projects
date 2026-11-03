@@ -1,8 +1,10 @@
 #include "i18n/languages.h"
-#include "i18n/privacy_notice.h"
 #include "persistence/language_preferences.h"
 #include "persistence/sqlite_project_repository.h"
 #include "ui/main_window.h"
+#include "ui/privacy_link.h"
+#include <QLabel>
+#include <QMessageBox>
 
 #include <QAction>
 #include <QApplication>
@@ -50,7 +52,12 @@ private slots:
     StorageController controller(
         [&data] { return std::make_unique<SqliteProjectRepository>(data.path()); });
     QSignalSpy loaded(&controller, &StorageController::loaded);
-    MainWindow window(controller, data.path(), tag);
+    QList<QUrl> opened;
+    bool browserAvailable = true;
+    MainWindow window(controller, data.path(), tag, nullptr, [&](const QUrl& url) {
+      opened.append(url);
+      return browserAvailable;
+    });
     window.show();
     QVERIFY(QTest::qWaitFor([&] { return loaded.size() == 1; }));
     QCOMPARE(window.windowTitle(), QStringLiteral("Woodworking Projects"));
@@ -77,6 +84,15 @@ private slots:
         QTest::keyClick(info->menu(), Qt::Key_Down);
       }
       QCOMPARE(info->menu()->activeAction(), actions[page]);
+      if (page == 1) {
+        QTest::keyClick(info->menu(), Qt::Key_Return);
+        QCOMPARE(
+            opened,
+            QList<QUrl>{QUrl(QStringLiteral(
+                "https://github.com/wasiliy-strecker/woodworking-projects/blob/main/PRIVACY.md"))});
+        QVERIFY(!QApplication::activeModalWidget());
+        continue;
+      }
       bool inspected = false;
       QTimer inspection;
       inspection.setInterval(10);
@@ -99,17 +115,6 @@ private slots:
           correct &= content.startsWith(QStringLiteral("Woodworking Projects\n")) &&
                      content.contains(QStringLiteral("0.1.0")) && content.contains(data.path()) &&
                      !content.contains(QStringLiteral("LGPL"));
-        } else if (page == 1) {
-          correct &= content == privacyNotice() && content.size() > 2500 &&
-                     content.contains(QStringLiteral("contact@appfabrik-ai.de")) &&
-                     content.contains(QStringLiteral("JSON")) &&
-                     !content.contains(QStringLiteral("Bookwoodwork"));
-          text->selectAll();
-          correct &=
-              text->textCursor().selectedText().contains(QStringLiteral("contact@appfabrik-ai.de"));
-          text->moveCursor(QTextCursor::End);
-          correct &= text->verticalScrollBar()->value() > 0;
-          text->moveCursor(QTextCursor::Start);
         } else {
           correct &= content.contains(QStringLiteral("GNU LESSER GENERAL PUBLIC LICENSE")) &&
                      content.contains(QStringLiteral("Qt 6.8.3")) && content.size() > 100000;
@@ -136,6 +141,30 @@ private slots:
       QVERIFY(!QApplication::activeModalWidget());
       QVERIFY(window.isVisible());
     }
+    browserAvailable = false;
+    bool errorInspected = false;
+    QTimer failureInspection;
+    failureInspection.setInterval(10);
+    connect(&failureInspection, &QTimer::timeout, [&] {
+      auto* message = qobject_cast<QMessageBox*>(QApplication::activeModalWidget());
+      if (!message)
+        return;
+      failureInspection.stop();
+      errorInspected =
+          message->objectName() == QStringLiteral("privacyLinkError") &&
+          message->text().contains(privacyPolicyUrl().toString()) &&
+          message->text().contains(translated(
+              "Die Datenschutzerklärung konnte nicht im Browser geöffnet werden. Kopiere diese "
+              "Adresse und öffne sie in deinem Browser. Die Erklärung ist auf Englisch.")) &&
+          message->textInteractionFlags().testFlag(Qt::TextSelectableByMouse);
+      message->accept();
+    });
+    failureInspection.start();
+    actions[1]->trigger();
+    QVERIFY(errorInspected);
+    QCOMPARE(opened.size(), 2);
+    QCOMPARE(opened.last(), privacyPolicyUrl());
+    QVERIFY(window.isVisible());
     QCOMPARE(readBytes(databasePath), database);
     QCOMPARE(readBytes(preferencePath), preference);
   }

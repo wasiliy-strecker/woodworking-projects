@@ -197,10 +197,6 @@
       <translation>Privacy</translation>
     </message>
     <message>
-      <source>Datenschutzerklärung für Woodworking Projects</source>
-      <translation>Informativa sulla privacy di Woodworking Projects</translation>
-    </message>
-    <message>
       <source>Datenverzeichnis: %1</source>
       <translation>Cartella dei dati: %1</translation>
     </message>
@@ -611,10 +607,6 @@
       <translation>Lingua salvata. Verrà applicata al prossimo avvio.</translation>
     </message>
     <message>
-      <source>Stand: 1. November 2026</source>
-      <translation>Ultimo aggiornamento: 1 novembre 2026</translation>
-    </message>
-    <message>
       <source>Status</source>
       <translation>Stato</translation>
     </message>
@@ -625,54 +617,6 @@
     <message>
       <source>Unbekannter gespeicherter Projektstatus „%1“. Die Daten werden nicht verändert.</source>
       <translation>Stato del progetto salvato sconosciuto: «%1». I dati non verranno modificati.</translation>
-    </message>
-    <message>
-      <source>Verantwortlicher und Kontakt
-Wasiliy Strecker · AppFabrik AI
-Ludwigstrasse 23, 86152 Augsburg, Deutschland
-Datenschutz: contact@appfabrik-ai.de
-Support: support@appfabrik-ai.de
-
-Zweck und gespeicherte Daten
-Woodworking Projects verwaltet deine privaten Einträge. Die App speichert Namen, Materialangaben, Aufbewahrungsorte, Farben, Notizen, interne Eintragskennungen und deine Spracheinstellung sowie ein optionales Foto, den Projektstatus und Arbeitsschritte mit Reihenfolge und Erledigungsstand standardmäßig lokal im Benutzerprofil deines Computers. Fotos bleiben als Originaldateiinhalt gespeichert und können Metadaten enthalten. Die Angaben können personenbezogene Informationen enthalten, wenn du sie selbst einträgst. Die Verarbeitung dient ausschließlich den von dir angeforderten Funktionen zum Verwalten, Suchen, Exportieren und Importieren deiner Sammlung.
-
-Lokale Verarbeitung
-Die App benötigt kein Konto und keinen Server. Sie übermittelt deine Sammlung und Spracheinstellung nicht an den Entwickler oder andere Empfänger. Sie enthält keine Werbung, Telemetrie, Nutzungsanalyse oder eigene Cloud-Synchronisierung. Die Datenschutzerklärung ist Bestandteil der App und wird ohne Internetverbindung angezeigt. Woodworking Projects verschlüsselt weder seine gespeicherte Sammlung noch exportierte JSON-Dateien selbst. Der Schutz hängt auch von deinem Benutzerkonto, den Zugriffsrechten und einer gegebenenfalls aktivierten Datenträgerverschlüsselung ab.
-
-Import, Export und Sicherungskopien
-Die App liest ausgewählte JSON-Dateien und Fotos lokal. Ein JSON-Export enthält alle gespeicherten Einträge mit einem optionalen Foto, dem Projektstatus und Arbeitsschritten mit Reihenfolge und Erledigungsstand. Er enthält keine internen Eintragskennungen und keine Spracheinstellung. Schrittkennungen, Reihenfolge und Häkchen sind enthalten. Du bestimmst den Speicherort und eine mögliche Weitergabe. Exportierte Dateien sind eigenständige Kopien und werden durch Änderungen in der App nicht aktualisiert oder gelöscht. Synchronisierte Ordner, Netzlaufwerke oder Sicherungsdienste können diese Dateien außerhalb der App verarbeiten oder übertragen. Dafür gelten die Einstellungen und Datenschutzbedingungen des jeweiligen Anbieters. Woodworking Projects steuert diese Dienste nicht.
-
-Speicherdauer und Löschung
-Die App bewahrt die Sammlung auf, bis du Einträge löschst oder die gespeicherten App-Daten entfernst. Du kannst Einträge in der App ansehen, bearbeiten und löschen. Zum vollständigen Entfernen der lokalen Sammlung und Spracheinstellung schließt du die App und entfernst ihren Datenordner. Die Speicherorte sind in der mitgelieferten Anleitung beschrieben. Exportdateien und andere Sicherungskopien musst du an ihren jeweiligen Speicherorten gesondert löschen. Das Löschen eines Eintrags ist keine garantierte sichere Löschung aller früheren Dateiinhalte. Verlasse dich nicht darauf, dass eine Deinstallation alle App-Daten und externen Kopien entfernt.
-
-Kontakt und Support
-Wenn du uns freiwillig eine E-Mail sendest, verarbeiten wir deine E-Mail-Adresse, den Nachrichteninhalt und beigefügte Dateien zur Bearbeitung der Anfrage. Deine lokal gespeicherte Sammlung wird dabei nicht automatisch mitgesendet. Rechtsgrundlage ist bei vertragsbezogenen Anfragen Artikel 6 Absatz 1 Buchstabe b DSGVO, ansonsten unser berechtigtes Interesse an der Beantwortung von Anfragen nach Artikel 6 Absatz 1 Buchstabe f DSGVO. Wir bewahren die Korrespondenz nur so lange auf, wie dies für die Bearbeitung und gesetzliche Aufbewahrungspflichten erforderlich ist.
-
-Deine Rechte und weitere Anbieter
-Soweit anwendbar, hast du Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht auf Beschwerde bei einer Datenschutzaufsichtsbehörde. Nutze dafür den Datenschutzkontakt. Auf Sammlungen, die ausschließlich auf deinem Computer liegen, hat der Entwickler keinen Zugriff. Beim Bezug oder Aktualisieren über Apple App Store, Microsoft Store oder GitHub können diese Anbieter selbst Daten verarbeiten. Dafür gelten deren eigene Datenschutzbedingungen. Diese Erklärung beschreibt die Datenverarbeitung durch Woodworking Projects und wird bei entsprechenden Änderungen aktualisiert.</source>
-      <translation>Titolare e contatti
-Wasiliy Strecker · AppFabrik AI
-Ludwigstrasse 23, 86152 Augusta, Germania
-Privacy: contact@appfabrik-ai.de
-Assistenza: support@appfabrik-ai.de
-
-Finalità e dati memorizzati
-Woodworking Projects organizza le tue voci personali. Per impostazione predefinita, l’app memorizza nomi, informazioni sui materiali, posizioni, colori, note, identificativi interni e la lingua scelta, insieme a una foto facoltativa, lo stato del progetto e passaggi ordinati con il relativo completamento, localmente nel profilo utente del computer. Le foto conservano il contenuto originale e possono includere metadati. I dati possono contenere informazioni personali se le inserisci. Il trattamento serve esclusivamente alle funzioni richieste di gestione, ricerca, esportazione e importazione della raccolta.
-
-Trattamento locale
-L’app non richiede un account o un server. Non trasmette la raccolta né la preferenza di lingua allo sviluppatore o ad altri destinatari. Non contiene pubblicità, telemetria, analisi dell’utilizzo o sincronizzazione cloud propria. Questa informativa è inclusa nell’app e si può leggere senza connessione Internet. Woodworking Projects non cifra autonomamente la raccolta salvata né i file JSON esportati. La protezione dipende anche dall’account utente, dai permessi di accesso e dall’eventuale cifratura del disco attivata.
-
-Importazione, esportazione e backup
-L’app legge localmente i file JSON e le foto selezionati. Un’esportazione JSON contiene tutte le voci salvate, con una foto facoltativa, lo stato del progetto e passaggi ordinati con il relativo completamento. Non include gli identificativi interni delle voci né la lingua scelta. Sono inclusi gli identificativi, l’ordine e il completamento dei passaggi. Scegli tu la destinazione e l’eventuale condivisione. I file esportati sono copie indipendenti e non vengono aggiornati o eliminati dalle modifiche nell’app. Cartelle sincronizzate, unità di rete o servizi di backup possono elaborare o trasferire questi file fuori dall’app. Si applicano le rispettive impostazioni e condizioni sulla privacy. Woodworking Projects non controlla questi servizi.
-
-Conservazione ed eliminazione
-L’app conserva la raccolta fino a quando elimini le voci o i dati salvati dell’app. Puoi visualizzare, modificare ed eliminare le voci nell’app. Per rimuovere tutta la raccolta locale e la preferenza di lingua, chiudi l’app ed elimina la sua cartella dati. I percorsi sono descritti nelle istruzioni incluse. I file esportati e gli altri backup devono essere eliminati separatamente dai rispettivi percorsi. L’eliminazione di una voce non garantisce la cancellazione sicura di tutti i precedenti contenuti dei file. Non presumere che la disinstallazione elimini tutti i dati dell’app e le copie esterne.
-
-Contatto e assistenza
-Se ci invii volontariamente un’e-mail, trattiamo il tuo indirizzo e-mail, il messaggio e gli allegati per rispondere alla richiesta. La raccolta locale non viene allegata automaticamente. La base giuridica per le richieste relative a un contratto è l’articolo 6, paragrafo 1, lettera b del GDPR. Per le altre richieste è il nostro legittimo interesse a rispondere, ai sensi dell’articolo 6, paragrafo 1, lettera f del GDPR. Conserviamo la corrispondenza solo per il tempo necessario a gestire la richiesta e adempiere agli obblighi legali di conservazione.
-
-I tuoi diritti e altri fornitori
-Ove applicabili, hai diritto di accesso, rettifica, cancellazione, limitazione del trattamento, portabilità e opposizione, oltre al diritto di presentare un reclamo a un’autorità di protezione dei dati. Puoi utilizzare il contatto privacy riportato sopra. Lo sviluppatore non può accedere alle raccolte presenti soltanto sul tuo computer. Quando ottieni o aggiorni l’app tramite Apple App Store, Microsoft Store o GitHub, questi fornitori possono trattare dati autonomamente secondo le proprie condizioni. Questa informativa descrive il trattamento di Woodworking Projects e sarà aggiornata se tale trattamento cambia.</translation>
     </message>
     <message>
       <source>Version %1</source>
@@ -793,6 +737,10 @@ Ove applicabili, hai diritto di accesso, rettifica, cancellazione, limitazione d
     <message>
       <source>Die Farbe muss ein Hexwert wie #RRGGBB oder #RRGGBBAA sein.</source>
       <translation>Il colore deve essere un valore esadecimale come #RRGGBB o #RRGGBBAA.</translation>
+    </message>
+    <message>
+      <source>Die Datenschutzerklärung konnte nicht im Browser geöffnet werden. Kopiere diese Adresse und öffne sie in deinem Browser. Die Erklärung ist auf Englisch.</source>
+      <translation>Impossibile aprire l’informativa sulla privacy nel browser. Copia questo indirizzo e aprilo nel browser. L’informativa è in inglese.</translation>
     </message>
   </context>
 </TS>

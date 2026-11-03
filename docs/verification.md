@@ -374,3 +374,29 @@ und `build/manual/color-package-workflow/`. Die normale Nutzersammlung wurde
 anschließend mit Schema 2 erfolgreich geöffnet. Native Windows- und macOS-
 Prüfungen wurden in dieser Linux-Umgebung nicht ausgeführt. Keine Store-
 Veröffentlichung, kein Upload und kein Lieferarchiv.
+
+## 3. November 2026: kanonische englische Datenschutzerklärung
+
+Die bisherige vollständige englische Erklärung wurde nach `PRIVACY.md`
+übernommen und um den ausdrücklichen Browseraufruf zu GitHub ergänzt.
+„Info“ → „Datenschutz“ öffnet in allen sechs Sprachen dieselbe eigene URL.
+Die vollständigen Datenschutztexte wurden aus Runtime und TS-Katalogen
+entfernt. README, Store-Felder und neue Übergaben verwenden diese eine Datei.
+
+`bash scripts/check.sh` bestand auf Linux mit Formatter, strengen
+Compilerwarnungen, clang-tidy und allen 18 CTest-Suiten. Derselbe vollständige
+Testlauf bestand mit `ASAN_OPTIONS=detect_leaks=1:halt_on_error=1` und
+`UBSAN_OPTIONS=halt_on_error=1 bash scripts/check.sh asan`.
+Die Informationsprüfung kontrolliert pro Sprache die feste Browseradresse,
+App- und Lizenzdialoge sowie einen fehlgeschlagenen Browserstart mit
+lokalisiertem Hinweis und auswählbarer URL. Datenbank und Spracheinstellung
+bleiben dabei bytegleich. Die Browserübergabe wird gezielt ersetzt, damit
+die Tests keine echten Browserfenster öffnen.
+
+`python3 scripts/test_export_privacy.py` bestand mit drei Prüfungen und ist
+auch als `privacy_delivery` in CTest eingebunden. Der Export kopiert die
+Originaldatei bytegleich, erhält vorhandene Lieferungen und prüft die
+Übereinstimmung von Runtime, README und allen Store-URL-Feldern.
+Python-Syntax und Git-Whitespace wurden ebenfalls geprüft. Bestehende
+Lieferordner bleiben unverändert. Native Browseraufrufe unter Windows und
+macOS sowie neue Store-Pakete sind nicht Teil dieser Linux-Prüfung.

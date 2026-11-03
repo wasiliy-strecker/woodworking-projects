@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ui/privacy_link.h"
+
 #include "ui/project_editor.h"
 
 #include <QMainWindow>
@@ -17,7 +19,8 @@ class MainWindow final : public QMainWindow {
   Q_OBJECT
 public:
   MainWindow(StorageController& controller, QString dataDirectory,
-             QString languagePreference = QStringLiteral("auto"), QWidget* parent = nullptr);
+             QString languagePreference = QStringLiteral("auto"), QWidget* parent = nullptr,
+             BrowserOpener browser = openInDefaultBrowser);
 
 protected:
   void closeEvent(QCloseEvent* event) override;
@@ -36,6 +39,7 @@ private:
   void importCollection();
   void showAbout();
   void showLanguage();
+  BrowserOpener browser_;
   StorageController& controller_;
   QString dataDirectory_;
   QString languagePreference_;

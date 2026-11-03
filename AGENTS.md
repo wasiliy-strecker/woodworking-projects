@@ -67,7 +67,8 @@ Der Nutzer bestätigt für alle fünf C++-Apps die unterstützte Systemsprache b
 Erststart mit Englisch als Fallback. Explizite Sprachwahlen bleiben erhalten.
 Dies ersetzt die allgemeine Englisch-Vorgabe ausschließlich für diese C++-Reihe.
 
-Info enthält Über die App, Datenschutz und Lizenzen mit roten Schließen-Buttons.
+Info enthält Über die App, den Datenschutz-Link und Lizenzen. Die Dialoge
+für App-Informationen und Lizenzen behalten ihre roten Schließen-Buttons.
 Die Original-Lizenztexte werden offline eingebettet. Sammlungstransfer per JSON
 ist in dieser Stufe ausdrücklich beauftragt, einschließlich aller vorhandenen
 Fotos und gegebenenfalls Status und Checklisten. Kein Austausch zwischen Apps.
@@ -91,3 +92,19 @@ Entwurf und zum JSON-Transfer. Schema 2 ergänzt das Farbfeld nach vollständige
 Prüfung und mit atomarer Migration von Schema 1. App-IDs, Datenpfade und
 vorhandene Inhalte bleiben erhalten. Neue Werte verwenden #RRGGBB oder
 #RRGGBBAA. Alte Exporte ohne Farbe bleiben lesbar. Alle sechs Sprachen abdecken.
+
+## Kanonische Datenschutzerklärung, 3. November 2026
+
+Auf ausdrücklichen Nutzerauftrag wird ausschließlich die englische `PRIVACY.md`
+im eigenen Repository als vollständige Erklärung gepflegt. Sie übernimmt die
+bisherigen englischen App-Texte mit aktualisierten Hinweisen zum Browseraufruf.
+Die feste Adresse für diese App und alle Store-Sprachen lautet:
+
+https://github.com/wasiliy-strecker/woodworking-projects/blob/main/PRIVACY.md
+
+„Info“ → „Datenschutz“ öffnet diese Adresse im externen Standardbrowser.
+Keine vollständigen Datenschutztexte zusätzlich in Sprachkatalogen, Dialogen
+oder GitHub Pages pflegen. Menütexte und Startfehler bleiben lokalisiert.
+Der Python-Export kopiert ausschließlich die Originaldatei und ihre URL in
+einen neuen Lieferordner. Alte Lieferungen sind historische Nachweise.
+Diese Entscheidung ersetzt die älteren Vorgaben zum Offline-Datenschutzdialog.

@@ -38,8 +38,8 @@ Die Spaltenüberschriften sortieren auf- und absteigend. Textspalten verwenden d
 aktuelle Sprache und eine natürliche Zahlenreihenfolge. Status folgt der Reihenfolge
 geplant, angefangen, fertig. Die Auswahl bleibt erhalten.
 
-Info enthält getrennte Fenster für Über die App, Datenschutz und Lizenzen.
-Alle Inhalte sind offline verfügbar. Neue Installationen verwenden die unterstützte
+Info enthält Über die App, den Browser-Link zur englischen Datenschutzerklärung
+und die offline eingebetteten Lizenzen. Neue Installationen verwenden die unterstützte
 Systemsprache mit Englisch als Fallback. Gespeicherte Sprachwahlen bleiben erhalten.
 
 Exportieren sichert die gesamte gespeicherte Sammlung als JSON mit eingebetteten
@@ -287,3 +287,26 @@ Vorhandene lokale Datenbanken werden nach Prüfung ihrer Identität und Struktur
 atomar von Schema 1 auf Schema 2 erweitert. IDs, Texte, Originalfotos und alle
 vorhandenen Status- und Checklistendaten bleiben erhalten. Die Farbauswahl ist
 zunächst leer. Ältere App-Builds können Schema 2 nicht öffnen.
+
+## Datenschutz
+
+Die vollständige [englische Datenschutzerklärung](https://github.com/wasiliy-strecker/woodworking-projects/blob/main/PRIVACY.md) liegt als
+[`PRIVACY.md`](PRIVACY.md) im eigenen GitHub-Repository. „Info“ → „Datenschutz“
+öffnet genau diese Adresse im Standardbrowser, unabhängig von der App-Sprache.
+Zum Lesen der Webseite ist eine Internetverbindung erforderlich. Die lokale
+Sammlung wird dabei nicht übertragen. Falls der Browser nicht gestartet werden
+kann, zeigt die App die Adresse zum Kopieren an.
+
+Diese eine Datei ist die gepflegte vollständige Erklärung für App und Store.
+Alle Store-Sprachen verwenden dieselbe URL. Die Menüs und Fehlermeldungen
+bleiben in den sechs vorhandenen Oberflächensprachen verfügbar.
+
+Für eine neue Übergabe den vorhandenen Elternordner und einen noch nicht
+existierenden Ausgabeordner verwenden:
+
+```bash
+python3 scripts/export_privacy.py build/privacy-handoff
+```
+
+Der Helfer kopiert `PRIVACY.md` und `privacy-url.txt` ohne App-Build oder Zugriff
+auf Nutzerdaten. Vorhandene Lieferungen werden nicht überschrieben.

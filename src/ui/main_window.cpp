@@ -40,10 +40,10 @@
 namespace woodwork {
 
 MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
-                       QString languagePreference, QWidget* parent)
-    : QMainWindow(parent), controller_(controller), dataDirectory_(std::move(dataDirectory)),
-      languagePreference_(std::move(languagePreference)), search_(new QLineEdit(this)),
-      table_(new QTableWidget(this)), note_(new QPlainTextEdit(this)),
+                       QString languagePreference, QWidget* parent, BrowserOpener browser)
+    : QMainWindow(parent), browser_(std::move(browser)), controller_(controller),
+      dataDirectory_(std::move(dataDirectory)), languagePreference_(std::move(languagePreference)),
+      search_(new QLineEdit(this)), table_(new QTableWidget(this)), note_(new QPlainTextEdit(this)),
       checklist_(new QPlainTextEdit(this)), photo_(new PhotoView(this)),
       detailTitle_(new QLabel(this)), state_(new QLabel(this)), feedback_(new QLabel(this)),
       count_(new QLabel(this)),
@@ -211,10 +211,7 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
   setCentralWidget(centralScroll);
 
   connect(aboutAction, &QAction::triggered, this, &MainWindow::showAbout);
-  connect(privacyAction, &QAction::triggered, this, [this] {
-    InformationDialog dialog(InformationPage::Privacy, dataDirectory_, this);
-    dialog.exec();
-  });
+  connect(privacyAction, &QAction::triggered, this, [this] { openPrivacyPolicy(this, browser_); });
   connect(licensesAction, &QAction::triggered, this, [this] {
     InformationDialog dialog(InformationPage::Licenses, dataDirectory_, this);
     dialog.exec();

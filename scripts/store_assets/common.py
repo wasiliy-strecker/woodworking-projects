@@ -16,7 +16,7 @@ LANGUAGES = ("de-DE", "en-US", "es-ES", "fr-FR", "it-IT", "pt-BR")
 
 
 def source_hashes():
-    paths = [ROOT / "CMakeLists.txt", ROOT / "CMakePresets.json"]
+    paths = [ROOT / "CMakeLists.txt", ROOT / "CMakePresets.json", ROOT / "PRIVACY.md"]
     for folder in (
         "src",
         "tests",

@@ -1,5 +1,4 @@
 #include "ui/information_dialog.h"
-#include "i18n/privacy_notice.h"
 
 #include <QCoreApplication>
 #include <QDialogButtonBox>
@@ -62,12 +61,6 @@ InformationDialog::InformationDialog(InformationPage page, const QString& dataDi
         QStringLiteral("\n\n") +
         QCoreApplication::translate("App", "Entwicklung: Wasiliy Strecker · AppFabrik AI") +
         QStringLiteral("\nsupport@appfabrik-ai.de");
-    break;
-  case InformationPage::Privacy:
-    suffix = QStringLiteral("Privacy");
-    setWindowTitle(
-        QCoreApplication::translate("App", "Datenschutzerklärung für Woodworking Projects"));
-    content = privacyNotice();
     break;
   case InformationPage::Licenses:
     suffix = QStringLiteral("Licenses");
