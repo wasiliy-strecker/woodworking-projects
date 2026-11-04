@@ -189,7 +189,9 @@ und vergrößerter Schrift. Speichern und Abbrechen bleiben außerhalb des Scrol
 
 ## Lokale Daten und Sicherung
 
-App-Kennung: `de.appfabrik.holzwerkprojekt`.
+Mac-Bundle-ID für die Store-Registrierung: `de.appfabrik.woodworkingprojects`.
+Die interne Datenkennung bleibt aus Kompatibilitätsgründen
+`de.appfabrik.holzwerkprojekt`.
 `holzwerkprojekt.sqlite3` enthält Projekte, Fotobytes und Schritte.
 QStandardPaths ermittelt das eigene Benutzerverzeichnis. „Über die App“ zeigt den
 tatsächlich verwendeten Pfad. Typische Pfade ohne Store-Sandbox:

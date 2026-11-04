@@ -108,3 +108,13 @@ oder GitHub Pages pflegen. Menütexte und Startfehler bleiben lokalisiert.
 Der Python-Export kopiert ausschließlich die Originaldatei und ihre URL in
 einen neuen Lieferordner. Alte Lieferungen sind historische Nachweise.
 Diese Entscheidung ersetzt die älteren Vorgaben zum Offline-Datenschutzdialog.
+
+## Englische Bundle-ID, 4. November 2026
+
+Gemäß der Nutzerpräferenz für englische IDs lautet die Bundle-ID zur ersten
+Mac-Store-Registrierung `de.appfabrik.woodworkingprojects`. Diese Kennung in
+CMake, Info.plist und Store-Metadaten verwenden. Neue IDs und Code-Bezeichner
+möglichst auf Englisch; das Präfix `de.appfabrik` bleibt bestehen.
+Die interne Datenkennung `de.appfabrik.holzwerkprojekt`, bestehende Datenpfade,
+SQLite-application_id, Datenbankdatei und JSON-Format bleiben kompatibel.
+Keine Datenmigration durch bloßes Umbenennen.

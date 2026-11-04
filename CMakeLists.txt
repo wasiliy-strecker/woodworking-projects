@@ -61,7 +61,7 @@ if(WIN32)
   target_sources(holzwerkprojekt PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/app.rc")
 endif()
 set_target_properties(holzwerkprojekt PROPERTIES
-  MACOSX_BUNDLE_GUI_IDENTIFIER de.appfabrik.holzwerkprojekt
+  MACOSX_BUNDLE_GUI_IDENTIFIER de.appfabrik.woodworkingprojects
   MACOSX_BUNDLE_BUNDLE_NAME "Woodworking Projects"
   MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
   MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}

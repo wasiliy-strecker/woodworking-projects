@@ -113,7 +113,7 @@ bash scripts/package_macos.sh
 
 Das Skript erzeugt `HolzwerkProjekt.app`, bündelt Qt über `macdeployqt`, prüft
 QSQLITE, JPEG- und Cocoa-Plugin und erstellt eine DMG. Das Bundle hat die Kennung
-`de.appfabrik.holzwerkprojekt` und ein eigenes Icon. Die Ad-hoc-Signatur dient
+`de.appfabrik.woodworkingprojects` und ein eigenes Icon. Die Ad-hoc-Signatur dient
 lokalen Tests und ist keine vertrauenswürdige Distributionssignatur.
 
 `packaging/macos/app-store.entitlements` bereitet App Sandbox und
@@ -127,7 +127,7 @@ Entitlements zum Abschalten von Bibliotheksprüfungen hinzufügen.
 
 In der Sandbox liegt der von QStandardPaths gelieferte App-Pfad innerhalb des
 App-Containers, typischerweise unter
-`~/Library/Containers/de.appfabrik.holzwerkprojekt/Data/Library/Application Support/`.
+`~/Library/Containers/de.appfabrik.woodworkingprojects/Data/Library/Application Support/`.
 Den vollständigen tatsächlich verwendeten Pfad mit „Über die App“ kontrollieren.
 Normale Nutzerdaten nicht automatisch kopieren oder migrieren. `--data-dir`
 ist bei Sandbox-Tests auf zugängliche Containerpfade beschränkt.
