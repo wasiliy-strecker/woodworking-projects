@@ -176,3 +176,41 @@ Kataloge werden eingebettet. `--stage-only --output-dir` erstellt eine eigene
 Prüflaufzeit ohne Lieferarchiv. [Internationalisierung](internationalization.md)
 beschreibt echte Aufnahmen, Laufzeitnachweise und sechs Store-Textfassungen.
 Native Windows-Abnahme und abschließende Store-Paketierung bleiben separat.
+
+## Paketprüfungen gegen Transporter 90255 und 90277, 4. November 2026
+
+`scripts/macos_bundle.py` prüft die Kennungen in allen enthaltenen `Info.plist`-
+Dateien einschließlich eingebetteter Bundles. Ungültige Kennungen, insbesondere
+Unterstriche, stoppen die Paketierung. Registrierte App-IDs und fremde
+Framework-Kennungen werden nicht automatisch umgeschrieben.
+
+`prepare` ergänzt ausschließlich in der erzeugten `.app`-Kopie die Leserechte
+für alle Benutzer sowie die Ausführungsrechte für Verzeichnisse und bereits
+als ausführbar markierte Dateien. Daten erhalten keine Ausführungsrechte und
+es werden keine zusätzlichen Schreibrechte vergeben. Ein bereits eingebettetes
+Provisionierungsprofil wird damit lesbar; das private Original außerhalb der
+App bleibt unverändert. Interne Framework-Symlinks bleiben erhalten, externe
+oder defekte Links werden abgewiesen. Plist-, Bibliotheks- und Signaturbytes
+bleiben unverändert.
+
+Die gezielten Skript-Prüfungen benötigen weder Maven/CMake noch ein SDK,
+Signierungszertifikate, Netzwerk oder einen App-Build:
+
+```bash
+python3 -B scripts/test_macos_bundle.py
+```
+
+Ein vorhandenes Bundle kann ohne Änderungen geprüft werden:
+
+```bash
+python3 -B scripts/macos_bundle.py inspect --app "/pfad/zur/App.app"
+```
+
+Diese Korrektur ist ausschließlich Quellcode-Vorbereitung. Native Paketprüfung,
+Distributionssignierung und Transporter-Validierung folgen beim späteren Release.
+
+`package_macos.sh` führt `prepare` nach dem Kopieren aller Ressourcen vor
+`codesign` aus. Nach dem Signieren prüft `inspect` erneut, bevor das DMG
+entsteht. Diese Qt-App enthält keine Temurin-Runtime; der konkrete Java-
+Runtime-ID-Generator ist hier nicht vorhanden. Der Paketweg bleibt eine
+lokale DMG-Lieferung, keine vollständige Mac-App-Store-Auslieferung.

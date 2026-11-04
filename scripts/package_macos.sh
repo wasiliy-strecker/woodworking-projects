@@ -43,8 +43,11 @@ for holzwerk_size in 16 32 128 256 512; do
 done
 iconutil -c icns "$holzwerk_icons" -o "$holzwerk_app/Contents/Resources/HolzwerkProjekt.icns"
 /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string HolzwerkProjekt.icns" "$holzwerk_app/Contents/Info.plist"
+# Normalize the staging copy before signing; reject invalid nested bundle IDs.
+python3 scripts/macos_bundle.py prepare --app "$holzwerk_app"
 # Ad-hoc signing permits local Apple-Silicon testing. It is not a distribution identity.
 codesign --force --deep --sign - "$holzwerk_app"
+python3 scripts/macos_bundle.py inspect --app "$holzwerk_app"
 hdiutil create -volname "Woodworking Projects" -srcfolder "$holzwerk_stage" -ov -format UDZO "$holzwerk_dmg"
 shasum -a 256 "$holzwerk_dmg" > "$holzwerk_dmg.sha256"
 echo "$holzwerk_dmg"
