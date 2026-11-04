@@ -19,7 +19,7 @@ namespace {
 class StepCheckBox final : public QCheckBox {
 public:
   explicit StepCheckBox(QWidget* parent) : QCheckBox(parent) {
-    setFixedSize(24, 24);
+    setFixedSize(26, 26);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_Hover);
   }
@@ -30,20 +30,28 @@ protected:
   void paintEvent(QPaintEvent*) override {
     QStyleOptionButton option;
     initStyleOption(&option);
-    option.rect = QRect(4, 4, 16, 16);
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    // Use the same border, background, hover and focus treatment as the app's buttons.
-    style()->drawControl(QStyle::CE_PushButton, &option, &painter, this);
+    // Native macOS push buttons do not paint reliably at checkbox dimensions.
+    // Draw the indicator explicitly; QCheckBox still owns input and accessibility.
+    const auto foreground = option.palette.color(QPalette::Text);
+    const auto background = option.palette.color(QPalette::Base);
+    painter.setPen(QPen(foreground, 1.5));
+    painter.setBrush(isChecked() ? foreground : background);
+    painter.drawRoundedRect(QRectF(4.5, 4.5, 17, 17), 3, 3);
     if (isChecked()) {
-      painter.setPen(QPen(option.palette.color(QPalette::ButtonText), 1.5, Qt::SolidLine,
-                          Qt::RoundCap, Qt::RoundJoin));
+      painter.setPen(QPen(background, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
       painter.setBrush(Qt::NoBrush);
       QPainterPath tick;
-      tick.moveTo(8, 12);
-      tick.lineTo(11, 15);
-      tick.lineTo(16, 9);
+      tick.moveTo(8, 13);
+      tick.lineTo(11.5, 16.5);
+      tick.lineTo(18, 9);
       painter.drawPath(tick);
+    }
+    if (hasFocus()) {
+      painter.setBrush(Qt::NoBrush);
+      painter.setPen(QPen(option.palette.color(QPalette::Highlight), 1.5));
+      painter.drawRoundedRect(QRectF(1.5, 1.5, 23, 23), 5, 5);
     }
   }
 };
@@ -83,6 +91,18 @@ Checklist ChecklistEditor::steps() const {
   return result;
 }
 
+QWidget* ChecklistEditor::firstInvalidField() const {
+  for (const auto& row : rows_) {
+    try {
+      (void)validateChecklist(
+          {{row.id, row.text->text(), row.completed->isChecked(), row.position}});
+    } catch (const ValidationError&) {
+      return row.text;
+    }
+  }
+  return nullptr;
+}
+
 void ChecklistEditor::append(const ChecklistStep& step, bool focus) {
   auto* widget = new QWidget(this);
   widget->setProperty("stepId", step.id.toString(QUuid::WithoutBraces));
@@ -90,6 +110,7 @@ void ChecklistEditor::append(const ChecklistStep& step, bool focus) {
   layout->setContentsMargins(0, 4, 0, 8);
   layout->setSpacing(4);
   auto* line = new QHBoxLayout;
+  line->setSpacing(10);
   auto* completed = new StepCheckBox(widget);
   completed->setObjectName(QStringLiteral("stepCompleted"));
   completed->setChecked(step.completed);
@@ -107,6 +128,8 @@ void ChecklistEditor::append(const ChecklistStep& step, bool focus) {
   layout->addWidget(removeButton, 0, Qt::AlignRight);
   rows_.append({step.id, step.position, widget, completed, text});
   rowsLayout_->addWidget(widget);
+  connect(text, &QLineEdit::textChanged, this, &ChecklistEditor::changed);
+  connect(completed, &QCheckBox::toggled, this, &ChecklistEditor::changed);
   connect(removeButton, &QPushButton::clicked, this, [this, id = step.id] { remove(id); });
   updateLabels();
   // Rows added later still precede the add action in keyboard traversal.
@@ -121,6 +144,7 @@ void ChecklistEditor::append(const ChecklistStep& step, bool focus) {
     text->setFocus();
     emit rowAdded(text);
   }
+  emit changed();
 }
 
 void ChecklistEditor::remove(const QUuid& id) {
@@ -135,6 +159,7 @@ void ChecklistEditor::remove(const QUuid& id) {
   widget->deleteLater();
   updateLabels();
   add_->setFocus();
+  emit changed();
 }
 
 void ChecklistEditor::updateLabels() {

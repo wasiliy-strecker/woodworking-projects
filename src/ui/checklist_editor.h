@@ -14,9 +14,11 @@ class ChecklistEditor final : public QWidget {
 public:
   explicit ChecklistEditor(const Checklist& steps, QWidget* parent = nullptr);
   Checklist steps() const;
+  QWidget* firstInvalidField() const;
 
 signals:
   void rowAdded(QWidget* field);
+  void changed();
 
 private:
   struct Row {

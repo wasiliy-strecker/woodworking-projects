@@ -39,6 +39,7 @@ private:
   void updateBusy();
   void selectPhoto();
   void updatePhotoActions();
+  void updateValidationFeedback();
   StorageController& controller_;
   qint64 id_ = 0;
   ProjectDraft original_;

@@ -321,6 +321,101 @@ private slots:
     QCOMPARE(validateDraft(editor.draft()).steps.last().text, QStringLiteral("Polieren"));
     QCOMPARE(editor.draft().status, draft.status);
   }
+  void singleStepCanBeCorrectedAndSavedFromScrolledEditor_data() {
+    QTest::addColumn<bool>("completed");
+    QTest::newRow("open") << false;
+    QTest::newRow("completed") << true;
+  }
+  void singleStepCanBeCorrectedAndSavedFromScrolledEditor() {
+    QFETCH(bool, completed);
+    QTemporaryDir directory;
+    qint64 id = 0;
+    ProjectDraft expected;
+    {
+      StorageController controller(factory(directory.path()));
+      QSignalSpy loaded(&controller, &StorageController::loaded);
+      QSignalSpy saved(&controller, &StorageController::saved);
+      controller.load();
+      QTRY_COMPARE(loaded.size(), 1);
+      auto draft = example();
+      draft.steps.clear();
+      draft.color = QStringLiteral("#FF2931");
+      ProjectEditor editor(controller, WoodProject{0, draft, true}, nullptr,
+                           QImage::fromData(draft.photo));
+      editor.resize(600, 500);
+      editor.show();
+      QVERIFY(QTest::qWaitForWindowExposed(&editor));
+      editor.findChild<QPushButton*>(QStringLiteral("addStep"))->click();
+      auto* field = editor.findChild<QLineEdit*>(QStringLiteral("stepText"));
+      auto* check = editor.findChild<QCheckBox*>(QStringLiteral("stepCompleted"));
+      auto* scroll = editor.findChild<QScrollArea*>();
+      auto* error = editor.findChild<QLabel*>(QStringLiteral("editorError"));
+      auto* save = editor.findChild<QPushButton*>(QStringLiteral("saveProject"));
+      QTRY_VERIFY(scroll->viewport()->rect().contains(
+          QRect(check->mapTo(scroll->viewport(), QPoint()), check->size())));
+      QTest::mouseClick(check, Qt::LeftButton);
+      QVERIFY(check->isChecked());
+      if (!completed) {
+        check->setFocus();
+        QTest::keyClick(check, Qt::Key_Space);
+        QVERIFY(!check->isChecked());
+      }
+      const auto pending = editor.draft();
+      QTest::mouseClick(save, Qt::LeftButton);
+      QCOMPARE(saved.size(), 0);
+      QVERIFY(editor.draft() == pending);
+      QVERIFY(error->isVisible());
+      QVERIFY(error->text().contains(QStringLiteral("Arbeitsschritt 1 ist leer")));
+      // Validation remains visible while the user corrects a field far down the form.
+      QVERIFY(!scroll->isAncestorOf(error));
+      QTRY_VERIFY(field->hasFocus());
+      QTRY_VERIFY(scroll->viewport()->rect().contains(
+          QRect(field->mapTo(scroll->viewport(), QPoint()), field->size())));
+      QVERIFY(editor.rect().contains(QRect(error->mapTo(&editor, QPoint()), error->size())));
+      QVERIFY(error->mapTo(&editor, QPoint()).y() + error->height() <=
+              save->mapTo(&editor, QPoint()).y());
+      const auto captureDirectory = qEnvironmentVariable("WOODWORKING_CHECKLIST_CAPTURE_DIR");
+      if (!captureDirectory.isEmpty()) {
+        QTest::qWait(100);
+        QVERIFY(editor.grab().save(captureDirectory + (completed ? QStringLiteral("/completed.png")
+                                                                 : QStringLiteral("/open.png"))));
+      }
+      field->setText(QStringLiteral("   "));
+      QVERIFY(error->isVisible());
+      QTest::keyClicks(field, "Holz zuschneiden");
+      QVERIFY(!error->isVisible());
+      expected = validateDraft(editor.draft());
+      QTest::mouseClick(save, Qt::LeftButton);
+      QTRY_COMPARE(saved.size(), 1);
+      QVERIFY(!editor.isVisible());
+      id = qvariant_cast<WoodProject>(saved.first().first()).id;
+    }
+    SqliteProjectRepository reopened(directory.path());
+    reopened.initialize();
+    QVERIFY(reopened.find(id) == expected);
+    QCOMPARE(expected.steps.size(), 1);
+    QCOMPARE(expected.steps.first().completed, completed);
+  }
+  void removingEmptyStepClearsValidationAndAllowsSave() {
+    QTemporaryDir directory;
+    StorageController controller(factory(directory.path()));
+    QSignalSpy loaded(&controller, &StorageController::loaded);
+    QSignalSpy saved(&controller, &StorageController::saved);
+    controller.load();
+    QTRY_COMPARE(loaded.size(), 1);
+    ProjectEditor editor(controller, std::nullopt);
+    editor.show();
+    editor.findChild<QLineEdit*>(QStringLiteral("projectName"))->setText(QStringLiteral("Regal"));
+    editor.findChild<QPushButton*>(QStringLiteral("addStep"))->click();
+    editor.save();
+    auto* error = editor.findChild<QLabel*>(QStringLiteral("editorError"));
+    QVERIFY(error->isVisible());
+    editor.findChild<QPushButton*>(QStringLiteral("removeStep"))->click();
+    QVERIFY(!error->isVisible());
+    editor.save();
+    QTRY_COMPARE(saved.size(), 1);
+    QVERIFY(qvariant_cast<WoodProject>(saved.first().first()).fields.steps.isEmpty());
+  }
   void checklistOnlyDirtyProtection_data() {
     QTest::addColumn<int>("action");
     for (int i = 0; i < 5; ++i)
