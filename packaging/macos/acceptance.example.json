@@ -1,0 +1,19 @@
+{
+  "sourceDigest": "",
+  "arm64Execution": false,
+  "x86_64Execution": false,
+  "x86_64Method": "",
+  "sandboxStorage": false,
+  "crudAndSearch": false,
+  "sorting": false,
+  "jsonTransfer": false,
+  "restart": false,
+  "dialogCancellation": false,
+  "nativeMenus": false,
+  "offlineLaunch": false,
+  "qtLibraryReplacement": false,
+  "environmentAndNotes": "",
+  "photoAndColor": false,
+  "projectStatus": false,
+  "checklist": false
+}

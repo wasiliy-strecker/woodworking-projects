@@ -118,3 +118,15 @@ möglichst auf Englisch; das Präfix `de.appfabrik` bleibt bestehen.
 Die interne Datenkennung `de.appfabrik.holzwerkprojekt`, bestehende Datenpfade,
 SQLite-application_id, Datenbankdatei und JSON-Format bleiben kompatibel.
 Keine Datenmigration durch bloßes Umbenennen.
+
+## Mac App Store release, 4 November 2026
+
+The current user request explicitly authorizes Mac Store preparation before
+Microsoft, including the necessary workspace Store metadata and changelog.
+The registered Store name is **Woodworking by Appfabrik** in all six locales;
+the installed app remains **Woodworking Projects**. Use independent app-local
+release tooling, universal arm64/x86_64 Qt 6.8.3 bundles and strict sandbox signing.
+Preserve runtime data paths and transfer formats. Only package and submit after
+automated/native checks and the user's functional confirmation for this app,
+including photos, colors, project status and checklists. Commit completed work
+locally; no push. Private signing inputs and artifacts stay untracked.

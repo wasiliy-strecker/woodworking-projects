@@ -111,10 +111,10 @@ private slots:
     ProjectService service(repository);
     service.load();
     const auto saved = service.save(0, {QStringLiteral("Unverändert"), {}, {}, {}});
-    QVERIFY_EXCEPTION_THROWN(service.save(saved.id, {QStringLiteral("\u00a0"), {}, {}, {}}),
-                             ValidationError);
-    QVERIFY_EXCEPTION_THROWN(service.save(999, saved.fields), StorageError);
-    QVERIFY_EXCEPTION_THROWN(service.remove(999), StorageError);
+    QVERIFY_THROWS_EXCEPTION(ValidationError,
+                             service.save(saved.id, {QStringLiteral("\u00a0"), {}, {}, {}}));
+    QVERIFY_THROWS_EXCEPTION(StorageError, service.save(999, saved.fields));
+    QVERIFY_THROWS_EXCEPTION(StorageError, service.remove(999));
     QVERIFY(service.load() == ProjectList{saved});
   }
   void lockedWriteAndRetry() {
@@ -125,9 +125,9 @@ private slots:
     const auto saved = service.save(0, {QStringLiteral("Original"), {}, {}, {}});
     ExternalDatabase external(databasePath(directory));
     external.execute(QStringLiteral("BEGIN EXCLUSIVE"));
-    QVERIFY_EXCEPTION_THROWN(service.save(saved.id, {QStringLiteral("Entwurf"), {}, {}, {}}),
-                             StorageError);
-    QVERIFY_EXCEPTION_THROWN(service.remove(saved.id), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError,
+                             service.save(saved.id, {QStringLiteral("Entwurf"), {}, {}, {}}));
+    QVERIFY_THROWS_EXCEPTION(StorageError, service.remove(saved.id));
     external.execute(QStringLiteral("ROLLBACK"));
     QVERIFY(service.load() == ProjectList{saved});
     QCOMPARE(service.save(saved.id, {QStringLiteral("Entwurf"), {}, {}, {}}).fields.name,
@@ -143,12 +143,12 @@ private slots:
     ExternalDatabase reader(databasePath(directory));
     reader.execute(QStringLiteral("BEGIN"));
     reader.execute(QStringLiteral("SELECT * FROM projects"));
-    QVERIFY_EXCEPTION_THROWN(service.save(saved.id, {QStringLiteral("Neu"), QStringLiteral("A"),
-                                                     QStringLiteral("B"), QStringLiteral("C")}),
-                             StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError,
+                             service.save(saved.id, {QStringLiteral("Neu"), QStringLiteral("A"),
+                                                     QStringLiteral("B"), QStringLiteral("C")}));
     reader.execute(QStringLiteral("ROLLBACK"));
     QVERIFY(service.load() == ProjectList{saved});
-    QVERIFY_EXCEPTION_THROWN(service.save(999, saved.fields), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, service.save(999, saved.fields));
     QCOMPARE(service.save(saved.id, {QStringLiteral("Erneut"), {}, {}, {}}).id, saved.id);
   }
   void triggerWriteFailurePreservesData() {
@@ -160,8 +160,8 @@ private slots:
     ExternalDatabase external(databasePath(directory));
     external.execute(QStringLiteral("CREATE TRIGGER reject_update BEFORE UPDATE ON projects BEGIN "
                                     "SELECT RAISE(ABORT, 'synthetischer Schreibfehler'); END"));
-    QVERIFY_EXCEPTION_THROWN(service.save(saved.id, {QStringLiteral("Neu"), {}, {}, {}}),
-                             StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError,
+                             service.save(saved.id, {QStringLiteral("Neu"), {}, {}, {}}));
     QVERIFY(service.load() == ProjectList{saved});
     external.execute(QStringLiteral("DROP TRIGGER reject_update"));
     QCOMPARE(service.save(saved.id, {QStringLiteral("Neu"), {}, {}, {}}).id, saved.id);
@@ -176,7 +176,7 @@ private slots:
     }
     const auto before = readFile(databasePath(directory));
     SqliteProjectRepository repository(directory.path());
-    QVERIFY_EXCEPTION_THROWN(repository.initialize(), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.initialize());
     QCOMPARE(readFile(databasePath(directory)), before);
   }
   void corruptDatabaseUnchanged() {
@@ -187,7 +187,7 @@ private slots:
     file.close();
     const auto before = readFile(databasePath(directory));
     SqliteProjectRepository repository(directory.path());
-    QVERIFY_EXCEPTION_THROWN(repository.initialize(), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.initialize());
     QCOMPARE(readFile(databasePath(directory)), before);
   }
   void existingEmptyOrForeignDatabase_data() {
@@ -207,7 +207,7 @@ private slots:
     }
     const auto before = readFile(databasePath(directory));
     SqliteProjectRepository repository(directory.path());
-    QVERIFY_EXCEPTION_THROWN(repository.initialize(), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.initialize());
     QCOMPARE(readFile(databasePath(directory)), before);
   }
   void wrongSchemaVersionOne() {
@@ -218,7 +218,7 @@ private slots:
       database.execute(QStringLiteral("CREATE TABLE projects(wrong TEXT)"));
     }
     SqliteProjectRepository repository(directory.path());
-    QVERIFY_EXCEPTION_THROWN(repository.initialize(), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.initialize());
   }
   void wrongTypesInKnownSchema() {
     QTemporaryDir directory;
@@ -230,7 +230,7 @@ private slots:
     }
     const auto before = readFile(databasePath(directory));
     SqliteProjectRepository repository(directory.path());
-    QVERIFY_EXCEPTION_THROWN(repository.initialize(), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.initialize());
     QCOMPARE(readFile(databasePath(directory)), before);
   }
   void corruptStoredNameIsReportedWithoutRepair() {
@@ -241,8 +241,8 @@ private slots:
     ExternalDatabase external(databasePath(directory));
     external.execute(QStringLiteral("UPDATE projects SET name=char(160)"));
     const auto before = readFile(databasePath(directory));
-    QVERIFY_EXCEPTION_THROWN(repository.findAll(), StorageError);
-    QVERIFY_EXCEPTION_THROWN(repository.find(1), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.findAll());
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.find(1));
     QCOMPARE(readFile(databasePath(directory)), before);
   }
   void lockedStartupCanRetry() {
@@ -255,7 +255,7 @@ private slots:
     ExternalDatabase blocker(databasePath(directory));
     blocker.execute(QStringLiteral("BEGIN EXCLUSIVE"));
     SqliteProjectRepository repository(directory.path());
-    QVERIFY_EXCEPTION_THROWN(repository.initialize(), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.initialize());
     blocker.execute(QStringLiteral("ROLLBACK"));
     repository.initialize();
     QCOMPARE(repository.findAll().first().fields.name, QStringLiteral("Vorhanden"));
@@ -265,7 +265,7 @@ private slots:
     auto first = std::make_unique<SqliteProjectRepository>(directory.path());
     first->initialize();
     SqliteProjectRepository second(directory.path());
-    QVERIFY_EXCEPTION_THROWN(second.initialize(), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, second.initialize());
     first.reset();
     second.initialize();
     QVERIFY(second.findAll().isEmpty());
@@ -277,7 +277,7 @@ private slots:
     QVERIFY(file.open(QIODevice::WriteOnly));
     file.close();
     SqliteProjectRepository repository(path);
-    QVERIFY_EXCEPTION_THROWN(repository.initialize(), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.initialize());
   }
   void readOnlyFile() {
 #ifdef Q_OS_WIN
@@ -296,8 +296,8 @@ private slots:
       SqliteProjectRepository repository(directory.path());
       ProjectService service(repository);
       QVERIFY(service.load() == ProjectList{saved});
-      QVERIFY_EXCEPTION_THROWN(service.save(saved.id, {QStringLiteral("Neu"), {}, {}, {}}),
-                               StorageError);
+      QVERIFY_THROWS_EXCEPTION(StorageError,
+                               service.save(saved.id, {QStringLiteral("Neu"), {}, {}, {}}));
       QVERIFY(service.load() == ProjectList{saved});
     }
     QVERIFY(QFile::setPermissions(databasePath(directory),

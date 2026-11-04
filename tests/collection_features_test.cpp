@@ -94,20 +94,20 @@ private slots:
   void invalidPhotoAndMetadataAreRejected() {
     auto object = encodeEntry(richDraft());
     object.insert(QStringLiteral("photoBase64"), QStringLiteral("YWJj"));
-    QVERIFY_EXCEPTION_THROWN(decodeEntry(object), std::exception);
+    QVERIFY_THROWS_EXCEPTION(std::exception, decodeEntry(object));
     object = encodeEntry(richDraft());
     object.insert(QStringLiteral("photoBase64"), QStringLiteral("!!"));
-    QVERIFY_EXCEPTION_THROWN(decodeEntry(object), std::exception);
+    QVERIFY_THROWS_EXCEPTION(std::exception, decodeEntry(object));
     object = encodeEntry(richDraft());
     object.insert(QStringLiteral("status"), QStringLiteral("unknown"));
-    QVERIFY_EXCEPTION_THROWN(decodeEntry(object), std::exception);
+    QVERIFY_THROWS_EXCEPTION(std::exception, decodeEntry(object));
     object = encodeEntry(richDraft());
     auto steps = object.value(QStringLiteral("steps")).toArray();
     auto invalid = steps[0].toObject();
     invalid.insert(QStringLiteral("position"), 0.5);
     steps[0] = invalid;
     object.insert(QStringLiteral("steps"), steps);
-    QVERIFY_EXCEPTION_THROWN(decodeEntry(object), std::exception);
+    QVERIFY_THROWS_EXCEPTION(std::exception, decodeEntry(object));
   }
   void sortingKeepsSelectionAndPhotoDetails_data() {
     QTest::addColumn<QString>("tag");

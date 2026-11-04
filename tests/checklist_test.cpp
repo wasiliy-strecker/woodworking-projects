@@ -122,7 +122,7 @@ private slots:
     QFETCH(QString, text);
     auto draft = example();
     draft.steps[1].text = text;
-    QVERIFY_EXCEPTION_THROWN(validateDraft(draft), ValidationError);
+    QVERIFY_THROWS_EXCEPTION(ValidationError, validateDraft(draft));
   }
   void emptyListTrimmingAndInvalidIdentity() {
     QVERIFY(ProjectDraft{}.steps.isEmpty());
@@ -132,16 +132,16 @@ private slots:
     QCOMPARE(clean.steps[0].text, QStringLiteral("Holz sägen"));
     QCOMPARE(clean.steps[0].id, draft.steps[0].id);
     draft.steps[1].id = draft.steps[0].id;
-    QVERIFY_EXCEPTION_THROWN(validateDraft(draft), ValidationError);
+    QVERIFY_THROWS_EXCEPTION(ValidationError, validateDraft(draft));
     draft = example();
     draft.steps[0].id = {};
-    QVERIFY_EXCEPTION_THROWN(validateDraft(draft), ValidationError);
+    QVERIFY_THROWS_EXCEPTION(ValidationError, validateDraft(draft));
     draft = example();
     draft.steps[0].position = -1;
-    QVERIFY_EXCEPTION_THROWN(validateDraft(draft), ValidationError);
+    QVERIFY_THROWS_EXCEPTION(ValidationError, validateDraft(draft));
     draft = example();
     draft.steps[1].position = 0;
-    QVERIFY_EXCEPTION_THROWN(validateDraft(draft), ValidationError);
+    QVERIFY_THROWS_EXCEPTION(ValidationError, validateDraft(draft));
     draft.steps.clear();
     QVERIFY(validateDraft(draft).steps.isEmpty());
   }
@@ -221,11 +221,11 @@ private slots:
     external.sql(QStringLiteral("CREATE TRIGGER fail_late BEFORE INSERT ON checklist_steps "
                                 "WHEN NEW.text='SPÄTER FEHLER' BEGIN SELECT "
                                 "RAISE(ABORT,'synthetisch später Fehler'); END"));
-    QVERIFY_EXCEPTION_THROWN(repository.update(id, changed), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.update(id, changed));
     QVERIFY(repository.find(id) == old);
     QCOMPARE(external.count(QStringLiteral("projects")), 1);
     QCOMPARE(external.count(QStringLiteral("checklist_steps")), 3);
-    QVERIFY_EXCEPTION_THROWN(repository.create(changed), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.create(changed));
     QCOMPARE(external.count(QStringLiteral("projects")), 1);
     QCOMPARE(external.count(QStringLiteral("checklist_steps")), 3);
     QVERIFY(repository.find(id) == old);
@@ -256,7 +256,7 @@ private slots:
           QStringLiteral("UPDATE checklist_steps SET text=NULL"),
           QStringLiteral("UPDATE checklist_steps SET project_id=999"),
           QStringLiteral("UPDATE checklist_steps SET id='11111111-1111-4111-8111-111111111111'")}) {
-      QVERIFY_EXCEPTION_THROWN(external.sql(statement), StorageError);
+      QVERIFY_THROWS_EXCEPTION(StorageError, external.sql(statement));
     }
     // The repository connection must also enforce FK cascades, not only this helper.
     repository.remove(1);
@@ -286,8 +286,8 @@ private slots:
     External external(directory.path());
     external.sql(QStringLiteral("PRAGMA ignore_check_constraints=ON"));
     external.sql(statement);
-    QVERIFY_EXCEPTION_THROWN(repository.find(1), StorageError);
-    QVERIFY_EXCEPTION_THROWN(repository.findAll(), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.find(1));
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.findAll());
     QCOMPARE(external.count(QStringLiteral("checklist_steps")), 3);
   }
   void editorActionsUseIdsAndPreservePositions() {

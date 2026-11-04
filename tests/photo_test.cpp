@@ -60,7 +60,7 @@ private slots:
   }
   void invalidContent() {
     QFETCH(QByteArray, bytes);
-    QVERIFY_EXCEPTION_THROWN(decodePhoto(bytes), PhotoError);
+    QVERIFY_THROWS_EXCEPTION(PhotoError, decodePhoto(bytes));
   }
   void dimensionLimits_data() {
     QTest::addColumn<QSize>("size");
@@ -78,7 +78,7 @@ private slots:
     if (accepted)
       QVERIFY(!decodePhoto(bytes).preview.isNull());
     else
-      QVERIFY_EXCEPTION_THROWN(decodePhoto(bytes), PhotoError);
+      QVERIFY_THROWS_EXCEPTION(PhotoError, decodePhoto(bytes));
   }
   void boundedReadIncludingGrowingDevice() {
     QByteArray exact(maxPhotoBytes, 'x');
@@ -101,20 +101,20 @@ private slots:
       }
       qint64 writeData(const char*, qint64) override { return -1; }
     } growing;
-    QVERIFY_EXCEPTION_THROWN(readPhotoBytes(growing), PhotoError);
+    QVERIFY_THROWS_EXCEPTION(PhotoError, readPhotoBytes(growing));
     // QIODevice may prefetch one internal 16 KiB block, never the whole file.
     QVERIFY(growing.count <= maxPhotoBytes + 16384);
   }
   void missingUnreadableAndOversizedFiles() {
     QTemporaryDir directory;
-    QVERIFY_EXCEPTION_THROWN(importPhoto(directory.filePath(QStringLiteral("missing.png"))),
-                             PhotoError);
-    QVERIFY_EXCEPTION_THROWN(importPhoto(directory.path()), PhotoError);
+    QVERIFY_THROWS_EXCEPTION(PhotoError,
+                             importPhoto(directory.filePath(QStringLiteral("missing.png"))));
+    QVERIFY_THROWS_EXCEPTION(PhotoError, importPhoto(directory.path()));
     QFile file(directory.filePath(QStringLiteral("too-big.png")));
     QVERIFY(file.open(QIODevice::WriteOnly));
     QVERIFY(file.resize(maxPhotoBytes + 1));
     file.close();
-    QVERIFY_EXCEPTION_THROWN(importPhoto(file.fileName()), PhotoError);
+    QVERIFY_THROWS_EXCEPTION(PhotoError, importPhoto(file.fileName()));
   }
   void orientationIsApplied() {
     auto jpeg = picture("JPEG", {40, 20});
@@ -166,14 +166,13 @@ private slots:
       QVERIFY(repository.find(firstId).photo.isEmpty());
       QCOMPARE(repository.find(secondId).photo, secondPhoto);
       repository.remove(secondId);
-      QVERIFY_EXCEPTION_THROWN(repository.find(secondId), StorageError);
-      QVERIFY_EXCEPTION_THROWN(repository.create({QStringLiteral("Ungültig"),
-                                                  {},
-                                                  {},
-                                                  {},
-                                                  ProjectStatus::Planned,
-                                                  QByteArray("broken")}),
-                               PhotoError);
+      QVERIFY_THROWS_EXCEPTION(StorageError, repository.find(secondId));
+      QVERIFY_THROWS_EXCEPTION(PhotoError, repository.create({QStringLiteral("Ungültig"),
+                                                              {},
+                                                              {},
+                                                              {},
+                                                              ProjectStatus::Planned,
+                                                              QByteArray("broken")}));
       QCOMPARE(repository.findAll().size(), 1);
     }
   }

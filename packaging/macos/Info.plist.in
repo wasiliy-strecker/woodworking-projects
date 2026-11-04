@@ -19,6 +19,8 @@
     <string>pt-BR</string>
   </array>
   <key>LSMinimumSystemVersion</key><string>12.0</string>
+  <key>LSMinimumSystemVersion</key><string>12.0</string>
+  <key>ITSAppUsesNonExemptEncryption</key><false/>
   <key>NSHighResolutionCapable</key><true/>
   <key>NSHumanReadableCopyright</key><string>© 2026 Wasiliy Strecker</string>
   <key>LSApplicationCategoryType</key><string>public.app-category.lifestyle</string>

@@ -312,3 +312,12 @@ python3 scripts/export_privacy.py build/privacy-handoff
 
 Der Helfer kopiert `PRIVACY.md` und `privacy-url.txt` ohne App-Build oder Zugriff
 auf Nutzerdaten. Vorhandene Lieferungen werden nicht überschrieben.
+
+## Mac App Store release preparation
+
+The current user-requested release targets the Mac App Store before Microsoft
+under **Woodworking by Appfabrik**. The installed app remains
+**Woodworking Projects**. Version 1.0, build 1 uses the registered bundle ID
+`de.appfabrik.woodworkingprojects` and Qt 6.8.3 for Apple Silicon and Intel.
+See [the release workflow](docs/mac-app-store-release.md) for signing, sandbox
+checks, native acceptance and localized Store screenshots.

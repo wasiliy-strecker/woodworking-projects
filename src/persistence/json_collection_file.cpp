@@ -83,7 +83,7 @@ QByteArray identity(const QString& path) {
          QByteArray::number(static_cast<qulonglong>(info.nFileIndexHigh)) + ':' +
          QByteArray::number(static_cast<qulonglong>(info.nFileIndexLow));
 #else
-  struct stat info{};
+  struct stat info {};
   if (::lstat(QFile::encodeName(path).constData(), &info) != 0 || S_ISLNK(info.st_mode)) {
     invalidTarget();
   }
@@ -99,7 +99,7 @@ QByteArray revision(const QString& path) {
          QByteArray::number(info.lastModified().toMSecsSinceEpoch()) + ':' +
          QByteArray::number(info.birthTime().toMSecsSinceEpoch());
 #else
-  struct stat info{};
+  struct stat info {};
   if (::lstat(QFile::encodeName(path).constData(), &info) != 0) {
     changedTarget();
   }

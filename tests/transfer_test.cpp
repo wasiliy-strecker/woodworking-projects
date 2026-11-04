@@ -75,7 +75,7 @@ private slots:
     QTemporaryDir data;
     QTemporaryDir output;
     const auto path = output.filePath(QStringLiteral("backup.json"));
-    struct rlimit originalLimit{};
+    struct rlimit originalLimit {};
     QVERIFY(::getrlimit(RLIMIT_FSIZE, &originalLimit) == 0);
     const auto previousSignal = std::signal(SIGXFSZ, SIG_IGN);
     QVERIFY(previousSignal != SIG_ERR);
@@ -120,7 +120,7 @@ private slots:
     files.write({sample, sample}, files.inspect(path), false);
     QCOMPARE(files.read(path), (TransferDraftList{sample, sample}));
     const auto previous = get(path);
-    QVERIFY_EXCEPTION_THROWN(files.write({}, files.inspect(path), false), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.write({}, files.inspect(path), false));
     QCOMPARE(get(path), previous);
     files.write({}, files.inspect(path), true);
     QVERIFY(files.read(path).isEmpty());
@@ -135,7 +135,7 @@ private slots:
       put(destination, "other application");
       return std::make_error_code(std::errc::operation_not_supported);
     });
-    QVERIFY_EXCEPTION_THROWN(files.write({sample}, files.inspect(path), false), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.write({sample}, files.inspect(path), false));
     QCOMPARE(get(path), QByteArray("other application"));
     QCOMPARE(QDir(output.path()).entryList(QDir::Files | QDir::Hidden).size(), 1);
 #ifndef Q_OS_WIN
@@ -148,7 +148,7 @@ private slots:
       }
       return std::make_error_code(std::errc::operation_not_supported);
     });
-    QVERIFY_EXCEPTION_THROWN(linked.write({sample}, linked.inspect(link), false), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, linked.write({sample}, linked.inspect(link), false));
     QCOMPARE(get(original), QByteArray("keep original"));
     QVERIFY(QFileInfo(link).isSymLink());
 #endif
@@ -173,7 +173,7 @@ private slots:
                  .toArray()[0]
                  .toObject()
                  .contains(QStringLiteral("id")));
-    QVERIFY_EXCEPTION_THROWN(files.write({}, files.inspect(path), false), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.write({}, files.inspect(path), false));
     QCOMPARE(files.read(path).size(), 2);
     files.write({}, files.inspect(path), true);
     QVERIFY(files.read(path).isEmpty());
@@ -218,7 +218,7 @@ private slots:
     const auto path = directory.filePath(QStringLiteral("invalid.json"));
     put(path, bytes);
     JsonCollectionFile files;
-    QVERIFY_EXCEPTION_THROWN(files.read(path), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.read(path));
     QCOMPARE(get(path), bytes);
   }
 
@@ -234,19 +234,19 @@ private slots:
     files.write(many, files.inspect(boundary), false);
     QCOMPARE(files.read(boundary).size(), maxTransferEntries);
     many.append(sample);
-    QVERIFY_EXCEPTION_THROWN(files.write(many, files.inspect(path), true), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.write(many, files.inspect(path), true));
     QCOMPARE(get(path), original);
     auto oversized = sample;
     oversized.note = QString(static_cast<int>(maxTransferBytes), QChar('x'));
-    QVERIFY_EXCEPTION_THROWN(files.write({oversized}, files.inspect(path), true), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.write({oversized}, files.inspect(path), true));
     QCOMPARE(get(path), original);
     // JSON escaping also counts towards the byte limit.
     oversized.note = QString(2000000, QChar(1));
-    QVERIFY_EXCEPTION_THROWN(files.write({oversized}, files.inspect(path), true), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.write({oversized}, files.inspect(path), true));
     QCOMPARE(get(path), original);
     const auto invalid = output.filePath(QStringLiteral("oversized.json"));
     put(invalid, QByteArray(maxTransferBytes + 1, ' '));
-    QVERIFY_EXCEPTION_THROWN(files.read(invalid), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.read(invalid));
     QByteArray entries("[");
     for (qsizetype index = 0; index <= maxTransferEntries; ++index) {
       if (index != 0) {
@@ -256,7 +256,7 @@ private slots:
     }
     entries += ']';
     put(invalid, collection(entries));
-    QVERIFY_EXCEPTION_THROWN(files.read(invalid), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.read(invalid));
   }
 
   void changedDestinationsAreNeverReplaced() {
@@ -266,16 +266,16 @@ private slots:
     const auto path = output.filePath(QStringLiteral("backup.json"));
     const auto absent = files.inspect(path);
     put(path, "created by another application");
-    QVERIFY_EXCEPTION_THROWN(files.write({sample}, absent, false), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.write({sample}, absent, false));
     QCOMPARE(get(path), QByteArray("created by another application"));
     const auto original = files.inspect(path);
     put(path, "changed after selection");
-    QVERIFY_EXCEPTION_THROWN(files.write({sample}, original, true), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.write({sample}, original, true));
     QCOMPARE(get(path), QByteArray("changed after selection"));
     const auto replaced = files.inspect(path);
     QVERIFY(QFile::rename(path, path + QStringLiteral(".old")));
     put(path, "changed after selection");
-    QVERIFY_EXCEPTION_THROWN(files.write({sample}, replaced, true), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.write({sample}, replaced, true));
     QCOMPARE(get(path), QByteArray("changed after selection"));
   }
 
@@ -283,30 +283,30 @@ private slots:
     QTemporaryDir data;
     QTemporaryDir output;
     JsonCollectionFile files(data.path());
-    QVERIFY_EXCEPTION_THROWN(files.inspect(QStringLiteral("relative.json")), TransferError);
-    QVERIFY_EXCEPTION_THROWN(files.inspect(output.filePath(QStringLiteral("backup.txt"))),
-                             TransferError);
-    QVERIFY_EXCEPTION_THROWN(files.inspect(data.filePath(QStringLiteral("backup.json"))),
-                             TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.inspect(QStringLiteral("relative.json")));
+    QVERIFY_THROWS_EXCEPTION(TransferError,
+                             files.inspect(output.filePath(QStringLiteral("backup.txt"))));
+    QVERIFY_THROWS_EXCEPTION(TransferError,
+                             files.inspect(data.filePath(QStringLiteral("backup.json"))));
     const auto folder = output.filePath(QStringLiteral("folder.json"));
     QVERIFY(QDir().mkdir(folder));
-    QVERIFY_EXCEPTION_THROWN(files.inspect(folder), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.inspect(folder));
     const auto protectedPath = data.filePath(QStringLiteral("language.txt"));
     put(protectedPath, "en-US\n");
 #ifndef Q_OS_WIN
     const auto symbolic = output.filePath(QStringLiteral("symbolic.json"));
     QVERIFY(QFile::link(protectedPath, symbolic));
-    QVERIFY_EXCEPTION_THROWN(files.inspect(symbolic), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.inspect(symbolic));
     const auto hard = output.filePath(QStringLiteral("hard.json"));
     std::error_code error;
     std::filesystem::create_hard_link(protectedPath.toStdString(), hard.toStdString(), error);
     QVERIFY2(!error, error.message().c_str());
-    QVERIFY_EXCEPTION_THROWN(files.inspect(hard), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.inspect(hard));
 #endif
     QCOMPARE(get(protectedPath), QByteArray("en-US\n"));
-    QVERIFY_EXCEPTION_THROWN(files.read(output.filePath(QStringLiteral("missing.json"))),
-                             TransferError);
-    QVERIFY_EXCEPTION_THROWN(files.read(folder), TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError,
+                             files.read(output.filePath(QStringLiteral("missing.json"))));
+    QVERIFY_THROWS_EXCEPTION(TransferError, files.read(folder));
   }
 
   void importPreservesMultiplicityAndExistingIdentities() {
@@ -350,12 +350,12 @@ private slots:
                     "BEGIN SELECT RAISE(ABORT, 'Synthetic late failure'); END"));
     const TransferDraftList incoming{{QStringLiteral("Inserted first"), {}, {}, {}},
                                      {QStringLiteral("Reject"), {}, {}, {}}};
-    QVERIFY_EXCEPTION_THROWN(repository.importEntries(incoming), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.importEntries(incoming));
     QCOMPARE(repository.findAll(), ProjectList{original});
     externalSql(directory.path(), QStringLiteral("DROP TRIGGER fail_import"));
     QCOMPARE(repository.importEntries(incoming).added, 2);
     QCOMPARE(repository.findAll().size(), 3);
-    QVERIFY_EXCEPTION_THROWN(repository.importEntries({sample, {{}, {}, {}, {}}}), ValidationError);
+    QVERIFY_THROWS_EXCEPTION(ValidationError, repository.importEntries({sample, {{}, {}, {}, {}}}));
     QCOMPARE(repository.findAll().size(), 3);
   }
 
@@ -366,9 +366,9 @@ private slots:
     QCOMPARE(repository.importEntries(TransferDraftList(maxTransferEntries - 1, sample)).added,
              maxTransferEntries - 1);
     const auto before = repository.findAll();
-    QVERIFY_EXCEPTION_THROWN(repository.importEntries({{QStringLiteral("One"), {}, {}, {}},
-                                                       {QStringLiteral("Two"), {}, {}, {}}}),
-                             TransferError);
+    QVERIFY_THROWS_EXCEPTION(TransferError,
+                             repository.importEntries({{QStringLiteral("One"), {}, {}, {}},
+                                                       {QStringLiteral("Two"), {}, {}, {}}}));
     QCOMPARE(repository.findAll(), before);
   }
 

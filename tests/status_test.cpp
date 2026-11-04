@@ -112,13 +112,13 @@ private slots:
   void invalidValues() {
     for (const auto& key : {QString(), QStringLiteral("Geplant"), QStringLiteral("0"),
                             QStringLiteral("PLANNED"), QStringLiteral("future")}) {
-      QVERIFY_EXCEPTION_THROWN(statusFromStorage(key), ValidationError);
+      QVERIFY_THROWS_EXCEPTION(ValidationError, statusFromStorage(key));
     }
     const auto invalid = static_cast<ProjectStatus>(200);
-    QVERIFY_EXCEPTION_THROWN(storedStatus(invalid), ValidationError);
-    QVERIFY_EXCEPTION_THROWN(displayStatus(invalid), ValidationError);
-    QVERIFY_EXCEPTION_THROWN(validateDraft({QStringLiteral("Name"), {}, {}, {}, invalid}),
-                             ValidationError);
+    QVERIFY_THROWS_EXCEPTION(ValidationError, storedStatus(invalid));
+    QVERIFY_THROWS_EXCEPTION(ValidationError, displayStatus(invalid));
+    QVERIFY_THROWS_EXCEPTION(ValidationError,
+                             validateDraft({QStringLiteral("Name"), {}, {}, {}, invalid}));
     QTemporaryDir directory;
     SqliteProjectRepository repository(directory.path());
     repository.initialize();
@@ -126,13 +126,13 @@ private slots:
     External external(directory.path());
     for (const auto& sql : {QStringLiteral("UPDATE projects SET status=NULL"),
                             QStringLiteral("UPDATE projects SET status='invalid'")}) {
-      QVERIFY_EXCEPTION_THROWN(external.sql(sql), StorageError);
+      QVERIFY_THROWS_EXCEPTION(StorageError, external.sql(sql));
     }
     QCOMPARE(repository.findAll().first().fields.status, ProjectStatus::Planned);
     external.sql(QStringLiteral("PRAGMA ignore_check_constraints=ON"));
     external.sql(QStringLiteral("UPDATE projects SET status='unknown-future-value'"));
-    QVERIFY_EXCEPTION_THROWN(repository.findAll(), StorageError);
-    QVERIFY_EXCEPTION_THROWN(repository.find(1), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.findAll());
+    QVERIFY_THROWS_EXCEPTION(StorageError, repository.find(1));
   }
   void everyTransitionPreservesOtherFieldsAndDuplicate() {
     QTemporaryDir directory;

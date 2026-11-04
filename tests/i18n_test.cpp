@@ -173,8 +173,8 @@ private slots:
     const auto result = readLanguagePreference(directory.path());
     QCOMPARE(result.value, tag);
     QVERIFY(!result.readFailed);
-    QVERIFY_EXCEPTION_THROWN(saveLanguagePreference(directory.path(), QStringLiteral("invalid")),
-                             StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError,
+                             saveLanguagePreference(directory.path(), QStringLiteral("invalid")));
     QCOMPARE(readLanguagePreference(directory.path()).value, tag);
     Translations translations;
     translations.install(result.value, QLocale(QStringLiteral("ja-JP")));
@@ -255,8 +255,8 @@ private slots:
     QVERIFY(QFile::remove(path));
     QVERIFY(QDir().mkdir(path));
     QVERIFY(readLanguagePreference(directory.path()).readFailed);
-    QVERIFY_EXCEPTION_THROWN(saveLanguagePreference(directory.path(), QStringLiteral("fr-FR")),
-                             StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError,
+                             saveLanguagePreference(directory.path(), QStringLiteral("fr-FR")));
     QVERIFY(QFileInfo(path).isDir());
   }
 

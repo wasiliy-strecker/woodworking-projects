@@ -11,3 +11,6 @@ CMakeUserPresets.json
 __pycache__/
 .ruff_cache/
 *.pyc
+
+# Private Mac signing inputs and acceptance records
+packaging/macos/*.local.json

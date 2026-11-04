@@ -29,7 +29,7 @@ private slots:
   }
   void requiredName() {
     QFETCH(QString, name);
-    QVERIFY_EXCEPTION_THROWN(validateDraft({name, {}, {}, {}}), ValidationError);
+    QVERIFY_THROWS_EXCEPTION(ValidationError, validateDraft({name, {}, {}, {}}));
   }
   void trimsSingleLinesPreservesNote() {
     const QString note = QStringLiteral("  Erste Zeile\n\n\tGeschenk von Ömer.\n ");
@@ -88,8 +88,8 @@ private slots:
     QTemporaryDir directory;
     QVERIFY(directory.isValid());
     QCOMPARE(resolveDataDirectory(directory.path(), true), directory.path());
-    QVERIFY_EXCEPTION_THROWN(resolveDataDirectory({}, true), StorageError);
-    QVERIFY_EXCEPTION_THROWN(resolveDataDirectory(QStringLiteral("relative"), true), StorageError);
+    QVERIFY_THROWS_EXCEPTION(StorageError, resolveDataDirectory({}, true));
+    QVERIFY_THROWS_EXCEPTION(StorageError, resolveDataDirectory(QStringLiteral("relative"), true));
     QVERIFY(!defaultDataDirectory().isEmpty());
     QVERIFY(defaultDataDirectory().contains(QStringLiteral("holzwerkprojekt-tests")));
   }

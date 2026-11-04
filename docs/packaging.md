@@ -117,8 +117,9 @@ QSQLITE, JPEG- und Cocoa-Plugin und erstellt eine DMG. Das Bundle hat die Kennun
 lokalen Tests und ist keine vertrauenswürdige Distributionssignatur.
 
 `packaging/macos/app-store.entitlements` bereitet App Sandbox und
-`com.apple.security.files.user-selected.read-only` vor. Die native Fotoauswahl
-erlaubt einen einmaligen lesenden Import. Dauerhafter Zugriff auf die externe
+`com.apple.security.files.user-selected.read-write` vor. Die native Fotoauswahl
+liest das gewählte Bild; JSON-Exporte schreiben nur an vom Nutzer gewählte Ziele.
+Dauerhafter Zugriff auf die externe
 Quelle und Security-Scoped Bookmarks sind für den gespeicherten BLOB nicht nötig.
 Die App benötigt keinen Netzwerkzugriff. Das Entitlement muss nativ geprüft werden.
 Store-Identität, Team, Provisioning und Signierung aller Bundle-Bestandteile
