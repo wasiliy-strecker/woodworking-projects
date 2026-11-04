@@ -19,6 +19,11 @@
 #include <QTimer>
 #include <QtTest>
 
+#ifdef Q_OS_MACOS
+// Qt disables automatic label mnemonics on macOS; this suite explicitly tests them.
+void qt_set_sequence_auto_mnemonic(bool enabled);
+#endif
+
 using namespace woodwork;
 namespace {
 ChecklistStep step(const QString& text, qint64 position, bool completed = false) {
@@ -100,6 +105,12 @@ void answer(bool& checked, bool keep = false) {
 class ChecklistTest final : public QObject {
   Q_OBJECT
 private slots:
+  void initTestCase() {
+#ifdef Q_OS_MACOS
+    qt_set_sequence_auto_mnemonic(true);
+#endif
+  }
+
   void validation_data() {
     QTest::addColumn<QString>("text");
     QTest::newRow("empty") << QString();

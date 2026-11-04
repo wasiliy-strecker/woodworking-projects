@@ -314,6 +314,7 @@ MainWindow::MainWindow(StorageController& controller, QString dataDirectory,
                               [&project](const WoodProject& row) { return row.id == project.id; });
     if (found == projects_.end()) {
       projects_.append(project);
+      search_->clear();
     } else {
       *found = project;
     }
